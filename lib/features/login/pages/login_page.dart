@@ -5,6 +5,7 @@ import 'package:porco_eats/shared/widgets/app_colors.dart';
 import 'package:porco_eats/shared/widgets/app_login_header.dart';
 import 'package:porco_eats/shared/widgets/app_text_style.dart';
 import 'package:provider/provider.dart';
+import 'package:porco_eats/features/recover/pages/recover_page.dart';
 
 import '../../../shared/widgets/app_text_form_field.dart';
 
@@ -105,7 +106,7 @@ class LoginPage extends StatelessWidget {
                           Spacer(),
                           TextButton(
                             onPressed: () {
-                              //   Navigator.pushNamed(context, RecoverPage.route);
+                              Navigator.pushNamed(context, RecoverPage.route);
                             },
                             child: Text(
                               'Esqueci a senha',
