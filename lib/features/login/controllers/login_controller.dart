@@ -20,7 +20,7 @@ class LoginController extends ChangeNotifier {
 
   changeIsLoading(bool value) {
     isLoading = value;
-    notifyListeners();
+     notifyListeners(); 
   }
 
   Future<void> handleLogin() async {

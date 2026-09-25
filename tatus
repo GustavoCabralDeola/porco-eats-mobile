@@ -1,0 +1,11 @@
+warning: in the working copy of '.metadata', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'pubspec.lock', LF will be replaced by CRLF the next time Git touches it
+ .metadata                                          | 15 [32m++++[m[31m------[m
+ analysis_options.yaml                              |  1 [32m+[m
+ .../login/controllers/login_controller.dart        |  2 [32m+[m[31m-[m
+ lib/features/login/pages/login_page.dart           |  3 [32m+[m[31m-[m
+ lib/routes.dart                                    |  2 [32m++[m
+ lib/shared/widgets/app_login_header.dart           |  2 [31m--[m
+ lib/shared/widgets/app_text_form_field.dart        |  8 [32m++++++[m
+ pubspec.lock                                       | 32 [32m+++++++++++[m[31m-----------[m
+ 8 files changed, 36 insertions(+), 29 deletions(-)
