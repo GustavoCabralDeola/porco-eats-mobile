@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:porco_eats/features/home/controllers/home_controller.dart';
 import 'package:porco_eats/features/login/controllers/login_controller.dart';
-import 'package:porco_eats/features/login/pages/login_page.dart';
-import 'package:porco_eats/routes.dart';
+import 'package:porco_eats/features/splash/presentation/splash_screen.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -17,9 +16,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (context) {
-            return LoginController();
-          },
+          create: (context) => LoginController(),
         ),
         ChangeNotifierProvider(
           create: (context) {
@@ -27,12 +24,9 @@ class MyApp extends StatelessWidget {
           },
         ),
       ],
-      builder: (context, child) {
-        return MaterialApp(
-          routes: AppRoutes.routes,
-          initialRoute: LoginPage.route,
-        );
-      },
+      child: MaterialApp(
+        home: const SplashScreen(),
+      ),
     );
   }
 }
