@@ -11,6 +11,8 @@ class AppTextFormField extends StatefulWidget {
     this.onChanged,
     this.textEditingcontroller,
     this.prefixIcon,
+    this.errorText,
+    this.onSubmitted,
   });
 
   final String hintText;
@@ -20,6 +22,8 @@ class AppTextFormField extends StatefulWidget {
   final TextInputType? keyboardType;
   final Function(String)? onChanged;
   final TextEditingController? textEditingcontroller;
+  final String? errorText;
+  final Function(String)? onSubmitted;
 
   @override
   State<AppTextFormField> createState() => _AppTextFormFieldState();
@@ -43,9 +47,13 @@ class _AppTextFormFieldState extends State<AppTextFormField> {
   Widget build(BuildContext context) {
     return TextFormField(
       keyboardType: widget.keyboardType,
+      controller: widget.textEditingcontroller,
+      onChanged: widget.onChanged,
+      onFieldSubmitted: widget.onSubmitted,
       autovalidateMode: AutovalidateMode.onUnfocus,
       decoration: InputDecoration(
         hintText: widget.hintText,
+        errorText: widget.errorText,
         prefixIcon: widget.prefixIcon != null
             ? Padding(
                 padding: const EdgeInsets.only(left: 24.0, right: 12.0),
