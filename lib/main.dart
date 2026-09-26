@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:porco_eats/features/home/controllers/home_controller.dart';
 import 'package:porco_eats/features/login/controllers/login_controller.dart';
 import 'package:porco_eats/features/login/pages/login_page.dart';
 import 'package:porco_eats/routes.dart';
@@ -18,6 +19,11 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (context) {
             return LoginController();
+          },
+        ),
+        ChangeNotifierProvider(
+          create: (context) {
+            return HomeController();
           },
         ),
       ],
