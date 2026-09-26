@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:porco_eats/features/home/pages/home_page.dart';
 import 'package:porco_eats/features/login/pages/login_page.dart';
 import 'package:porco_eats/features/recover/pages/recover_page.dart';
 

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:porco_eats/shared/widgets/app_colors.dart';
+import 'package:porco_eats/shared/widgets/app_text_form_field_notifier.dart';
 
-class AppTextFormField extends StatefulWidget {
-  const AppTextFormField(
+class AppTextFormField extends StatelessWidget {
+  AppTextFormField(
     this.keyboardType, {
     super.key,
     required this.hintText,
@@ -18,7 +19,7 @@ class AppTextFormField extends StatefulWidget {
   final String hintText;
   final bool obscureText;
   final IconData? prefixIcon;
-  final Widget? suffixIcon;
+  final IconData? suffixIcon;
   final TextInputType? keyboardType;
   final Function(String)? onChanged;
   final TextEditingController? textEditingcontroller;
