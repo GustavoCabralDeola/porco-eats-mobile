@@ -1,6 +1,5 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
+import 'package:porco_eats/shared/widgets/app_logo.dart';
 
 class AppLoginHeader extends StatelessWidget {
   const AppLoginHeader({super.key});
@@ -64,10 +63,7 @@ class AppLoginHeader extends StatelessWidget {
             left: 0,
             right: 0,
             child: Center(
-              child: Image.asset(
-                'assets/images/porco_eats_images/logoporcoeats.png',
-                height: 250,
-              ),
+              child: AppLogo(height: 250, heroTag: 'porco-eats-logo'),
             ),
           ),
         ],

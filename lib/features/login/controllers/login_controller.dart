@@ -1,8 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:porco_eats/models/user.dart';
+import 'package:porco_eats/shared/services/app_remember_me.dart';
 import 'package:porco_eats/shared/widgets/exceptions/auth_exception.dart';
 
 class LoginController extends ChangeNotifier {
+  final AppPreferences _preferences;
+
+  LoginController({AppPreferences? preferences, User? rememberedUser})
+    : _preferences = preferences ?? AppPreferences() {
+    user = rememberedUser;
+    if (rememberedUser != null) {
+      emailController.text = rememberedUser.email;
+      isActiveCheckBox = true;
+    }
+  }
+
   User? user;
 
   bool isLoading = false;
@@ -15,7 +27,7 @@ class LoginController extends ChangeNotifier {
   final RegExp _emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-  changeIsLoading(bool value) {
+  void changeIsLoading(bool value) {
     isLoading = value;
     notifyListeners();
   }
@@ -45,11 +57,13 @@ class LoginController extends ChangeNotifier {
         passwordController.text.trim() != '@Aero1224') {
       throw AuthException('E-mail ou senha inválidos');
     }
-    user = User(
-      name: 'Gustavo',
-      email: emailController.text,
-      password: passwordController.text,
-    );
+    user = User(name: 'Gustavo', email: emailController.text);
+
+    if (isActiveCheckBox) {
+      await _preferences.saveUser(user!);
+    } else {
+      await _preferences.clearUser();
+    }
   }
 
   String? validEmail(String? value) {
@@ -57,7 +71,7 @@ class LoginController extends ChangeNotifier {
       return 'Digite seu e-mail';
     }
 
-    if (!_emailRegex.hasMatch(value.trim())) {
+    if (_emailRegex.hasMatch(value.trim())) {
       return null;
     }
     return 'E-mail inválido';
@@ -82,7 +96,7 @@ class LoginController extends ChangeNotifier {
   }
 
   void changeActiveCheckBox(bool value) {
-    isActiveCheckBox = !isActiveCheckBox;
+    isActiveCheckBox = value;
     notifyListeners();
   }
 }
