@@ -34,7 +34,7 @@ class LoginPage extends StatelessWidget {
             ),
             SizedBox(height: 50),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 44),
+              padding: EdgeInsets.symmetric(horizontal: 44),
               child: Form(
                 key: controller.formKey,
                 child: Column(
@@ -48,7 +48,7 @@ class LoginPage extends StatelessWidget {
                       hintText: 'Digite seu email',
                       prefixIcon: Icons.person_outline,
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20),
                     AppTextFormField(
                       textEditingcontroller: controller.passwordController,
                       validator: (value) {
@@ -60,7 +60,7 @@ class LoginPage extends StatelessWidget {
                       suffixIcon: Icons.visibility_off_outlined,
                       obscureText: true,
                     ),
-                    const SizedBox(height: 10),
+                    SizedBox(height: 10),
                     Row(
                       children: [
                         AppCheckBox(
@@ -69,8 +69,8 @@ class LoginPage extends StatelessWidget {
                             controller.changeActiveCheckBox(value!);
                           },
                         ),
-                        const Text('Lembrar de mim'),
-                        const Spacer(),
+                        Text('Lembrar de mim'),
+                        Spacer(),
                         TextButton(
                           onPressed: () {
                             //   Navigator.pushNamed(context, RecoverPage.route);
@@ -82,7 +82,7 @@ class LoginPage extends StatelessWidget {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 70),
+                    SizedBox(height: 70),
                     AppElevatedButton(
                       prefixIcon: Icons.arrow_forward,
                       label: 'ENTRAR',
@@ -97,8 +97,7 @@ class LoginPage extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>
-                                  const LoginSuccessVideoPage(),
+                              builder: (context) => LoginSuccessVideoPage(),
                             ),
                           );
                         } on AuthException catch (e) {
@@ -107,13 +106,13 @@ class LoginPage extends StatelessWidget {
                             title: 'Erro ao fazer login',
                             label: e.message,
                             type: SnackbarType.error,
-                            duration: const Duration(seconds: 3),
+                            duration: Duration(seconds: 3),
                           );
                         }
                       },
                       type: ButtonType.filled,
                     ),
-                    const SizedBox(height: 50),
+                    SizedBox(height: 50),
                     AuthSwitchAction(
                       leadingText: 'Ainda não tem conta?',
                       actionText: 'Cadastre-se',
