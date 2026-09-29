@@ -59,11 +59,11 @@ class AppLoginHeader extends StatelessWidget {
           ),
 
           Positioned(
-            top: 10,
+            top: 40,
             left: 0,
             right: 0,
             child: Center(
-              child: AppLogo(height: 250, heroTag: 'porco-eats-logo'),
+              child: AppLogo(height: 200, heroTag: 'porco-eats-logo'),
             ),
           ),
         ],

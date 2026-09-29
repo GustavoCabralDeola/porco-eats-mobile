@@ -27,12 +27,12 @@ class LoginPage extends StatelessWidget {
         return AuthScreenLayout(
           header: AppLoginHeader(),
           children: [
-            const SizedBox(height: 20),
-            const AuthIntroText(
+            SizedBox(height: 20),
+            AuthIntroText(
               title: 'Bem vindo(a)',
               subtitle: 'Faça login e peça o que quiser \n do seu jeito!',
             ),
-            const SizedBox(height: 50),
+            SizedBox(height: 50),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 44),
               child: Form(
