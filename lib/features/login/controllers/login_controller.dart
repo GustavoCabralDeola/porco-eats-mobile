@@ -15,17 +15,14 @@ class LoginController extends ChangeNotifier {
   final RegExp _emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-  bool get isSenhaLengthValid => senhaController.text.trim().length >= 6;
-  bool get isEmailValid => _emailRegex.hasMatch(emailController.text.trim());
-
-  changeIsLoading(bool value) {
+  void changeIsLoading(bool value) {
     isLoading = value;
      notifyListeners(); 
   }
 
-  Future<void> handleLogin() async {
+  Future<bool> handleLogin() async {
     if (!formKey.currentState!.validate()) {
-      throw ErrorDescription('validacao_incorreta');
+      return false;
     }
 
     changeIsLoading(true);
@@ -34,11 +31,10 @@ class LoginController extends ChangeNotifier {
       await login();
       emailController.clear();
       senhaController.clear();
+      return true;
     } finally {
       changeIsLoading(false);
     }
-
-    return;
   }
 
   Future<void> login() async {
@@ -56,14 +52,22 @@ class LoginController extends ChangeNotifier {
   }
 
   String? validEmail(String? value) {
-    if (isEmailValid) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Digite seu e-mail';
+    }
+
+    if (_emailRegex.hasMatch(value.trim())) {
       return null;
     }
     return 'E-mail inválido';
   }
 
   String? validPassword(String? value) {
-    if (isSenhaLengthValid) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Digite sua senha';
+    }
+
+    if (value.trim().length >= 6) {
       return null;
     }
 
@@ -77,7 +81,7 @@ class LoginController extends ChangeNotifier {
   }
 
   void changeActiveCheckBox(bool value) {
-    isActiveCheckBox = !isActiveCheckBox;
+    isActiveCheckBox = value;
     notifyListeners();
   }
 }

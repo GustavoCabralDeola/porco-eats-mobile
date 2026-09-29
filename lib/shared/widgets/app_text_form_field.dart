@@ -11,8 +11,8 @@ class AppTextFormField extends StatefulWidget {
     this.onChanged,
     this.textEditingcontroller,
     this.prefixIcon,
-    this.errorText,
     this.onSubmitted,
+    this.validator,
   });
 
   final String hintText;
@@ -22,8 +22,8 @@ class AppTextFormField extends StatefulWidget {
   final TextInputType? keyboardType;
   final Function(String)? onChanged;
   final TextEditingController? textEditingcontroller;
-  final String? errorText;
   final Function(String)? onSubmitted;
+  final FormFieldValidator<String>? validator;
 
   @override
   State<AppTextFormField> createState() => _AppTextFormFieldState();
@@ -33,8 +33,8 @@ class _AppTextFormFieldState extends State<AppTextFormField> {
   late bool isObscure;
   @override
   void initState() {
-    isObscure = widget.obscureText;
     super.initState();
+    isObscure = widget.obscureText;
   }
 
   void toggleObscure() {
@@ -50,10 +50,10 @@ class _AppTextFormFieldState extends State<AppTextFormField> {
       controller: widget.textEditingcontroller,
       onChanged: widget.onChanged,
       onFieldSubmitted: widget.onSubmitted,
+      validator: widget.validator,
       autovalidateMode: AutovalidateMode.onUnfocus,
       decoration: InputDecoration(
         hintText: widget.hintText,
-        errorText: widget.errorText,
         prefixIcon: widget.prefixIcon != null
             ? Padding(
                 padding: const EdgeInsets.only(left: 24.0, right: 12.0),
