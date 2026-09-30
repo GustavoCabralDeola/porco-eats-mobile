@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:porco_eats/shared/widgets/app_colors.dart';
 
+import 'app_search_button.dart';
+
 class AppSearchField extends StatelessWidget {
   const AppSearchField({
     super.key,
@@ -41,23 +43,6 @@ class AppSearchField extends StatelessWidget {
           if (enableFilter == true) ...[SizedBox(width: 5), AppSearchButton()],
         ],
       ),
-    );
-  }
-}
-
-class AppSearchButton extends StatelessWidget {
-  const AppSearchButton({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 65,
-      height: 65,
-      decoration: BoxDecoration(
-        color: AppColors.darkBrown,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: const Icon(Icons.tune, color: AppColors.yellowAgility, size: 30),
     );
   }
 }

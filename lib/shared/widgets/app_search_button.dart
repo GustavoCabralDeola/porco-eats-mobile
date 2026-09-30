@@ -6,18 +6,22 @@ class AppSearchButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () {
-        //Abrir dialog do filtro
-      },
-      child: Container(
-        width: 65,
-        height: 65,
-        decoration: BoxDecoration(
-          color: AppColors.darkBrown,
-          borderRadius: BorderRadius.circular(20),
+    return SizedBox(
+      width: 49,
+      height: 47,
+      child: ElevatedButton(
+        onPressed: () {
+          // Abrir dialog do filtro
+        },
+        style: ElevatedButton.styleFrom(
+          padding: EdgeInsets.zero,
+          backgroundColor: AppColors.darkBrown,
+          foregroundColor: AppColors.yellowAgility,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+          ),
         ),
-        child: const Icon(Icons.tune, color: AppColors.yellowAgility, size: 30),
+        child: Icon(Icons.tune, size: 28, color: AppColors.yellowAgility),
       ),
     );
   }
