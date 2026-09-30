@@ -44,6 +44,7 @@ flutter:
 
   assets:
     - assets/images/porco_eats_images/
+    - assets/images/porco_eats_images/categories_icons/
     - assets/videos/login_success.mp4
 
   # fonts:
