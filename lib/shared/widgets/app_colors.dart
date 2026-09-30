@@ -9,4 +9,5 @@ class AppColors {
   static const Color subTitle = Color(0xFF777777);
   static const Color fullWhite = Color(0xFFFFFFFF);
   static const Color borderInputColor = Color(0xFFD9D7D3);
+  static const Color greyshade = Color(0xFF999999);
 }

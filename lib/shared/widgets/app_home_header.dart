@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:porco_eats/shared/widgets/app_colors.dart';
 
 import 'app_header_default.dart';
@@ -30,7 +31,10 @@ class AppHomeHeader extends StatelessWidget {
             top: 65,
             child: Text(
               'PORCO',
-              style: TextStyle(fontSize: 15, color: AppColors.fullWhite),
+              style: GoogleFonts.anton(
+                fontSize: 15,
+                color: AppColors.fullWhite,
+              ),
             ),
           ),
 
@@ -39,7 +43,10 @@ class AppHomeHeader extends StatelessWidget {
             top: 65,
             child: Text(
               'EATS',
-              style: TextStyle(fontSize: 15, color: AppColors.yellowAgility),
+              style: GoogleFonts.anton(
+                fontSize: 15,
+                color: AppColors.yellowAgility,
+              ),
             ),
           ),
 
@@ -48,7 +55,10 @@ class AppHomeHeader extends StatelessWidget {
             top: 90,
             child: Text(
               'Seu pedido,',
-              style: TextStyle(fontSize: 12, color: AppColors.fullWhite),
+              style: GoogleFonts.anton(
+                fontSize: 12,
+                color: AppColors.fullWhite,
+              ),
             ),
           ),
 
@@ -57,7 +67,10 @@ class AppHomeHeader extends StatelessWidget {
             top: 91,
             child: Text(
               'nossa missão!',
-              style: TextStyle(fontSize: 12, color: AppColors.redDelivery),
+              style: GoogleFonts.anton(
+                fontSize: 12,
+                color: AppColors.redDelivery,
+              ),
             ),
           ),
 
@@ -73,12 +86,15 @@ class AppHomeHeader extends StatelessWidget {
 
           Positioned(
             left: 275,
-            top: 66,
+            top: 67,
             child: Row(
               children: [
                 Text(
                   'Entregar em',
-                  style: TextStyle(fontSize: 10, color: AppColors.fullWhite),
+                  style: GoogleFonts.poppins(
+                    fontSize: 10,
+                    color: AppColors.fullWhite,
+                  ),
                 ),
                 SizedBox(width: 2),
                 Icon(
@@ -95,7 +111,7 @@ class AppHomeHeader extends StatelessWidget {
             top: 86,
             child: Text(
               'Blumenau, SC',
-              style: TextStyle(
+              style: GoogleFonts.poppins(
                 fontSize: 10,
                 color: AppColors.fullWhite,
                 fontWeight: FontWeight.bold,
