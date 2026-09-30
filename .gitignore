@@ -43,3 +43,5 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+lib/features/login/pages/login_page.dart
+lib/features/login/controllers/login_controller.dart
