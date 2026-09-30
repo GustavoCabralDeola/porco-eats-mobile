@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:porco_eats/features/home/controllers/home_controller.dart';
 import 'package:porco_eats/features/login/controllers/login_controller.dart';
 import 'package:porco_eats/features/splash/pages/splash_screen_page.dart';
-import 'package:porco_eats/models/user.dart';
+import 'package:porco_eats/models/customer.dart';
 import 'package:porco_eats/shared/services/app_remember_me.dart';
 import 'package:provider/provider.dart';
 
@@ -15,7 +15,7 @@ Future<void> main() async {
 
 class MyApp extends StatelessWidget {
   final AppPreferences preferences;
-  final User? rememberedUser;
+  final Customer? rememberedUser;
 
   const MyApp({
     super.key,
