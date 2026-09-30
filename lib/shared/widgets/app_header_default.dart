@@ -20,6 +20,7 @@ class AppHeaderDefault extends StatelessWidget {
               fit: BoxFit.cover,
             ),
           ),
+          ...?children,
         ],
       ),
     );
