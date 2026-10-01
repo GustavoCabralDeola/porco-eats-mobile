@@ -7,12 +7,14 @@ class AppCardDashboard extends StatelessWidget {
     required this.icon,
     required this.title,
     required this.description,
+    this.backgroundColor,
     this.compact = false,
   });
 
   final IconData icon;
   final String title;
   final String description;
+  final Color? backgroundColor;
   final bool compact;
 
   @override
@@ -25,7 +27,7 @@ class AppCardDashboard extends StatelessWidget {
     final double descriptionSize = compact ? 10 : 12;
 
     return Card(
-      color: AppColors.brownWhite,
+      color: backgroundColor ?? AppColors.brownWhite,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       child: SizedBox(
         width: double.infinity,
@@ -55,7 +57,7 @@ class AppCardDashboard extends StatelessWidget {
                 style: TextStyle(
                   fontSize: titleSize,
                   fontWeight: FontWeight.w600,
-                  color: AppColors.darkBrown,
+                  color: AppColors.fullWhite,
                 ),
               ),
               SizedBox(height: compact ? 3 : 6),
@@ -64,7 +66,7 @@ class AppCardDashboard extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: descriptionSize,
-                  color: AppColors.title,
+                  color: AppColors.fullWhite,
                   fontWeight: FontWeight.bold,
                 ),
               ),
