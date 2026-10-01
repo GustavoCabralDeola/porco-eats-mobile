@@ -4,8 +4,19 @@ import 'package:provider/provider.dart';
 
 class AppPromoCarousel extends StatelessWidget {
   final List<String> banners;
+  final BoxFit fit;
+  final AlignmentGeometry alignment;
+  final double width;
+  final double height;
 
-  const AppPromoCarousel({super.key, required this.banners});
+  const AppPromoCarousel({
+    super.key,
+    required this.banners,
+    this.fit = BoxFit.fill,
+    this.alignment = Alignment.center,
+    this.width = 255,
+    this.height = 125,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -18,32 +29,31 @@ class AppPromoCarousel extends StatelessWidget {
       child: Consumer<PromoCarouselController>(
         builder: (context, controller, child) {
           return SizedBox(
-            height: 190,
+            width: width,
+            height: height,
             child: Stack(
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 15.0),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
                   child: PageView.builder(
                     controller: controller.pageController,
-                    padEnds: false,
+                    physics: const NeverScrollableScrollPhysics(),
                     onPageChanged: controller.updatePage,
                     itemCount: banners.length,
                     itemBuilder: (context, index) {
-                      return Padding(
-                        padding: const EdgeInsets.only(right: 12.0),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(16),
-                          child: Image.asset(banners[index], fit: BoxFit.fill),
-                        ),
+                      return Image.asset(
+                        banners[index],
+                        fit: fit,
+                        alignment: alignment,
                       );
                     },
                   ),
                 ),
 
                 Positioned(
-                  bottom: 12,
-                  left: 15,
-                  right: 40,
+                  bottom: 8,
+                  left: 0,
+                  right: 0,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: List.generate(
@@ -52,16 +62,15 @@ class AppPromoCarousel extends StatelessWidget {
                         onTap: () => controller.goToPage(index),
                         child: AnimatedContainer(
                           duration: const Duration(milliseconds: 300),
-                          margin: const EdgeInsets.symmetric(horizontal: 4),
-
-                          height: 12,
-                          width: 12,
+                          margin: const EdgeInsets.symmetric(horizontal: 3),
+                          width: 9,
+                          height: 9,
                           decoration: BoxDecoration(
                             color: controller.currentPage == index
                                 ? const Color(0xFFFFC107)
                                 : const Color(0xFF9E9E9E),
                             shape: BoxShape.circle,
-                            border: Border.all(color: Colors.black, width: 2.5),
+                            border: Border.all(color: Colors.black, width: 1.5),
                           ),
                         ),
                       ),
