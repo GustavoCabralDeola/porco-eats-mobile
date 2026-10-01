@@ -1,12 +1,13 @@
 import 'dart:convert';
 
 import 'package:porco_eats/models/product.dart';
-import 'package:porco_eats/models/customer.dart';
+import 'package:porco_eats/models/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AppPreferences {
   static const _userKey = 'remembered_user';
   static const _registeredUserKey = 'registered_user';
+  static const _registeredUsersKey = 'registered_users';
   static const _productsKey = 'products';
 
   final SharedPreferencesAsync _preferences;
@@ -14,16 +15,16 @@ class AppPreferences {
   AppPreferences({SharedPreferencesAsync? preferences})
     : _preferences = preferences ?? SharedPreferencesAsync();
 
-  Future<void> saveUser(Customer user) {
+  Future<void> saveUser(User user) {
     return _preferences.setString(_userKey, jsonEncode(user.toJson()));
   }
 
-  Future<Customer?> loadUser() async {
+  Future<User?> loadUser() async {
     final value = await _preferences.getString(_userKey);
     if (value == null) return null;
 
     try {
-      return Customer.fromJson(jsonDecode(value) as Map<String, dynamic>);
+      return User.fromJson(jsonDecode(value) as Map<String, dynamic>);
     } on FormatException {
       await clearUser();
       return null;
@@ -58,6 +59,32 @@ class AppPreferences {
   }
 
   Future<void> clearRegisteredUser() => _preferences.remove(_registeredUserKey);
+
+  Future<void> saveRegisteredUsers(List<User> users) {
+    final value = jsonEncode(users.map((user) => user.toJson()).toList());
+    return _preferences.setString(_registeredUsersKey, value);
+  }
+
+  Future<List<User>> loadRegisteredUsers() async {
+    final value = await _preferences.getString(_registeredUsersKey);
+    if (value == null) return [];
+
+    try {
+      final users = jsonDecode(value) as List<dynamic>;
+      return users
+          .map((user) => User.fromJson(user as Map<String, dynamic>))
+          .toList(growable: false);
+    } on FormatException {
+      await _preferences.remove(_registeredUsersKey);
+      return [];
+    } on TypeError {
+      await _preferences.remove(_registeredUsersKey);
+      return [];
+    }
+  }
+
+  Future<void> clearRegisteredUsers() =>
+      _preferences.remove(_registeredUsersKey);
 
   Future<void> saveProducts(List<Product> products) {
     final value = jsonEncode(

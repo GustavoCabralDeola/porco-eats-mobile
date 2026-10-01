@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:porco_eats/models/user.dart';
+import 'package:porco_eats/models/enums/user_role.dart';
 import 'package:porco_eats/shared/services/app_remember_me.dart';
 
 class SignupController extends ChangeNotifier {
@@ -16,6 +17,7 @@ class SignupController extends ChangeNotifier {
   bool isPasswordVisible = false;
   bool isConfirmPasswordVisible = false;
   String? cadastroErrorMessage;
+  UserRole selectedRole = UserRole.customer;
 
   SignupController({AppPreferences? preferences})
     : _preferences = preferences ?? AppPreferences();
@@ -38,6 +40,11 @@ class SignupController extends ChangeNotifier {
       {'hasLowerCase': passwordController.text.contains(RegExp(r'[a-z]'))},
       {'hasNumber': passwordController.text.contains(RegExp(r'[0-9]'))},
     ];
+  }
+
+  void setSelectedRole(UserRole role) {
+    selectedRole = role;
+    notifyListeners();
   }
 
   void onFieldChanged() {
@@ -132,11 +139,16 @@ class SignupController extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final registeredUser = await _preferences.loadRegisteredUser();
+      // Converter para lista mutável (growable: true)
+      final registeredUsers = List<User>.from(await _preferences.loadRegisteredUsers());
       final emailAtual = emailController.text.trim().toLowerCase();
 
-      if (registeredUser != null &&
-          registeredUser.email.trim().toLowerCase() == emailAtual) {
+      // Verificar se o email já existe na lista
+      final usuarioExistente = registeredUsers.any(
+        (user) => user.email.trim().toLowerCase() == emailAtual,
+      );
+
+      if (usuarioExistente) {
         cadastroErrorMessage = 'Já existe um cadastro com este e-mail.';
         isLoading = false;
         notifyListeners();
@@ -149,9 +161,12 @@ class SignupController extends ChangeNotifier {
         name: nameController.text.trim(),
         email: emailController.text.trim(),
         password: passwordController.text.trim(),
+        role: selectedRole,
       );
 
-      await _preferences.saveRegisteredUser(novoUsuario);
+      // Adicionar o novo usuário à lista
+      registeredUsers.add(novoUsuario);
+      await _preferences.saveRegisteredUsers(registeredUsers);
 
       isLoading = false;
       notifyListeners();

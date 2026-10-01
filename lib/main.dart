@@ -6,6 +6,7 @@ import 'package:porco_eats/features/login/pages/signup_page.dart'
     show SignupPage;
 import 'package:porco_eats/features/splash/pages/splash_screen_page.dart';
 import 'package:porco_eats/models/user.dart';
+import 'package:porco_eats/routes.dart';
 import 'package:porco_eats/shared/services/app_remember_me.dart';
 import 'package:provider/provider.dart';
 
@@ -44,10 +45,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         home: SplashScreen(hasRememberedUser: rememberedUser != null),
-        routes: {
-          '/signup': (context) => const SignupPage(),
-          '/login': (context) => const LoginPage(),
-        },
+        routes: AppRoutes.routes,
       ),
     );
   }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:porco_eats/features/login/controllers/signup_controller.dart';
 import 'package:porco_eats/features/login/pages/login_page.dart';
+import 'package:porco_eats/models/enums/user_role.dart';
 import 'package:porco_eats/shared/widgets/app_elevated_button.dart';
 import 'package:porco_eats/shared/widgets/app_login_header.dart';
 import 'package:porco_eats/shared/widgets/app_text_form_field.dart';
@@ -96,6 +97,35 @@ class _SignupPageState extends State<SignupPage> {
                     textEditingController: controller.confirmarSenhaController,
                     onChanged: (_) => controller.onFieldChanged(),
                     validator: (value) => controller.validarConfirmarSenha(),
+                  ),
+
+                  const SizedBox(height: 15),
+
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: DropdownButton<UserRole>(
+                      value: controller.selectedRole,
+                      onChanged: (UserRole? newValue) {
+                        if (newValue != null) {
+                          controller.setSelectedRole(newValue);
+                        }
+                      },
+                      items: UserRole.values.map((UserRole role) {
+                        return DropdownMenuItem<UserRole>(
+                          value: role,
+                          child: Text(
+                            role == UserRole.customer ? 'Cliente' : 'Gerente',
+                          ),
+                        );
+                      }).toList(),
+                      isExpanded: true,
+                      underline: const SizedBox(),
+                      hint: const Text('Selecione seu tipo de conta'),
+                    ),
                   ),
 
                   const SizedBox(height: 38),
