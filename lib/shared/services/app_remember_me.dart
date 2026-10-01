@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:porco_eats/models/product.dart';
-import 'package:porco_eats/models/user.dart';
+import 'package:porco_eats/models/customer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AppPreferences {
@@ -14,16 +14,16 @@ class AppPreferences {
   AppPreferences({SharedPreferencesAsync? preferences})
     : _preferences = preferences ?? SharedPreferencesAsync();
 
-  Future<void> saveUser(User user) {
+  Future<void> saveUser(Customer user) {
     return _preferences.setString(_userKey, jsonEncode(user.toJson()));
   }
 
-  Future<User?> loadUser() async {
+  Future<Customer?> loadUser() async {
     final value = await _preferences.getString(_userKey);
     if (value == null) return null;
 
     try {
-      return User.fromJson(jsonDecode(value) as Map<String, dynamic>);
+      return Customer.fromJson(jsonDecode(value) as Map<String, dynamic>);
     } on FormatException {
       await clearUser();
       return null;

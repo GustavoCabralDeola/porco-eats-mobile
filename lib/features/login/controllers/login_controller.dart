@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:porco_eats/models/user.dart';
+import 'package:porco_eats/models/customer.dart';
+import 'package:porco_eats/models/enums/user_role.dart';
 import 'package:porco_eats/shared/services/app_remember_me.dart';
 import 'package:porco_eats/shared/widgets/exceptions/auth_exception.dart';
 
 class LoginController extends ChangeNotifier {
   final AppPreferences _preferences;
 
-  LoginController({AppPreferences? preferences, User? rememberedUser})
+  LoginController({AppPreferences? preferences, Customer? rememberedUser})
     : _preferences = preferences ?? AppPreferences() {
     user = rememberedUser;
     if (rememberedUser != null) {
@@ -15,7 +16,7 @@ class LoginController extends ChangeNotifier {
     }
   }
 
-  User? user;
+  Customer? user;
 
   bool isLoading = false;
   bool lembrarMe = false;

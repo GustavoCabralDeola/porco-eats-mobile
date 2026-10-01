@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:porco_eats/shared/widgets/app_colors.dart';
-
-import 'app_search_button.dart';
+import 'package:porco_eats/shared/widgets/app_search_button.dart';
 
 class AppSearchField extends StatelessWidget {
   const AppSearchField({
