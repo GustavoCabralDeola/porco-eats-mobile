@@ -31,6 +31,7 @@ dependencies:
   custom_snackbar_plus: ^8.0.0
   video_player: ^2.14.0
   shared_preferences: ^2.5.5
+  skeletonizer: ^3.0.0
 
 dev_dependencies:
   flutter_test:
@@ -46,6 +47,7 @@ flutter:
     - assets/images/porco_eats_images/
     - assets/images/porco_eats_images/categories_icons/
     - assets/images/porco_eats_images/carousel_images/
+    - assets/images/porco_eats_images/products_images/
     - assets/videos/login_success.mp4
 
   # fonts:
