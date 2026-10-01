@@ -1,4 +1,5 @@
-import 'user_role.dart';
+import 'enums/user_role.dart' show UserRole;
+
 
 class Customer {
   final int id;
