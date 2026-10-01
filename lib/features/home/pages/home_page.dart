@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:porco_eats/features/home/controllers/home_controller.dart';
 import 'package:porco_eats/shared/widgets/app_promo_carousel.dart';
 import 'package:porco_eats/shared/widgets/app_search_field.dart';
+import 'package:porco_eats/shared/widgets/app_text_style.dart';
 import 'package:provider/provider.dart';
 
 import '../../../shared/widgets/app_category_item.dart';
@@ -33,6 +34,7 @@ class HomePage extends StatelessWidget {
                   children: [
                     SizedBox(width: 20),
                     AppCategoryItem(
+                      label: 'Lanches',
                       onTap: () {},
                       image:
                           'assets/images/porco_eats_images/categories_icons/hamburguerIcon.png',
@@ -43,6 +45,7 @@ class HomePage extends StatelessWidget {
                     SizedBox(width: 10),
 
                     AppCategoryItem(
+                      label: 'Pizzas',
                       onTap: () {},
                       image:
                           'assets/images/porco_eats_images/categories_icons/pizzaIcon.png',
@@ -53,6 +56,7 @@ class HomePage extends StatelessWidget {
                     SizedBox(width: 10),
 
                     AppCategoryItem(
+                      label: 'Sushi',
                       onTap: () {},
                       image:
                           'assets/images/porco_eats_images/categories_icons/sushiIcon.png',
@@ -63,6 +67,7 @@ class HomePage extends StatelessWidget {
                     SizedBox(width: 10),
 
                     AppCategoryItem(
+                      label: 'Executivos',
                       onTap: () {},
                       image:
                           'assets/images/porco_eats_images/categories_icons/executivoIcon.png',
@@ -73,6 +78,7 @@ class HomePage extends StatelessWidget {
 
                     SizedBox(width: 10),
                     AppCategoryItem(
+                      label: 'Porções',
                       onTap: () {},
                       image:
                           'assets/images/porco_eats_images/categories_icons/porcoesIcon.png',
@@ -82,6 +88,7 @@ class HomePage extends StatelessWidget {
 
                     SizedBox(width: 10),
                     AppCategoryItem(
+                      label: 'Bebidas',
                       onTap: () {},
                       image:
                           'assets/images/porco_eats_images/categories_icons/bebidaIcon.png',
@@ -96,20 +103,58 @@ class HomePage extends StatelessWidget {
 
               SizedBox(height: 20),
 
-              AppPromoCarousel(
-                banners: [
-                  'assets/images/porco_eats_images/carousel_images/hamburguerCarousel.png',
-                  'assets/images/porco_eats_images/carousel_images/pizzaCarousel.png',
-                  'assets/images/porco_eats_images/carousel_images/sushiCarousel.png',
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    SizedBox(width: 10),
+                    AppPromoCarousel(
+                      banners: [
+                        'assets/images/porco_eats_images/carousel_images/hamburguerCarousel.png',
+                        'assets/images/porco_eats_images/carousel_images/pizzaCarousel.png',
+                        'assets/images/porco_eats_images/carousel_images/sushiCarousel.png',
+                      ],
+                    ),
+                    SizedBox(width: 4),
+                    AppPromoCarousel(
+                      fit: BoxFit.contain,
+                      alignment: Alignment.centerLeft,
+                      width: 300,
+                      height: 127,
+                      banners: [
+                        'assets/images/porco_eats_images/carousel_images/firstcupomcarousel.png',
+                        'assets/images/porco_eats_images/carousel_images/secoundcupomcarousel.png',
+                      ],
+                    ),
+                    SizedBox(width: 10),
+                  ],
+                ),
+              ),
+              SizedBox(height: 50),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  SizedBox(width: 20),
+                  Container(
+                    child: Text(
+                      'Ofertas para você',
+                      style: AppTextStyle.sectionTitle,
+                    ),
+                  ),
                 ],
               ),
-              SizedBox(width: 10),
-
-              AppPromoCarousel(
-                banners: [
-                  'assets/images/porco_eats_images/carousel_images/firstcupomcarousel.png',
-                  'assets/images/porco_eats_images/carousel_images/secoundcupomcarousel.png',
-                ],
+              Material(
+                color: Colors.transparent,
+                shape: CircleBorder(),
+                child: Ink(
+                  width: 60,
+                  height: 60,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: AppColors.darkBrown),
+                    borderRadius: BorderRadius.circular(30),
+                    color: AppColors.categoryBackground,
+                  ),
+                ),
               ),
             ],
           ),
