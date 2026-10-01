@@ -6,6 +6,7 @@ import 'package:porco_eats/models/enums/user_role.dart';
 import 'package:porco_eats/shared/widgets/app_elevated_button.dart';
 import 'package:porco_eats/shared/widgets/app_login_header.dart';
 import 'package:porco_eats/shared/widgets/app_text_form_field.dart';
+
 import 'package:porco_eats/shared/widgets/app_intro_text.dart';
 import 'package:porco_eats/shared/widgets/app_screen_layout.dart';
 import 'package:porco_eats/shared/widgets/app_switch_action.dart';
@@ -48,6 +49,13 @@ class _SignupPageState extends State<SignupPage> {
               padding: const EdgeInsets.symmetric(horizontal: 30.0),
               child: Column(
                 children: [
+                  const SizedBox(height: 20),
+                  const AppIntroText(
+                    title: 'Crie sua conta',
+                    subtitle: 'Preencha seus dados para pedir!',
+                  ),
+                  const SizedBox(height: 18),
+
                   const SizedBox(height: 20),
                   const AppIntroText(
                     title: 'Crie sua conta',
@@ -182,6 +190,18 @@ class _SignupPageState extends State<SignupPage> {
                 ],
               ),
             ),
+
+            const SizedBox(height: 38),
+
+            AppSwitchAction(
+              leadingText: 'Já possui uma conta?',
+              actionText: 'Faça login',
+              onPressed: () {
+                Navigator.pushNamed(context, LoginPage.route);
+              },
+            ),
+
+            const SizedBox(height: 70),
           ],
         );
       },
