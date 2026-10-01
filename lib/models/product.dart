@@ -1,7 +1,8 @@
 class Product {
   final String name;
   final String? description;
-  final String brand;
+  final String restaurant;
+  final double avaliation;
   final String category;
   final double price;
   final String imageUrl;
@@ -9,7 +10,8 @@ class Product {
   Product({
     required this.name,
     required this.description,
-    required this.brand,
+    required this.restaurant,
+    required this.avaliation,
     required this.category,
     required this.price,
     required this.imageUrl,
@@ -18,7 +20,8 @@ class Product {
   Map<String, dynamic> toJson() => {
     'name': name,
     'description': description,
-    'brand': brand,
+    'avaliation': avaliation,
+    'restaurant': restaurant,
     'category': category,
     'price': price,
     'imageUrl': imageUrl,
@@ -28,7 +31,8 @@ class Product {
     return Product(
       name: json['name'] as String,
       description: json['description'] as String?,
-      brand: json['brand'] as String,
+      restaurant: json['restaurant'] as String,
+      avaliation: (json['avaliation'] as num).toDouble(),
       category: json['category'] as String,
       price: (json['price'] as num).toDouble(),
       imageUrl: json['imageUrl'] as String,
