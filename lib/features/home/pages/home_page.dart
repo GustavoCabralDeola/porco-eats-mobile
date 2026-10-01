@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:porco_eats/features/home/controllers/home_controller.dart';
-import 'package:porco_eats/shared/widgets/app_colors.dart';
 import 'package:porco_eats/shared/widgets/app_search_field.dart';
 import 'package:provider/provider.dart';
 
