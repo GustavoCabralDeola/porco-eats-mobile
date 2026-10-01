@@ -1,4 +1,4 @@
-import 'user_role.dart';
+import 'package:porco_eats/models/enums/user_role.dart';
 
 class Customer {
   final int id;

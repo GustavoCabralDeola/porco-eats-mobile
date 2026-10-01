@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:porco_eats/models/user.dart';
+import 'package:porco_eats/models/customer.dart';
+import 'package:porco_eats/models/enums/user_role.dart';
 import 'package:porco_eats/shared/services/app_remember_me.dart';
 import 'package:porco_eats/shared/widgets/exceptions/auth_exception.dart';
 
 class LoginController extends ChangeNotifier {
   final AppPreferences _preferences;
 
-  LoginController({AppPreferences? preferences, User? rememberedUser})
+  LoginController({AppPreferences? preferences, Customer? rememberedUser})
     : _preferences = preferences ?? AppPreferences() {
     user = rememberedUser;
     if (rememberedUser != null) {
@@ -15,7 +16,7 @@ class LoginController extends ChangeNotifier {
     }
   }
 
-  User? user;
+  Customer? user;
 
   bool isLoading = false;
   bool lembrarMe = false;
@@ -52,12 +53,28 @@ class LoginController extends ChangeNotifier {
   }
 
   Future<void> login() async {
-    await Future.delayed(Duration(seconds: 2));
-    if (emailController.text.trim() != 'gustavodeola@gmail.com' ||
-        passwordController.text.trim() != '@Aero1224') {
+    await Future.delayed(const Duration(seconds: 2));
+
+    final email = emailController.text.trim().toLowerCase();
+    final password = passwordController.text.trim();
+
+    if (email == 'gustavodeola@gmail.com' && password == '@Aero1224') {
+      user = Customer(
+        id: 1,
+        name: 'Gustavo',
+        email: email,
+        role: UserRole.customer,
+      );
+    } else if (email == 'baianinhogerente@gmail.com' && password == '@baiano') {
+      user = Customer(
+        id: 2,
+        name: 'Baianinho Gerente',
+        email: email,
+        role: UserRole.manager,
+      );
+    } else {
       throw AuthException('E-mail ou senha inválidos');
     }
-    user = User(name: 'Gustavo', email: emailController.text);
 
     if (isActiveCheckBox) {
       await _preferences.saveUser(user!);

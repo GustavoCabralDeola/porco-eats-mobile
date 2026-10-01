@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
 class SignupController extends ChangeNotifier {
-  final RegExp _emailRegex =
-      RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+  final RegExp _emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
 
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
@@ -27,21 +26,10 @@ class SignupController extends ChangeNotifier {
 
   List<Map<String, bool>> getPasswordRequirements() {
     return [
-      {
-        'minLength': passwordController.text.length >= 6,
-      },
-      {
-        'hasUpperCase':
-            passwordController.text.contains(RegExp(r'[A-Z]')),
-      },
-      {
-        'hasLowerCase':
-            passwordController.text.contains(RegExp(r'[a-z]')),
-      },
-      {
-        'hasNumber':
-            passwordController.text.contains(RegExp(r'[0-9]')),
-      },
+      {'minLength': passwordController.text.length >= 6},
+      {'hasUpperCase': passwordController.text.contains(RegExp(r'[A-Z]'))},
+      {'hasLowerCase': passwordController.text.contains(RegExp(r'[a-z]'))},
+      {'hasNumber': passwordController.text.contains(RegExp(r'[0-9]'))},
     ];
   }
 
@@ -135,9 +123,7 @@ class SignupController extends ChangeNotifier {
     notifyListeners();
 
     try {
-      await Future.delayed(
-        const Duration(seconds: 2),
-      );
+      await Future.delayed(const Duration(seconds: 2));
 
       isLoading = false;
       notifyListeners();

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:porco_eats/features/home/controllers/home_controller.dart';
-import 'package:porco_eats/shared/widgets/app_colors.dart';
+import 'package:porco_eats/shared/widgets/app_promo_carousel.dart';
 import 'package:porco_eats/shared/widgets/app_search_field.dart';
 import 'package:provider/provider.dart';
 
@@ -88,8 +88,28 @@ class HomePage extends StatelessWidget {
                       imageWidth: 60,
                       imageHeight: 80,
                     ),
+
+                    SizedBox(width: 10),
                   ],
                 ),
+              ),
+
+              SizedBox(height: 20),
+
+              AppPromoCarousel(
+                banners: [
+                  'assets/images/porco_eats_images/carousel_images/hamburguerCarousel.png',
+                  'assets/images/porco_eats_images/carousel_images/pizzaCarousel.png',
+                  'assets/images/porco_eats_images/carousel_images/sushiCarousel.png',
+                ],
+              ),
+              SizedBox(width: 10),
+
+              AppPromoCarousel(
+                banners: [
+                  'assets/images/porco_eats_images/carousel_images/firstcupomcarousel.png',
+                  'assets/images/porco_eats_images/carousel_images/secoundcupomcarousel.png',
+                ],
               ),
             ],
           ),
