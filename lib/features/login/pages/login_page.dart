@@ -5,10 +5,10 @@ import 'package:porco_eats/features/login/pages/login_success_video_page.dart';
 import 'package:porco_eats/features/login/pages/signup_page.dart';
 import 'package:porco_eats/shared/widgets/app_checkbox.dart';
 import 'package:porco_eats/shared/widgets/app_colors.dart';
+import 'package:porco_eats/shared/widgets/app_intro_text.dart';
 import 'package:porco_eats/shared/widgets/app_login_header.dart';
-import 'package:porco_eats/shared/widgets/exceptions/auth_intro_text.dart';
-import 'package:porco_eats/shared/widgets/exceptions/auth_screen_layout.dart';
-import 'package:porco_eats/shared/widgets/exceptions/auth_switch_action.dart';
+import 'package:porco_eats/shared/widgets/app_screen_layout.dart';
+import 'package:porco_eats/shared/widgets/app_switch_action.dart';
 import 'package:porco_eats/shared/widgets/exceptions/auth_exception.dart';
 import 'package:provider/provider.dart';
 
@@ -24,11 +24,11 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<LoginController>(
       builder: (context, controller, child) {
-        return AuthScreenLayout(
+        return AppScreenLayout(
           header: AppLoginHeader(),
           children: [
             SizedBox(height: 20),
-            AuthIntroText(
+            AppIntroText(
               title: 'Bem vindo(a)',
               subtitle: 'Faça login e peça o que quiser \n do seu jeito!',
             ),
@@ -113,7 +113,7 @@ class LoginPage extends StatelessWidget {
                       type: ButtonType.filled,
                     ),
                     SizedBox(height: 50),
-                    AuthSwitchAction(
+                    AppSwitchAction(
                       leadingText: 'Ainda não tem conta?',
                       actionText: 'Cadastre-se',
                       onPressed: () {

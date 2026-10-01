@@ -5,9 +5,9 @@ import 'package:porco_eats/features/login/pages/login_page.dart';
 import 'package:porco_eats/shared/widgets/app_elevated_button.dart';
 import 'package:porco_eats/shared/widgets/app_login_header.dart';
 import 'package:porco_eats/shared/widgets/app_text_form_field.dart';
-import 'package:porco_eats/shared/widgets/exceptions/auth_intro_text.dart';
-import 'package:porco_eats/shared/widgets/exceptions/auth_screen_layout.dart';
-import 'package:porco_eats/shared/widgets/exceptions/auth_switch_action.dart';
+import 'package:porco_eats/shared/widgets/app_screen_layout.dart';
+import 'package:porco_eats/shared/widgets/app_switch_action.dart';
+import 'package:porco_eats/shared/widgets/app_intro_text.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -40,11 +40,11 @@ class _SignupPageState extends State<SignupPage> {
     return ListenableBuilder(
       listenable: controller,
       builder: (context, child) {
-        return AuthScreenLayout(
+        return AppScreenLayout(
           header: const AppLoginHeader(),
           children: [
             const SizedBox(height: 20),
-            const AuthIntroText(
+            const AppIntroText(
               title: 'Crie sua conta',
               subtitle: 'Preencha seus dados para pedir!',
             ),
@@ -128,7 +128,7 @@ class _SignupPageState extends State<SignupPage> {
 
             const SizedBox(height: 38),
 
-            AuthSwitchAction(
+            AppSwitchAction(
               leadingText: 'Já possui uma conta?',
               actionText: 'Faça login',
               onPressed: () {
