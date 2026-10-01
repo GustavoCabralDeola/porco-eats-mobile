@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:porco_eats/features/home/controllers/home_controller.dart';
 import 'package:porco_eats/features/login/controllers/login_controller.dart';
-import 'package:porco_eats/features/login/pages/login_page.dart';
-import 'package:porco_eats/features/login/pages/signup_page.dart'
-    show SignupPage;
 import 'package:porco_eats/features/splash/pages/splash_screen_page.dart';
 import 'package:porco_eats/models/user.dart';
 import 'package:porco_eats/routes.dart';
