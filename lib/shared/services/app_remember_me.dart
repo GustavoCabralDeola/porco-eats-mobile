@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class AppPreferences {
   static const _userKey = 'remembered_user';
+  static const _registeredUserKey = 'registered_user';
   static const _productsKey = 'products';
 
   final SharedPreferencesAsync _preferences;
@@ -33,6 +34,30 @@ class AppPreferences {
   }
 
   Future<void> clearUser() => _preferences.remove(_userKey);
+
+  Future<void> saveRegisteredUser(User user) {
+    return _preferences.setString(
+      _registeredUserKey,
+      jsonEncode(user.toJson()),
+    );
+  }
+
+  Future<User?> loadRegisteredUser() async {
+    final value = await _preferences.getString(_registeredUserKey);
+    if (value == null) return null;
+
+    try {
+      return User.fromJson(jsonDecode(value) as Map<String, dynamic>);
+    } on FormatException {
+      await _preferences.remove(_registeredUserKey);
+      return null;
+    } on TypeError {
+      await _preferences.remove(_registeredUserKey);
+      return null;
+    }
+  }
+
+  Future<void> clearRegisteredUser() => _preferences.remove(_registeredUserKey);
 
   Future<void> saveProducts(List<Product> products) {
     final value = jsonEncode(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:porco_eats/features/Dashboard/dashboard_order_page.dart';
 import 'package:porco_eats/features/home/pages/home_page.dart';
 import 'package:porco_eats/features/login/pages/login_page.dart';
 import 'package:porco_eats/shared/widgets/app_colors.dart';
@@ -138,8 +139,8 @@ class SplashBrand extends StatelessWidget {
           animation: logoProgress,
           builder: (context, child) {
             final progress = logoProgress.value;
-            final logoSize = 220 + (30 * progress);
-            final logoTop = initialLogoTop + ((10 - initialLogoTop) * progress);
+            final logoSize = 180 + (30 * progress);
+            final logoTop = initialLogoTop + ((35 - initialLogoTop) * progress);
 
             return Stack(
               children: [

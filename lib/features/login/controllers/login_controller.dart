@@ -53,11 +53,20 @@ class LoginController extends ChangeNotifier {
 
   Future<void> login() async {
     await Future.delayed(Duration(seconds: 2));
-    if (emailController.text.trim() != 'gustavodeola@gmail.com' ||
-        passwordController.text.trim() != '@Aero1224') {
+    final registeredUser = await _preferences.loadRegisteredUser();
+
+    if (registeredUser == null) {
+      throw AuthException(
+        'Nenhum cadastro encontrado. Crie uma conta primeiro.',
+      );
+    }
+
+    if (emailController.text.trim() != registeredUser.email ||
+        passwordController.text.trim() != registeredUser.password) {
       throw AuthException('E-mail ou senha inválidos');
     }
-    user = User(name: 'Gustavo', email: emailController.text);
+
+    user = registeredUser;
 
     if (isActiveCheckBox) {
       await _preferences.saveUser(user!);

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class AuthScreenLayout extends StatelessWidget {
-  const AuthScreenLayout({super.key, this.header, required this.children});
+class AppScreenLayout extends StatelessWidget {
+  const AppScreenLayout({super.key, this.header, required this.children});
 
   final Widget? header;
   final List<Widget> children;
