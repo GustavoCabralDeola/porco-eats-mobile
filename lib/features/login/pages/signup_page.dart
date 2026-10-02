@@ -110,7 +110,7 @@ class _SignupPageState extends State<SignupPage> {
                         border: Border.all(color: Colors.grey),
                         borderRadius: BorderRadius.circular(50),
                       ),
-                      height: 50,
+                      height: 55,
                       width: 180,
                       child: DropdownButton<UserRole>(
                         value: controller.selectedRole,
