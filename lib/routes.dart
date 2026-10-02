@@ -11,6 +11,6 @@ class AppRoutes {
     HomePage.route: (context) => HomePage(),
     RecoverPage.route: (context) => RecoverPage(),
     SignupPage.route: (context) => SignupPage(),
-    CartPage.routeName: (context) => CartPage(),
+    CartPage.route: (context) => CartPage(),
   };
 }
