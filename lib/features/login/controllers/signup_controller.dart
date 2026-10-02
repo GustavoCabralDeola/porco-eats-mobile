@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:porco_eats/models/user.dart';
+import 'package:porco_eats/models/enums/user_role.dart';
+import 'package:porco_eats/shared/services/app_remember_me.dart';
 
 class SignupController extends ChangeNotifier {
-  final RegExp _emailRegex =
-      RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+  final AppPreferences _preferences;
+  final RegExp _emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
 
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
@@ -13,6 +16,11 @@ class SignupController extends ChangeNotifier {
   bool isLoading = false;
   bool isPasswordVisible = false;
   bool isConfirmPasswordVisible = false;
+  String? cadastroErrorMessage;
+  UserRole selectedRole = UserRole.customer;
+
+  SignupController({AppPreferences? preferences})
+    : _preferences = preferences ?? AppPreferences();
 
   bool get podeCadastrar {
     return nameController.text.isNotEmpty &&
@@ -21,31 +29,25 @@ class SignupController extends ChangeNotifier {
         confirmarSenhaController.text.isNotEmpty &&
         validarNome() == null &&
         validarEmail() == null &&
-        valoidarSenha() == null &&
+        validarSenha() == null &&
         validarConfirmarSenha() == null;
   }
 
   List<Map<String, bool>> getPasswordRequirements() {
     return [
-      {
-        'minLength': passwordController.text.length >= 6,
-      },
-      {
-        'hasUpperCase':
-            passwordController.text.contains(RegExp(r'[A-Z]')),
-      },
-      {
-        'hasLowerCase':
-            passwordController.text.contains(RegExp(r'[a-z]')),
-      },
-      {
-        'hasNumber':
-            passwordController.text.contains(RegExp(r'[0-9]')),
-      },
+      {'minLength': passwordController.text.length >= 6},
+      {'hasUpperCase': passwordController.text.contains(RegExp(r'[A-Z]'))},
+      {'hasLowerCase': passwordController.text.contains(RegExp(r'[a-z]'))},
+      {'hasNumber': passwordController.text.contains(RegExp(r'[0-9]'))},
     ];
   }
 
-  void onfieldChanged() {
+  void setSelectedRole(UserRole role) {
+    selectedRole = role;
+    notifyListeners();
+  }
+
+  void onFieldChanged() {
     notifyListeners();
   }
 
@@ -73,7 +75,7 @@ class SignupController extends ChangeNotifier {
     return null;
   }
 
-  String? valoidarSenha() {
+  String? validarSenha() {
     if (passwordController.text.isEmpty) {
       return 'A senha não pode estar vazia';
     }
@@ -120,13 +122,15 @@ class SignupController extends ChangeNotifier {
   }
 
   Future<bool> cadastrarUsuario() async {
+    cadastroErrorMessage = null;
+
     if (!podeCadastrar) {
       return false;
     }
 
     if (validarNome() != null ||
         validarEmail() != null ||
-        valoidarSenha() != null ||
+        validarSenha() != null ||
         validarConfirmarSenha() != null) {
       return false;
     }
@@ -135,9 +139,34 @@ class SignupController extends ChangeNotifier {
     notifyListeners();
 
     try {
-      await Future.delayed(
-        const Duration(seconds: 2),
+      // Converter para lista mutável (growable: true)
+      final registeredUsers = List<User>.from(await _preferences.loadRegisteredUsers());
+      final emailAtual = emailController.text.trim().toLowerCase();
+
+      // Verificar se o email já existe na lista
+      final usuarioExistente = registeredUsers.any(
+        (user) => user.email.trim().toLowerCase() == emailAtual,
       );
+
+      if (usuarioExistente) {
+        cadastroErrorMessage = 'Já existe um cadastro com este e-mail.';
+        isLoading = false;
+        notifyListeners();
+        return false;
+      }
+
+      await Future.delayed(const Duration(seconds: 2));
+
+      final novoUsuario = User(
+        name: nameController.text.trim(),
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
+        role: selectedRole,
+      );
+
+      // Adicionar o novo usuário à lista
+      registeredUsers.add(novoUsuario);
+      await _preferences.saveRegisteredUsers(registeredUsers);
 
       isLoading = false;
       notifyListeners();
@@ -147,6 +176,7 @@ class SignupController extends ChangeNotifier {
       isLoading = false;
       notifyListeners();
 
+      cadastroErrorMessage = 'Não foi possível concluir o cadastro.';
       return false;
     }
   }

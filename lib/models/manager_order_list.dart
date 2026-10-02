@@ -1,3 +1,5 @@
+import 'package:porco_eats/models/enums/order_status.dart';
+
 class ManagerOrderList {
   final int id;
   final String customerName;

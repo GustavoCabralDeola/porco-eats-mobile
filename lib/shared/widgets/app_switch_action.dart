@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:porco_eats/shared/widgets/app_colors.dart';
 
-class AuthSwitchAction extends StatelessWidget {
-  const AuthSwitchAction({
+class AppSwitchAction extends StatelessWidget {
+  const AppSwitchAction({
     super.key,
     required this.leadingText,
     required this.actionText,

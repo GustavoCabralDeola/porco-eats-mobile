@@ -13,4 +13,10 @@ class AppTextStyle {
     color: AppColors.subTitle,
     fontWeight: FontWeight.bold,
   );
+
+  static final TextStyle sectionTitle = GoogleFonts.poppins(
+    fontSize: 20,
+    color: AppColors.black,
+    fontWeight: FontWeight.bold,
+  );
 }

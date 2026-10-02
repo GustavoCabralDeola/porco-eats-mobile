@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:porco_eats/models/enums/user_role.dart';
 import 'package:porco_eats/models/user.dart';
 import 'package:porco_eats/shared/services/app_remember_me.dart';
 import 'package:porco_eats/shared/widgets/exceptions/auth_exception.dart';
@@ -13,6 +14,7 @@ class LoginController extends ChangeNotifier {
       emailController.text = rememberedUser.email;
       isActiveCheckBox = true;
     }
+    _loadAndPrintUsers();
   }
 
   User? user;
@@ -26,6 +28,25 @@ class LoginController extends ChangeNotifier {
   TextEditingController passwordController = TextEditingController();
   final RegExp _emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+  void _loadAndPrintUsers() {
+    _preferences.loadRegisteredUsers().then((users) {
+      print('=== USUÁRIOS SALVOS ===');
+      if (users.isEmpty) {
+        print('Nenhum usuário registrado');
+      } else {
+        for (int i = 0; i < users.length; i++) {
+          final roleStr = users[i].role == UserRole.customer
+              ? 'Cliente'
+              : 'Gerente';
+          print(
+            '${i + 1}. Nome: ${users[i].name}, Email: ${users[i].email}, Role: $roleStr, pass: ${users[i].password} ',
+          );
+        }
+      }
+      print('=======================');
+    });
+  }
 
   void changeIsLoading(bool value) {
     isLoading = value;
@@ -53,11 +74,26 @@ class LoginController extends ChangeNotifier {
 
   Future<void> login() async {
     await Future.delayed(Duration(seconds: 2));
-    if (emailController.text.trim() != 'gustavodeola@gmail.com' ||
-        passwordController.text.trim() != '@Aero1224') {
+    final registeredUsers = await _preferences.loadRegisteredUsers();
+
+    if (registeredUsers.isEmpty) {
+      throw AuthException(
+        'Nenhum cadastro encontrado. Crie uma conta primeiro.',
+      );
+    }
+
+    final emailAtual = emailController.text.trim();
+    final senhaAtual = passwordController.text.trim();
+
+    try {
+      user = registeredUsers.firstWhere(
+        (user) =>
+            user.email.trim() == emailAtual &&
+            user.password.trim() == senhaAtual,
+      );
+    } catch (e) {
       throw AuthException('E-mail ou senha inválidos');
     }
-    user = User(name: 'Gustavo', email: emailController.text);
 
     if (isActiveCheckBox) {
       await _preferences.saveUser(user!);
