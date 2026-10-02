@@ -27,18 +27,28 @@ dependencies:
 
   cupertino_icons: ^1.0.8
   provider: ^6.1.5+1
+  google_fonts: ^8.2.1
+  custom_snackbar_plus: ^8.0.0
+  video_player: ^2.14.0
+  shared_preferences: ^2.5.5
+  skeletonizer: ^3.0.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
   flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.4
 
 flutter:
   uses-material-design: true
 
   assets:
     - assets/images/porco_eats_images/
+    - assets/images/porco_eats_images/categories_icons/
+    - assets/images/porco_eats_images/carousel_images/
+    - assets/images/porco_eats_images/products/
+    - assets/videos/login_success.mp4
 
   # fonts:
   #   - family: Schyler
