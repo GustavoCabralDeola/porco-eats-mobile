@@ -11,6 +11,7 @@ class AppTextFormField extends StatefulWidget {
     this.suffixIcon,
     this.onChanged,
     this.textEditingController,
+    this.onSubmitted,
     this.prefixIcon,
     this.validator,
   });
@@ -22,9 +23,9 @@ class AppTextFormField extends StatefulWidget {
   final IconData? suffixIcon;
 
   final TextInputType? keyboardType;
-
-  final ValueChanged<String>? onChanged;
-  final TextEditingController? textEditingController;
+  final Function(String)? onChanged;
+  final ValueChanged<String>? onSubmitted;
+  final TextEditingController? textEditingcontroller;
   final String? Function(String?)? validator;
 
   @override
@@ -60,6 +61,9 @@ class _AppTextFormFieldState extends State<AppTextFormField> {
           validator: widget.validator,
           onChanged: widget.onChanged,
           autovalidateMode: AutovalidateMode.onUnfocus,
+          validator: validator,
+          onChanged: onChanged,
+          onFieldSubmitted: onSubmitted,
           obscureText: notifier.isObscure,
           decoration: InputDecoration(
             hintText: widget.hintText,

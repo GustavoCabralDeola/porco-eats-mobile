@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:porco_eats/features/cart/controllers/cart_controller.dart';
 import 'package:porco_eats/features/home/controllers/home_controller.dart';
 import 'package:porco_eats/features/login/controllers/login_controller.dart';
+import 'package:porco_eats/features/recover/controllers/recover_controller.dart';
 import 'package:porco_eats/features/splash/pages/splash_screen_page.dart';
 import 'package:porco_eats/models/user.dart';
 import 'package:porco_eats/routes.dart';
@@ -43,6 +44,11 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (context) {
             return CartController();
+          },
+        ),
+        ChangeNotifierProvider(
+          create: (context) {
+            return RecoverController();
           },
         ),
       ],

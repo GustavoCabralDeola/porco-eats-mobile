@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 class CartPage extends StatelessWidget {
   const CartPage({super.key});
 
-  static String routeName = '/cart';
+  static String route = '/cart';
   @override
   Widget build(BuildContext context) {
     return Consumer<CartController>(

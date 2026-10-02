@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:porco_eats/features/login/controllers/login_controller.dart';
 import 'package:porco_eats/features/login/pages/login_success_video_page.dart';
 import 'package:porco_eats/features/login/pages/signup_page.dart';
+import 'package:porco_eats/features/recover/pages/recover_page.dart';
 import 'package:porco_eats/shared/widgets/app_checkbox.dart';
 import 'package:porco_eats/shared/widgets/app_colors.dart';
 import 'package:porco_eats/shared/widgets/app_intro_text.dart';
@@ -73,7 +74,7 @@ class LoginPage extends StatelessWidget {
                         Spacer(),
                         TextButton(
                           onPressed: () {
-                            //   Navigator.pushNamed(context, RecoverPage.route);
+                            Navigator.pushNamed(context, RecoverPage.route);
                           },
                           child: Text(
                             'Esqueci a senha',
