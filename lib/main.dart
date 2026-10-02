@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:porco_eats/features/cart/controllers/cart_controller.dart';
 import 'package:porco_eats/features/home/controllers/home_controller.dart';
 import 'package:porco_eats/features/login/controllers/login_controller.dart';
 import 'package:porco_eats/features/splash/pages/splash_screen_page.dart';
@@ -39,10 +40,15 @@ class MyApp extends StatelessWidget {
             return HomeController();
           },
         ),
+        ChangeNotifierProvider(
+          create: (context) {
+            return CartController();
+          },
+        ),
       ],
       child: MaterialApp(
-        home: SplashScreen(hasRememberedUser: rememberedUser != null),
         routes: AppRoutes.routes,
+        home: SplashScreen(hasRememberedUser: rememberedUser != null),
       ),
     );
   }
