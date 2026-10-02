@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:porco_eats/shared/widgets/app_colors.dart';
 import 'package:porco_eats/shared/widgets/app_text_form_field_notifier.dart';
 
-class AppTextFormField extends StatelessWidget {
-  AppTextFormField(
+class AppTextFormField extends StatefulWidget {
+  const AppTextFormField(
     this.keyboardType, {
     super.key,
     required this.hintText,
@@ -13,7 +13,7 @@ class AppTextFormField extends StatelessWidget {
     this.textEditingController,
     this.prefixIcon,
     this.validator,
-  }) : notifier = AppTextFormFieldNotifier(obscureText);
+  });
 
   final String hintText;
   final bool obscureText;
@@ -27,7 +27,27 @@ class AppTextFormField extends StatelessWidget {
   final TextEditingController? textEditingController;
   final String? Function(String?)? validator;
 
-  final AppTextFormFieldNotifier notifier;
+  @override
+  State<AppTextFormField> createState() => _AppTextFormFieldState();
+}
+
+class _AppTextFormFieldState extends State<AppTextFormField> {
+  late final AppTextFormFieldNotifier notifier;
+
+  @override
+  void initState() {
+    super.initState();
+    notifier = AppTextFormFieldNotifier(widget.obscureText);
+  }
+
+  @override
+  void didUpdateWidget(covariant AppTextFormField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.obscureText != widget.obscureText) {
+      notifier.setObscure(widget.obscureText);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,14 +55,14 @@ class AppTextFormField extends StatelessWidget {
       listenable: notifier,
       builder: (context, child) {
         return TextFormField(
-          controller: textEditingController,
-          keyboardType: keyboardType,
-          validator: validator,
-          onChanged: onChanged,
+          controller: widget.textEditingController,
+          keyboardType: widget.keyboardType,
+          validator: widget.validator,
+          onChanged: widget.onChanged,
           autovalidateMode: AutovalidateMode.onUnfocus,
           obscureText: notifier.isObscure,
           decoration: InputDecoration(
-            hintText: hintText,
+            hintText: widget.hintText,
             filled: true,
             fillColor: AppColors.fullWhite,
 
@@ -54,23 +74,13 @@ class AppTextFormField extends StatelessWidget {
             prefixIcon: _buildPrefixIcon(),
             suffixIcon: _buildSuffixIcon(),
 
-            enabledBorder: _buildBorder(
-              AppColors.borderInputColor,
-            ),
+            enabledBorder: _buildBorder(AppColors.borderInputColor),
 
-            focusedBorder: _buildBorder(
-              Colors.black87,
-              width: 1.5,
-            ),
+            focusedBorder: _buildBorder(Colors.black87, width: 1.5),
 
-            errorBorder: _buildBorder(
-              AppColors.redDelivery,
-            ),
+            errorBorder: _buildBorder(AppColors.redDelivery),
 
-            focusedErrorBorder: _buildBorder(
-              AppColors.redDelivery,
-              width: 1.5,
-            ),
+            focusedErrorBorder: _buildBorder(AppColors.redDelivery, width: 1.5),
           ),
         );
       },
@@ -78,22 +88,16 @@ class AppTextFormField extends StatelessWidget {
   }
 
   Widget? _buildPrefixIcon() {
-    if (prefixIcon == null) return null;
+    if (widget.prefixIcon == null) return null;
 
     return Padding(
-      padding: const EdgeInsets.only(
-        left: 24,
-        right: 12,
-      ),
-      child: Icon(
-        prefixIcon,
-        color: AppColors.darkBrown,
-      ),
+      padding: const EdgeInsets.only(left: 24, right: 12),
+      child: Icon(widget.prefixIcon, color: AppColors.darkBrown),
     );
   }
 
   Widget? _buildSuffixIcon() {
-    if (obscureText) {
+    if (widget.obscureText) {
       return IconButton(
         onPressed: notifier.toggleObscure,
         icon: Icon(
@@ -105,24 +109,15 @@ class AppTextFormField extends StatelessWidget {
       );
     }
 
-    if (suffixIcon == null) return null;
+    if (widget.suffixIcon == null) return null;
 
-    return Icon(
-      suffixIcon,
-      color: AppColors.darkBrown,
-    );
+    return Icon(widget.suffixIcon, color: AppColors.darkBrown);
   }
 
-  OutlineInputBorder _buildBorder(
-    Color color, {
-    double width = 1,
-  }) {
+  OutlineInputBorder _buildBorder(Color color, {double width = 1}) {
     return OutlineInputBorder(
       borderRadius: BorderRadius.circular(28),
-      borderSide: BorderSide(
-        color: color,
-        width: width,
-      ),
+      borderSide: BorderSide(color: color, width: width),
     );
   }
 }
