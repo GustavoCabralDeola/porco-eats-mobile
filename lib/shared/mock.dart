@@ -1,4 +1,3 @@
-import 'package:porco_eats/models/category.dart';
 import 'package:porco_eats/models/product.dart';
 
 class Mocks {
