@@ -68,7 +68,7 @@ class _AppTextFormFieldState extends State<AppTextFormField> {
 
             contentPadding: const EdgeInsets.symmetric(
               vertical: 18,
-              horizontal: 20,
+              horizontal: 15,
             ),
 
             prefixIcon: _buildPrefixIcon(),
