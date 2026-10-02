@@ -57,11 +57,6 @@ class _SignupPageState extends State<SignupPage> {
                   const SizedBox(height: 18),
 
                   const SizedBox(height: 20),
-                  const AppIntroText(
-                    title: 'Crie sua conta',
-                    subtitle: 'Preencha seus dados para pedir!',
-                  ),
-                  const SizedBox(height: 18),
 
                   AppTextFormField(
                     TextInputType.text,
@@ -186,22 +181,12 @@ class _SignupPageState extends State<SignupPage> {
                     },
                   ),
 
-                  const SizedBox(height: 70),
+                  const SizedBox(height: 40),
                 ],
               ),
             ),
 
-            const SizedBox(height: 38),
-
-            AppSwitchAction(
-              leadingText: 'Já possui uma conta?',
-              actionText: 'Faça login',
-              onPressed: () {
-                Navigator.pushNamed(context, LoginPage.route);
-              },
-            ),
-
-            const SizedBox(height: 70),
+            const SizedBox(height: 18),
           ],
         );
       },
