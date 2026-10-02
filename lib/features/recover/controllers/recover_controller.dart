@@ -17,7 +17,7 @@ class RecoverController extends ChangeNotifier {
     if (!RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(email)) {
       return 'Digite um e-mail válido';
     }
-
+    //aaa
     return null;
   }
 
