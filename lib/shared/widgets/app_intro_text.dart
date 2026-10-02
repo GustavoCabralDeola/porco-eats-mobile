@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:porco_eats/shared/widgets/app_text_style.dart';
 
-class AuthIntroText extends StatelessWidget {
-  const AuthIntroText({super.key, required this.title, required this.subtitle});
+class AppIntroText extends StatelessWidget {
+  const AppIntroText({super.key, required this.title, required this.subtitle});
 
   final String title;
   final String subtitle;

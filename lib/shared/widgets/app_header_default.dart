@@ -8,7 +8,7 @@ class AppHeaderDefault extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.only(
+      borderRadius: const BorderRadius.only(
         bottomLeft: Radius.circular(50),
         bottomRight: Radius.circular(50),
       ),
@@ -20,7 +20,7 @@ class AppHeaderDefault extends StatelessWidget {
               fit: BoxFit.cover,
             ),
           ),
-          ...?children,
+          if (children != null) ...children!,
         ],
       ),
     );

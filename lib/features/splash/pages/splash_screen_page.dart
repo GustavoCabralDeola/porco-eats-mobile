@@ -138,8 +138,8 @@ class SplashBrand extends StatelessWidget {
           animation: logoProgress,
           builder: (context, child) {
             final progress = logoProgress.value;
-            final logoSize = 220 + (30 * progress);
-            final logoTop = initialLogoTop + ((10 - initialLogoTop) * progress);
+            final logoSize = 180 + (30 * progress);
+            final logoTop = initialLogoTop + ((35 - initialLogoTop) * progress);
 
             return Stack(
               children: [
