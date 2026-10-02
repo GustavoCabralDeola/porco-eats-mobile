@@ -31,7 +31,7 @@ class RecoverPage extends StatelessWidget {
       create: (_) => RecoverController(),
       child: Consumer<RecoverController>(
         builder: (context, controller, child) => Scaffold(
-          backgroundColor: AppColors.fullWhite,
+          backgroundColor: Color(0xFFF7F6F2),
           body: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -62,6 +62,7 @@ class RecoverPage extends StatelessWidget {
                           hintText: 'Digite seu email',
                           prefixIcon: Icons.mail_outline,
                           validator: controller.validateEmail,
+
                           onSubmitted: (_) => _sendCode(context, controller),
                         ),
                         const SizedBox(height: 70),

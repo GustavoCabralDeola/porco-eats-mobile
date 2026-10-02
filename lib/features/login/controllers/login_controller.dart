@@ -1,9 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:porco_eats/models/user.dart';
+import 'package:porco_eats/models/customer.dart';
+import 'package:porco_eats/models/enums/user_role.dart';
+import 'package:porco_eats/shared/services/app_remember_me.dart';
 import 'package:porco_eats/shared/widgets/exceptions/auth_exception.dart';
 
 class LoginController extends ChangeNotifier {
-  User? user;
+  final AppPreferences _preferences;
+
+  LoginController({AppPreferences? preferences, Customer? rememberedUser})
+    : _preferences = preferences ?? AppPreferences() {
+    user = rememberedUser;
+    if (rememberedUser != null) {
+      emailController.text = rememberedUser.email;
+      isActiveCheckBox = true;
+    }
+  }
+
+  Customer? user;
 
   bool isLoading = false;
   bool lembrarMe = false;
@@ -11,13 +24,13 @@ class LoginController extends ChangeNotifier {
   bool isActiveCheckBox = false;
 
   TextEditingController emailController = TextEditingController();
-  TextEditingController senhaController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
   final RegExp _emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   void changeIsLoading(bool value) {
     isLoading = value;
-     notifyListeners(); 
+    notifyListeners();
   }
 
   Future<bool> handleLogin() async {
@@ -29,8 +42,10 @@ class LoginController extends ChangeNotifier {
 
     try {
       await login();
+
       emailController.clear();
-      senhaController.clear();
+      passwordController.clear();
+
       return true;
     } finally {
       changeIsLoading(false);
@@ -38,17 +53,34 @@ class LoginController extends ChangeNotifier {
   }
 
   Future<void> login() async {
-    //Simula o delay de uma chamada de API
-    await Future.delayed(Duration(seconds: 2));
-    if (emailController.text.trim() != 'gustavodeola@gmail.com' ||
-        senhaController.text.trim() != '@Aero1224') {
+    await Future.delayed(const Duration(seconds: 2));
+
+    final email = emailController.text.trim().toLowerCase();
+    final password = passwordController.text.trim();
+
+    if (email == 'gustavodeola@gmail.com' && password == '@Aero1224') {
+      user = Customer(
+        id: 1,
+        name: 'Gustavo',
+        email: email,
+        role: UserRole.customer,
+      );
+    } else if (email == 'baianinhogerente@gmail.com' && password == '@baiano') {
+      user = Customer(
+        id: 2,
+        name: 'Baianinho Gerente',
+        email: email,
+        role: UserRole.manager,
+      );
+    } else {
       throw AuthException('E-mail ou senha inválidos');
     }
-    user = User(
-      name: 'Gustavo',
-      email: emailController.text,
-      password: senhaController.text,
-    );
+
+    if (isActiveCheckBox) {
+      await _preferences.saveUser(user!);
+    } else {
+      await _preferences.clearUser();
+    }
   }
 
   String? validEmail(String? value) {
@@ -67,17 +99,17 @@ class LoginController extends ChangeNotifier {
       return 'Digite sua senha';
     }
 
-    if (value.trim().length >= 6) {
-      return null;
+    if (value.trim().length < 6) {
+      return 'A senha deve conter mais de 5 caracteres';
     }
 
-    return 'A senha deve conter mais de 5 caracteres';
+    return null;
   }
 
   void validFieldsForButton() {
     isActiveButton =
         emailController.text.trim().isNotEmpty &&
-        senhaController.text.trim().isNotEmpty;
+        passwordController.text.trim().isNotEmpty;
   }
 
   void changeActiveCheckBox(bool value) {
