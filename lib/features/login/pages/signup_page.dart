@@ -56,13 +56,6 @@ class _SignupPageState extends State<SignupPage> {
                   ),
                   const SizedBox(height: 18),
 
-                  const SizedBox(height: 20),
-                  const AppIntroText(
-                    title: 'Crie sua conta',
-                    subtitle: 'Preencha seus dados para pedir!',
-                  ),
-                  const SizedBox(height: 18),
-
                   AppTextFormField(
                     TextInputType.text,
                     hintText: 'Digite seu nome completo',
@@ -109,30 +102,35 @@ class _SignupPageState extends State<SignupPage> {
 
                   const SizedBox(height: 15),
 
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: DropdownButton<UserRole>(
-                      value: controller.selectedRole,
-                      onChanged: (UserRole? newValue) {
-                        if (newValue != null) {
-                          controller.setSelectedRole(newValue);
-                        }
-                      },
-                      items: UserRole.values.map((UserRole role) {
-                        return DropdownMenuItem<UserRole>(
-                          value: role,
-                          child: Text(
-                            role == UserRole.customer ? 'Cliente' : 'Gerente',
-                          ),
-                        );
-                      }).toList(),
-                      isExpanded: true,
-                      underline: const SizedBox(),
-                      hint: const Text('Selecione seu tipo de conta'),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 18),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey),
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                      height: 50,
+                      width: 180,
+                      child: DropdownButton<UserRole>(
+                        value: controller.selectedRole,
+                        onChanged: (UserRole? newValue) {
+                          if (newValue != null) {
+                            controller.setSelectedRole(newValue);
+                          }
+                        },
+                        items: UserRole.values.map((UserRole role) {
+                          return DropdownMenuItem<UserRole>(
+                            value: role,
+                            child: Text(
+                              role == UserRole.customer ? 'Cliente' : 'Gerente',
+                            ),
+                          );
+                        }).toList(),
+                        isExpanded: true,
+                        underline: const SizedBox(),
+                        hint: const Text('Selecione seu tipo de conta'),
+                      ),
                     ),
                   ),
 
@@ -186,22 +184,12 @@ class _SignupPageState extends State<SignupPage> {
                     },
                   ),
 
-                  const SizedBox(height: 70),
+                  const SizedBox(height: 20),
                 ],
               ),
             ),
 
-            const SizedBox(height: 38),
-
-            AppSwitchAction(
-              leadingText: 'Já possui uma conta?',
-              actionText: 'Faça login',
-              onPressed: () {
-                Navigator.pushNamed(context, LoginPage.route);
-              },
-            ),
-
-            const SizedBox(height: 70),
+            const SizedBox(height: 8),
           ],
         );
       },
