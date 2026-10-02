@@ -2,7 +2,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 class PromoCarouselController extends ChangeNotifier {
-  final PageController pageController = PageController(viewportFraction: 0.85);
+  final PageController pageController = PageController();
+
   Timer? _timer;
   int _currentPage = 0;
   int _totalBanners = 0;
@@ -14,7 +15,9 @@ class PromoCarouselController extends ChangeNotifier {
     _timer?.cancel();
 
     _timer = Timer.periodic(const Duration(milliseconds: 4500), (timer) {
-      if (_totalBanners == 0 || !pageController.hasClients) return;
+      if (_totalBanners == 0 || !pageController.hasClients) {
+        return;
+      }
 
       _currentPage = (_currentPage + 1) % _totalBanners;
 
@@ -23,6 +26,7 @@ class PromoCarouselController extends ChangeNotifier {
         duration: const Duration(milliseconds: 400),
         curve: Curves.easeInOut,
       );
+
       notifyListeners();
     });
   }
@@ -34,6 +38,7 @@ class PromoCarouselController extends ChangeNotifier {
 
   void goToPage(int index) {
     _currentPage = index;
+
     if (pageController.hasClients) {
       pageController.animateToPage(
         index,
@@ -41,6 +46,7 @@ class PromoCarouselController extends ChangeNotifier {
         curve: Curves.easeInOut,
       );
     }
+
     notifyListeners();
   }
 
