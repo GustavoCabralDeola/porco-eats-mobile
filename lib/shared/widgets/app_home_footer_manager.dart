@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:porco_eats/features/order_list/pages/orders_list_page.dart';
 import 'package:porco_eats/shared/widgets/app_colors.dart';
 
 class AppHomeFooterManager extends StatelessWidget {
@@ -17,14 +18,17 @@ class AppHomeFooterManager extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          _FooterItem(
+          _FooterItem( 
+            onTap: () {
+              
+            },
             icon: Icons.home_rounded,
             label: 'Início',
             selected: true,
           ),
-          _FooterItem(icon: Icons.list_alt_rounded, label: 'Pedidos'),
-          _FooterItem(icon: Icons.bar_chart_rounded, label: 'Dashboard'),
-          _FooterItem(icon: Icons.person_rounded, label: 'Perfil'),
+          _FooterItem(icon: Icons.list_alt_rounded, label: 'Pedidos',onTap: () => Navigator.pushNamed(context, OrdersPage.route),),
+          _FooterItem(icon: Icons.bar_chart_rounded, label: 'Dashboard', onTap: () {  },),
+          _FooterItem(icon: Icons.person_rounded, label: 'Perfil', onTap: () {  },),
         ],
       ),
     );
@@ -35,12 +39,13 @@ class _FooterItem extends StatelessWidget {
   const _FooterItem({
     required this.icon,
     required this.label,
-    this.selected = false,
+    this.selected = false, required this.onTap,
   });
 
   final IconData icon;
   final String label;
   final bool selected;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -56,21 +61,26 @@ class _FooterItem extends StatelessWidget {
           )
         : Icon(icon, color: AppColors.fullWhite, size: 24);
 
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        iconWidget,
-        const SizedBox(height: 6),
-        Text(
-          label,
-          textAlign: TextAlign.center,
-          style: GoogleFonts.poppins(
-            fontSize: 11,
-            color: selected ? AppColors.yellowAgility : AppColors.fullWhite,
-            fontWeight: FontWeight.w600,
+    return InkWell(
+      onTap: () {
+       onTap();
+      },
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          iconWidget,
+          const SizedBox(height: 6),
+          Text(
+            label,
+            textAlign: TextAlign.center,
+            style: GoogleFonts.poppins(
+              fontSize: 11,
+              color: selected ? AppColors.yellowAgility : AppColors.fullWhite,
+              fontWeight: FontWeight.w600,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

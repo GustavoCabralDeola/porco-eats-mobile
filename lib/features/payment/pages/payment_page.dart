@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:porco_eats/features/cart/controllers/cart_controller.dart';
+import 'package:porco_eats/features/login/controllers/login_controller.dart';
 import 'package:porco_eats/shared/widgets/app_colors.dart';
+import 'package:provider/provider.dart';
 
 class PaymentPage extends StatelessWidget {
   const PaymentPage({super.key});
@@ -191,33 +194,43 @@ class PaymentPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 12),
-              SizedBox(
-                width: double.infinity,
-                height: 56,
-                child: ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.redDelivery,
-                    foregroundColor: AppColors.fullWhite,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Finalizar pedido',
-                        style: GoogleFonts.poppins(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
+              Consumer<LoginController>(
+                builder: (context,loginController,child) {
+                  return Consumer<CartController>(
+                    builder: (context,controller,child) {
+                      return SizedBox(
+                        width: double.infinity,
+                        height: 56,
+                        child: ElevatedButton(
+                          onPressed: () {
+                      controller.checkout(loginController.user!);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.redDelivery,
+                            foregroundColor: AppColors.fullWhite,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                'Finalizar pedido',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              const Icon(Icons.arrow_forward_rounded, size: 22),
+                            ],
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 8),
-                      const Icon(Icons.arrow_forward_rounded, size: 22),
-                    ],
-                  ),
-                ),
+                      );
+                    }
+                  );
+                }
               ),
             ],
           ),

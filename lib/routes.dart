@@ -15,10 +15,7 @@ class AppRoutes {
     RecoverPage.route: (context) => RecoverPage(),
     SignupPage.route: (context) => SignupPage(),
     CartPage.route: (context) => CartPage(),
-<<<<<<< Updated upstream
     PaymentPage.route: (context) => const PaymentPage(),
-=======
     OrdersPage.route: (context) =>  OrdersPage(),
->>>>>>> Stashed changes
   };
 }

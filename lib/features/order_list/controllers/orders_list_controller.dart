@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:porco_eats/features/order_list/controllers/customer_order.dart';
 import 'package:porco_eats/features/order_list/controllers/order_list_card.dart';
+import 'package:porco_eats/shared/services/app_remember_me.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../models/customer_order.dart';
@@ -31,12 +32,11 @@ class OrderListController extends ChangeNotifier {
   }
  Future<void> loadOrdersFromStorage() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final ordersJson = prefs.getStringList('orders') ?? [];
-      
+      final prefs = await AppPreferences();
+      final ordersJson = await prefs.loadOrders();      
       _orders.clear();
-      for (String json in ordersJson) {
-        _orders.add(CustomerOrder.fromJson(jsonDecode(json)));
+      for (CustomerOrder json in ordersJson) {
+        _orders.add(json);
       }
       
       notifyListeners();

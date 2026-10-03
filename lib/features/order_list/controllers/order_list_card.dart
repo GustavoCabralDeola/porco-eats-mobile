@@ -1,25 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:porco_eats/features/order_list/controllers/order_list_status.dart';
+import 'package:porco_eats/models/customer_order.dart';
 import 'package:porco_eats/models/enums/order_status.dart' show OrderStatus;
 
 
 class OrderCard extends StatelessWidget {
-  final String number;
-  final String client;
-  final String date;
-  final String time;
-  final String value;
-  final String status;
+
 
   const OrderCard({
-    super.key,
-    required this.number,
-    required this.client,
-    required this.date,
-    required this.time,
-    required this.value,
-    required this.status,
+    super.key, required this.customerOrder,
+   
   });
+  final CustomerOrder customerOrder;
 
   @override
   Widget build(BuildContext context) {
@@ -39,30 +31,30 @@ class OrderCard extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      '#$number',
+                      '#${customerOrder.id}',
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     const SizedBox(width: 12),
-                    Text(client),
+                    Text(customerOrder.customerName),
                   ],
                 ),
 
                 const SizedBox(height: 5),
 
-                Text(
-                  '$date • $time',
-                  style: const TextStyle(
-                    fontSize: 9,
-                    color: Colors.grey,
-                  ),
-                ),
+                // Text(
+                //   '${customerOrder.} • ${customerOrder.time}',
+                //   style: const TextStyle(
+                //     fontSize: 9,
+                //     color: Colors.grey,
+                //   ),
+                // ),
 
                 const SizedBox(height: 3),
 
                 Text(
-                  value,
+                  '${customerOrder.total}',
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                   ),
@@ -72,7 +64,7 @@ class OrderCard extends StatelessWidget {
           ),
 
           OrderListStatus(
-            status: status,
+            status: customerOrder.status.toString(),
           ),
 
           const SizedBox(width: 5),

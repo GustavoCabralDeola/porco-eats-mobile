@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:porco_eats/features/order_list/controllers/order_list_card.dart';
+import 'package:porco_eats/features/order_list/controllers/orders_list_controller.dart';
+import 'package:provider/provider.dart';
 
 class OrdersPage extends StatefulWidget {
 static String route = '/orders';
@@ -11,29 +14,19 @@ static String route = '/orders';
   State<OrdersPage> createState() => _OrdersPageState();
 }
 
-class OrdersPageController extends ChangeNotifier {
-  String selectedFilter = 'Todos';
 
-  void changeFilter(String value) {
-    if (selectedFilter == value) return;
-    selectedFilter = value;
-    notifyListeners();
-  }
-}
 
 class _OrdersPageState extends State<OrdersPage> {
-  final OrdersPageController _controller = OrdersPageController();
+  // final OrderListController _controller = OrderListController();
 
   @override
   void initState() {
     super.initState();
-    _controller.addListener(_handleControllerUpdate);
+    context.read<OrderListController>().loadOrdersFromStorage();
   }
 
   @override
   void dispose() {
-    _controller.removeListener(_handleControllerUpdate);
-    _controller.dispose();
     super.dispose();
   }
 
@@ -87,13 +80,13 @@ class _OrdersPageState extends State<OrdersPage> {
             ),
             child: Row(
               children: [
-                _buildFilter(
-                  label: 'Todos',
-                  selected: _controller.selectedFilter == 'Todos',
-                  onTap: () {
-                    _controller.changeFilter('Todos');
-                  },
-                ),
+                // _buildFilter(
+                //   label: 'Todos',
+                //   selected: _controller.selectedFilter == 'Todos',
+                //   onTap: () {
+                //     _controller.changeFilter('Todos');
+                //   },
+                // ),
 
                 const SizedBox(width: 8),
 
@@ -191,11 +184,31 @@ class _OrdersPageState extends State<OrdersPage> {
 
   Widget _buildOrdersList() {
     // talvez listagem de pedidos da API
-    return const SizedBox();
+    return Consumer<OrderListController>(
+          builder: (context, controller, _) {
+            if (controller.orders.isEmpty) {
+              return const Center(
+                child: Text('Nenhum pedido encontrado'),
+              );
+            }
+            return ListView.builder(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              itemCount: controller.orders.length,
+              itemBuilder: (context, index) {
+                final order = controller.orders[index];
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: OrderCard(customerOrder: order,),
+                );
+              },
+            );
+          },
+        );
   }
 
   void _showClientFilter() {
     showModalBottomSheet(
+   
       context: context,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:porco_eats/features/cart/controllers/cart_controller.dart';
 import 'package:porco_eats/features/home/controllers/home_controller.dart';
 import 'package:porco_eats/features/login/controllers/login_controller.dart';
 import 'package:porco_eats/features/login/controllers/signup_controller.dart';
 import 'package:porco_eats/features/login/pages/login_page.dart';
+import 'package:porco_eats/features/order_list/controllers/orders_list_controller.dart';
 import 'package:porco_eats/features/order_list/pages/orders_list_page.dart';
 import 'package:porco_eats/routes.dart';
 import 'package:provider/provider.dart';
@@ -35,14 +37,19 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (context) {
-            return OrdersPageController();
+            return OrderListController();
+          },
+        ),
+           ChangeNotifierProvider(
+          create: (context) {
+            return CartController();
           },
         ),
       ],
       builder: (context, child) {
         return MaterialApp(
           routes: AppRoutes.routes,
-         initialRoute: OrdersPage.route,
+         initialRoute: LoginPage.route,
         );
       },
     );
