@@ -31,7 +31,7 @@ class AppHomeFooterCustomer extends StatelessWidget {
           ),
 
           InkWell(
-            onTap: () => Navigator.pushNamed(context, CartPage.route),
+            //onTap: () => Navigator.pushNamed(context, CartPage.route),
             child: _NavigationBarItem(
               icon: Icons.list_alt_rounded,
               label: 'Meus pedidos',

@@ -8,8 +8,13 @@ import 'package:porco_eats/features/order_list/controllers/orders_list_controlle
 import 'package:porco_eats/features/order_list/pages/orders_list_page.dart';
 import 'package:porco_eats/routes.dart';
 import 'package:provider/provider.dart';
-void main() {
-  runApp(const MyApp());
+import 'package:porco_eats/features/payment/controllers/payment_controller.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final preferences = AppPreferences();
+  final rememberedUser = await preferences.loadUser();
+  runApp(MyApp(preferences: preferences, rememberedUser: rememberedUser));
 }
 
 class MyApp extends StatelessWidget {
@@ -43,6 +48,11 @@ class MyApp extends StatelessWidget {
            ChangeNotifierProvider(
           create: (context) {
             return CartController();
+          },
+        ),
+        ChangeNotifierProvider(
+          create: (context) {
+            return PaymentController();
           },
         ),
       ],
