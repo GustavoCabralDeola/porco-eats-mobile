@@ -30,7 +30,7 @@ class CartPage extends StatelessWidget {
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
-          'Meus pedidos',
+          'Carrinho',
           style: GoogleFonts.poppins(
             fontSize: 20,
             fontWeight: FontWeight.w700,
@@ -217,7 +217,7 @@ class _CartItemCard extends StatelessWidget {
                   children: [
                     _QuantityButton(
                       icon: Icons.remove,
-                      onPressed: quantity > 1 ? onDecrease : null,
+                      onPressed: () => onDecrease(),
                     ),
                     Text(
                       quantity.toString(),
