@@ -7,10 +7,9 @@ import 'package:porco_eats/models/user.dart';
 import 'package:porco_eats/shared/services/app_remember_me.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class ProfileController {
+class ProfileController extends ChangeNotifier {
   ProfileController({
     required User? user,
-    required this.onUserUpdated,
     AppPreferences? preferences,
     SharedPreferencesAsync? profilePreferences,
   }) : user = user,
@@ -25,7 +24,6 @@ class ProfileController {
 
   final AppPreferences _preferences;
   final SharedPreferencesAsync _profilePreferences;
-  final ValueChanged<User> onUserUpdated;
 
   User? user;
   final nameController = TextEditingController();
@@ -86,6 +84,7 @@ class ProfileController {
       base64Encode(imageBytes),
     );
     profileImageBytes = imageBytes;
+    notifyListeners();
   }
 
   Future<void> saveProfile() async {
@@ -171,10 +170,14 @@ class ProfileController {
 
     user = updatedUser;
     _setUserFields(updatedUser);
-    onUserUpdated(updatedUser);
+    notifyListeners();
   }
 
-  Future<void> logout() => _preferences.clearUser();
+  Future<void> logout() async {
+    await _preferences.clearUser();
+    user = null;
+    notifyListeners();
+  }
 
   void _setUserFields(User? value) {
     if (value == null) return;
@@ -205,6 +208,7 @@ class ProfileController {
     confirmPasswordController.clear();
   }
 
+  @override
   void dispose() {
     nameController.dispose();
     lastNameController.dispose();
@@ -214,5 +218,6 @@ class ProfileController {
     currentPasswordController.dispose();
     newPasswordController.dispose();
     confirmPasswordController.dispose();
+    super.dispose();
   }
 }

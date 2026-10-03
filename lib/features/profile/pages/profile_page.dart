@@ -34,11 +34,14 @@ class _ProfilePageState extends State<ProfilePage> {
     _loginController = context.read<LoginController>();
     _controller = ProfileController(
       user: _loginController.user,
-      onUserUpdated: (user) {
-        _loginController.user = user;
-      },
     );
+    _controller.addListener(_handleProfileControllerChanged);
     _loadProfile();
+  }
+
+  void _handleProfileControllerChanged() {
+    _loginController.user = _controller.user;
+    if (mounted) setState(() {});
   }
 
   Future<void> _loadProfile() async {
@@ -124,7 +127,6 @@ class _ProfilePageState extends State<ProfilePage> {
       if (image == null) return;
 
       await _controller.saveProfilePhoto(await image.readAsBytes());
-      if (mounted) setState(() {});
     } catch (_) {
       if (mounted) {
         _showMessage('Não foi possível atualizar a foto do perfil.');
@@ -141,7 +143,6 @@ class _ProfilePageState extends State<ProfilePage> {
         onConfirm: () async {
           final navigator = Navigator.of(dialogContext);
           await _controller.logout();
-          _loginController.user = null;
           _loginController.isActiveCheckBox = false;
           if (!mounted) return;
           navigator.pop();
@@ -162,6 +163,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   void dispose() {
+    _controller.removeListener(_handleProfileControllerChanged);
     _controller.dispose();
     super.dispose();
   }
