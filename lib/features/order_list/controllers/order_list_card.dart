@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:porco_eats/features/order_list/controllers/order_list_status.dart';
+import 'package:porco_eats/models/enums/order_status.dart' show OrderStatus;
 
 
 class OrderCard extends StatelessWidget {
@@ -70,7 +71,7 @@ class OrderCard extends StatelessWidget {
             ),
           ),
 
-          OrderStatusChip(
+          OrderListStatus(
             status: status,
           ),
 

@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart' show StatelessWidget, Widget, BuildContext, Color, EdgeInsets, BorderRadius, BoxDecoration, Colors, FontWeight, TextStyle, Text, Container;
 
 
-class OrderStatusChip extends StatelessWidget {
+class OrderListStatus extends StatelessWidget {
   final String status;
 
-  const OrderStatusChip({
+  const OrderListStatus({
     super.key,
     required this.status,
   });
 
-  Color get backgroundColor {
+  Color get getStatusColor {
     switch (status) {
       case 'Em preparo':
         return const Color(0xFFFFC928);
@@ -36,7 +36,7 @@ class OrderStatusChip extends StatelessWidget {
         vertical: 5,
       ),
       decoration: BoxDecoration(
-        color: backgroundColor,
+        color: getStatusColor,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Text(

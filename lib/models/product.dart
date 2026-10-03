@@ -7,6 +7,7 @@ class Product {
   final String category;
   final double price;
   final String imageUrl;
+  String? observation;
 
   Product({
     required this.id,
@@ -17,7 +18,32 @@ class Product {
     required this.category,
     required this.price,
     required this.imageUrl,
+    this.observation,
   });
+
+  Product copyWith({
+    int? id,
+    String? name,
+    String? description,
+    String? restaurant,
+    double? avaliation,
+    String? category,
+    double? price,
+    String? imageUrl,
+    String? observation,
+  }) {
+    return Product(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      restaurant: restaurant ?? this.restaurant,
+      avaliation: avaliation ?? this.avaliation,
+      category: category ?? this.category,
+      price: price ?? this.price,
+      imageUrl: imageUrl ?? this.imageUrl,
+      observation: observation ?? this.observation,
+    );
+  }
 
   Map<String, dynamic> toJson() => {
     'id': id,
@@ -28,6 +54,7 @@ class Product {
     'category': category,
     'price': price,
     'imageUrl': imageUrl,
+    'observation': observation,
   };
 
   factory Product.fromJson(Map<String, dynamic> json) {
@@ -40,6 +67,7 @@ class Product {
       category: json['category'] as String,
       price: (json['price'] as num).toDouble(),
       imageUrl: json['imageUrl'] as String,
+      observation: json['observation'] as String?,
     );
   }
 }

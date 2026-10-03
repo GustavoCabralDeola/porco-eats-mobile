@@ -1,16 +1,47 @@
-
-
 import 'package:flutter/material.dart';
 
 class OrdersPage extends StatefulWidget {
+static String route = '/orders';
+
   const OrdersPage({super.key});
+
+
 
   @override
   State<OrdersPage> createState() => _OrdersPageState();
 }
 
-class _OrdersPageState extends State<OrdersPage> {
+class OrdersPageController extends ChangeNotifier {
   String selectedFilter = 'Todos';
+
+  void changeFilter(String value) {
+    if (selectedFilter == value) return;
+    selectedFilter = value;
+    notifyListeners();
+  }
+}
+
+class _OrdersPageState extends State<OrdersPage> {
+  final OrdersPageController _controller = OrdersPageController();
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(_handleControllerUpdate);
+  }
+
+  @override
+  void dispose() {
+    _controller.removeListener(_handleControllerUpdate);
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _handleControllerUpdate() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,9 +57,7 @@ class _OrdersPageState extends State<OrdersPage> {
           onPressed: () {
             Navigator.pop(context);
           },
-          icon: const Icon(
-            Icons.arrow_back,
-          ),
+          icon: const Icon(Icons.arrow_back),
         ),
 
         title: const Text(
@@ -40,22 +69,17 @@ class _OrdersPageState extends State<OrdersPage> {
         ),
 
         actions: [
-          IconButton(
-            onPressed: () {
-             //botão de pesquisa do controller
-            },
-            icon: const Icon(
-              Icons.search,
-              size: 22,
-            ),
-          ),
+          // IconButton(
+          //   onPressed: _openSearch,
+          //   icon: const Icon(
+          //     Icons.search,
+          //     size: 22,
+          //   ),
+          // ),
         ],
       ),
-
       body: Column(
         children: [
-
-         
           Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: 12,
@@ -63,14 +87,11 @@ class _OrdersPageState extends State<OrdersPage> {
             ),
             child: Row(
               children: [
-
                 _buildFilter(
                   label: 'Todos',
-                  selected: selectedFilter == 'Todos',
+                  selected: _controller.selectedFilter == 'Todos',
                   onTap: () {
-                    setState(() {
-                      selectedFilter = 'Todos';
-                    });
+                    _controller.changeFilter('Todos');
                   },
                 ),
 
@@ -96,7 +117,6 @@ class _OrdersPageState extends State<OrdersPage> {
 
                 const Spacer(),
 
-                // Filtro
                 Container(
                   width: 36,
                   height: 36,
@@ -119,7 +139,6 @@ class _OrdersPageState extends State<OrdersPage> {
             ),
           ),
 
-          
           Expanded(
             child: _buildOrdersList(),
           ),
@@ -157,10 +176,8 @@ class _OrdersPageState extends State<OrdersPage> {
                 fontWeight: FontWeight.w600,
               ),
             ),
-
             if (icon != null) ...[
               const SizedBox(width: 3),
-
               Icon(
                 icon,
                 size: 14,
@@ -174,7 +191,6 @@ class _OrdersPageState extends State<OrdersPage> {
 
   Widget _buildOrdersList() {
     // talvez listagem de pedidos da API
-
     return const SizedBox();
   }
 
@@ -192,9 +208,7 @@ class _OrdersPageState extends State<OrdersPage> {
           child: SizedBox(
             height: 180,
             child: Center(
-              child: Text(
-                'Aguardando Clientes ',
-              ),
+              child: Text('Aguardando Clientes'),
             ),
           ),
         );
@@ -217,7 +231,6 @@ class _OrdersPageState extends State<OrdersPage> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-
               const Text(
                 'Status do pedido',
                 style: TextStyle(
@@ -225,29 +238,12 @@ class _OrdersPageState extends State<OrdersPage> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-
               const SizedBox(height: 16),
-
-
-              const ListTile(
-                title: Text('Todos'),
-              ),
-
-              const ListTile(
-                title: Text('Em preparo'),
-              ),
-
-              const ListTile(
-                title: Text('Saiu para entrega'),
-              ),
-
-              const ListTile(
-                title: Text('Entregue'),
-              ),
-
-              const ListTile(
-                title: Text('Cancelado'),
-              ),
+              const ListTile(title: Text('Todos')),
+              const ListTile(title: Text('Em preparo')),
+              const ListTile(title: Text('Saiu para entrega')),
+              const ListTile(title: Text('Entregue')),
+              const ListTile(title: Text('Cancelado')),
             ],
           ),
         );

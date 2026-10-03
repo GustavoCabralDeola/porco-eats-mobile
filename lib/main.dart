@@ -1,40 +1,32 @@
 import 'package:flutter/material.dart';
-import 'package:porco_eats/features/cart/controllers/cart_controller.dart';
 import 'package:porco_eats/features/home/controllers/home_controller.dart';
 import 'package:porco_eats/features/login/controllers/login_controller.dart';
-import 'package:porco_eats/features/recover/controllers/recover_controller.dart';
-import 'package:porco_eats/features/splash/pages/splash_screen_page.dart';
-import 'package:porco_eats/models/user.dart';
+import 'package:porco_eats/features/login/controllers/signup_controller.dart';
+import 'package:porco_eats/features/login/pages/login_page.dart';
+import 'package:porco_eats/features/order_list/pages/orders_list_page.dart';
 import 'package:porco_eats/routes.dart';
-import 'package:porco_eats/shared/services/app_remember_me.dart';
 import 'package:provider/provider.dart';
-
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  final preferences = AppPreferences();
-  final rememberedUser = await preferences.loadUser();
-  runApp(MyApp(preferences: preferences, rememberedUser: rememberedUser));
+void main() {
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  final AppPreferences preferences;
-  final User? rememberedUser;
-
-  const MyApp({
-    super.key,
-    required this.preferences,
-    required this.rememberedUser,
-  });
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (context) => LoginController(
-            preferences: preferences,
-            rememberedUser: rememberedUser,
-          ),
+          create: (context) {
+            return LoginController();
+          },
+        ),
+
+        ChangeNotifierProvider(
+          create: (context) {
+            return SignupController();
+          },
         ),
         ChangeNotifierProvider(
           create: (context) {
@@ -43,19 +35,16 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (context) {
-            return CartController();
-          },
-        ),
-        ChangeNotifierProvider(
-          create: (context) {
-            return RecoverController();
+            return OrdersPageController();
           },
         ),
       ],
-      child: MaterialApp(
-        routes: AppRoutes.routes,
-        home: SplashScreen(hasRememberedUser: rememberedUser != null),
-      ),
+      builder: (context, child) {
+        return MaterialApp(
+          routes: AppRoutes.routes,
+         initialRoute: OrdersPage.route,
+        );
+      },
     );
   }
 }

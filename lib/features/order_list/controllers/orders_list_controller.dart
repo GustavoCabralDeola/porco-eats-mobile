@@ -1,6 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:porco_eats/features/order_list/controllers/customer_order.dart';
 import 'package:porco_eats/features/order_list/controllers/order_list_card.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../../models/customer_order.dart';
 
 
 class OrderListController extends ChangeNotifier {
@@ -22,11 +27,22 @@ class OrderListController extends ChangeNotifier {
     }
 
     return result;
+ 
   }
-
-  void addOrder(CustomerOrder order) {
-    _orders.add(order);
-    notifyListeners();
+ Future<void> loadOrdersFromStorage() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final ordersJson = prefs.getStringList('orders') ?? [];
+      
+      _orders.clear();
+      for (String json in ordersJson) {
+        _orders.add(CustomerOrder.fromJson(jsonDecode(json)));
+      }
+      
+      notifyListeners();
+    } catch (e) {
+      print('Erro ao carregar pedidos: $e');
+    }
   }
 
   CustomerOrder? getOrderById(int orderId) {
