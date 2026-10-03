@@ -94,25 +94,7 @@ class AppPreferences {
     );
     return _preferences.setString(_productsKey, value);
   }
-
-  Future<List<Product>> loadProducts() async {
-    final value = await _preferences.getString(_productsKey);
-    if (value == null) return [];
-
-    try {
-      final products = jsonDecode(value) as List<dynamic>;
-      return products
-          .map((product) => Product.fromJson(product as Map<String, dynamic>))
-          .toList(growable: false);
-    } on FormatException {
-      await _preferences.remove(_productsKey);
-      return [];
-    } on TypeError {
-      await _preferences.remove(_productsKey);
-      return [];
-    }
-  }
-
+ 
   Future<void> saveOrders(List<CustomerOrder> orders) {
     final value = jsonEncode(orders.map((order) => order.toJson()).toList());
     return _preferences.setString(_ordersKey, value);
@@ -138,3 +120,4 @@ class AppPreferences {
 
   Future<void> clearOrders() => _preferences.remove(_ordersKey);
 }
+

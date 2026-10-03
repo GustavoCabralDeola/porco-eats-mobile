@@ -14,7 +14,9 @@ class AppHomeFooterCustomer extends StatelessWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         color: AppColors.darkBrown,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
+        borderRadius: const BorderRadius.vertical(
+          top: Radius.circular(30),
+        ),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -54,11 +56,13 @@ class _NavigationBarItem extends StatelessWidget {
     required this.icon,
     required this.label,
     this.selected = false,
+    this.onTap,
   });
 
   final IconData icon;
   final String label;
   final bool selected;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -70,25 +74,38 @@ class _NavigationBarItem extends StatelessWidget {
               color: AppColors.yellowAgility,
               borderRadius: BorderRadius.circular(16),
             ),
-            child: Icon(icon, color: AppColors.darkBrown, size: 24),
+            child: Icon(
+              icon,
+              color: AppColors.darkBrown,
+              size: 24,
+            ),
           )
-        : Icon(icon, color: AppColors.fullWhite, size: 24);
+        : Icon(
+            icon,
+            color: AppColors.fullWhite,
+            size: 24,
+          );
 
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        iconWidget,
-        const SizedBox(height: 6),
-        Text(
-          label,
-          textAlign: TextAlign.center,
-          style: GoogleFonts.poppins(
-            fontSize: 11,
-            color: selected ? AppColors.yellowAgility : AppColors.fullWhite,
-            fontWeight: FontWeight.w600,
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          iconWidget,
+          const SizedBox(height: 6),
+          Text(
+            label,
+            textAlign: TextAlign.center,
+            style: GoogleFonts.poppins(
+              fontSize: 11,
+              color: selected
+                  ? AppColors.yellowAgility
+                  : AppColors.fullWhite,
+              fontWeight: FontWeight.w600,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
