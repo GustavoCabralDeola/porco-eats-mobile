@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:porco_eats/models/customer_order.dart';
 import 'package:porco_eats/models/enums/order_status.dart';
 import 'package:porco_eats/models/product.dart';
+import 'package:porco_eats/models/user.dart';
 import 'package:porco_eats/shared/services/app_remember_me.dart';
 
 class CartController extends ChangeNotifier {
@@ -11,11 +12,27 @@ class CartController extends ChangeNotifier {
 
   CartController({AppPreferences? preferences})
     : _preferences = preferences ?? AppPreferences() {
-    _loadOrders();
+    loadOrders();
   }
 
-  Future<void> _loadOrders() async {
+  List<Product> get uniqueProductsInCart {
+    final uniqueProducts = <Product>[];
+    final seenIds = <int>{};
+
+    for (final product in productsInCart) {
+      if (seenIds.add(product.id)) {
+        uniqueProducts.add(product);
+      }
+    }
+
+    return uniqueProducts;
+  }
+
+  Future<void> loadOrders() async {
     orders = await _preferences.loadOrders();
+    print(
+      'Pedidos salvos no localStorage: ${orders.map((order) => order.toJson()).toList()}',
+    );
     notifyListeners();
   }
 
@@ -27,6 +44,16 @@ class CartController extends ChangeNotifier {
   void addToCart(Product product) {
     productsInCart.add(product);
     notifyListeners();
+  }
+
+  void updateObservation(Product product, String observation) {
+    final index = productsInCart.indexWhere((item) => item.id == product.id);
+    if (index != -1) {
+      productsInCart[index] = productsInCart[index].copyWith(
+        observation: observation,
+      );
+      notifyListeners();
+    }
   }
 
   int getQuantity(Product product) {
@@ -63,7 +90,7 @@ class CartController extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> checkout() async {
+  Future<void> checkout(User user) async {
     if (productsInCart.isEmpty) {
       return;
     }
@@ -74,6 +101,7 @@ class CartController extends ChangeNotifier {
       total: totalPrice,
       status: OrderStatus.received,
       quantity: productsInCart.length,
+      customerName: user.name,
     );
 
     orders.insert(0, order);

@@ -42,7 +42,7 @@ class LoginPage extends StatelessWidget {
                   children: [
                     AppTextFormField(
                       TextInputType.emailAddress,
-                      textEditingController: controller.emailController,
+                      textEditingcontroller: controller.emailController,
                       validator: (value) {
                         return controller.validEmail(value);
                       },
@@ -51,7 +51,7 @@ class LoginPage extends StatelessWidget {
                     ),
                     SizedBox(height: 20),
                     AppTextFormField(
-                      textEditingController: controller.passwordController,
+                      textEditingcontroller: controller.passwordController,
                       validator: (value) {
                         return controller.validPassword(value);
                       },

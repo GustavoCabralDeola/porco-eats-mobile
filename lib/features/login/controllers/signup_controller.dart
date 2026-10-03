@@ -139,11 +139,11 @@ class SignupController extends ChangeNotifier {
     notifyListeners();
 
     try {
-      // Converter para lista mutável (growable: true)
-      final registeredUsers = List<User>.from(await _preferences.loadRegisteredUsers());
+      final registeredUsers = List<User>.from(
+        await _preferences.loadRegisteredUsers(),
+      );
       final emailAtual = emailController.text.trim().toLowerCase();
 
-      // Verificar se o email já existe na lista
       final usuarioExistente = registeredUsers.any(
         (user) => user.email.trim().toLowerCase() == emailAtual,
       );

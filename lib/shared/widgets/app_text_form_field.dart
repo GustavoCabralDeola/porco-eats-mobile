@@ -10,7 +10,7 @@ class AppTextFormField extends StatefulWidget {
     this.obscureText = false,
     this.suffixIcon,
     this.onChanged,
-    this.textEditingController,
+    this.textEditingcontroller,
     this.onSubmitted,
     this.prefixIcon,
     this.validator,
@@ -56,14 +56,11 @@ class _AppTextFormFieldState extends State<AppTextFormField> {
       listenable: notifier,
       builder: (context, child) {
         return TextFormField(
-          controller: widget.textEditingController,
+          controller: widget.textEditingcontroller,
           keyboardType: widget.keyboardType,
           validator: widget.validator,
           onChanged: widget.onChanged,
           autovalidateMode: AutovalidateMode.onUnfocus,
-          validator: validator,
-          onChanged: onChanged,
-          onFieldSubmitted: onSubmitted,
           obscureText: notifier.isObscure,
           decoration: InputDecoration(
             hintText: widget.hintText,
