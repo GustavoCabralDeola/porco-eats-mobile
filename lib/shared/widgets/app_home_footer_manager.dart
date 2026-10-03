@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:porco_eats/features/order_list/pages/orders_list_page.dart';
 import 'package:porco_eats/shared/widgets/app_colors.dart';
 import 'package:porco_eats/features/profile/pages/profile_page.dart';
 
@@ -18,7 +19,10 @@ class AppHomeFooterManager extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          _FooterItem(
+          _FooterItem( 
+            onTap: () {
+              
+            },
             icon: Icons.home_rounded,
             label: 'Início',
             selected: true,

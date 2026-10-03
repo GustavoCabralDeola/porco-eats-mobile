@@ -7,6 +7,7 @@ import 'package:porco_eats/features/profile/pages/profile_page.dart';
 import 'package:porco_eats/features/recover/pages/recover_page.dart';
 import 'package:porco_eats/features/payment/pages/payment_page.dart';
 
+
 class AppRoutes {
   static final Map<String, WidgetBuilder> routes = {
     LoginPage.route: (context) => LoginPage(),
@@ -15,5 +16,6 @@ class AppRoutes {
     SignupPage.route: (context) => SignupPage(),
     CartPage.route: (context) => CartPage(),
     PaymentPage.route: (context) => const PaymentPage(),
+    OrdersPage.route: (context) =>  OrdersPage(),
   };
 }

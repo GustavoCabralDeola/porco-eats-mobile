@@ -15,7 +15,9 @@ class AppHomeFooterCustomer extends StatelessWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         color: AppColors.darkBrown,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
+        borderRadius: const BorderRadius.vertical(
+          top: Radius.circular(30),
+        ),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -30,7 +32,7 @@ class AppHomeFooterCustomer extends StatelessWidget {
           ),
 
           InkWell(
-            onTap: () => Navigator.pushNamed(context, CartPage.route),
+            //onTap: () => Navigator.pushNamed(context, CartPage.route),
             child: _NavigationBarItem(
               icon: Icons.list_alt_rounded,
               label: 'Meus pedidos',
@@ -73,9 +75,17 @@ class _NavigationBarItem extends StatelessWidget {
               color: AppColors.yellowAgility,
               borderRadius: BorderRadius.circular(16),
             ),
-            child: Icon(icon, color: AppColors.darkBrown, size: 24),
+            child: Icon(
+              icon,
+              color: AppColors.darkBrown,
+              size: 24,
+            ),
           )
-        : Icon(icon, color: AppColors.fullWhite, size: 24);
+        : Icon(
+            icon,
+            color: AppColors.fullWhite,
+            size: 24,
+          );
 
     return InkWell(
       onTap: onTap,
