@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:porco_eats/features/details/order_details_page.dart';
 import 'package:porco_eats/features/order_list/controllers/order_list_status.dart';
 import 'package:porco_eats/models/customer_order.dart';
-import 'package:porco_eats/models/enums/order_status.dart' show OrderStatus;
 
 
 class OrderCard extends StatelessWidget {
@@ -15,7 +15,17 @@ class OrderCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => OrderDetailsPage(
+              customerOrder: customerOrder,
+            ),
+          ),
+        );
+      },child: Container(
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -74,6 +84,7 @@ class OrderCard extends StatelessWidget {
           ),
         ],
       ),
+    )
     );
   }
 }
