@@ -3,10 +3,11 @@ import 'package:porco_eats/features/cart/controllers/cart_controller.dart';
 import 'package:porco_eats/features/home/controllers/home_controller.dart';
 import 'package:porco_eats/features/login/controllers/login_controller.dart';
 import 'package:porco_eats/features/login/controllers/signup_controller.dart';
-import 'package:porco_eats/features/login/pages/login_page.dart';
 import 'package:porco_eats/features/order_list/controllers/orders_list_controller.dart';
-import 'package:porco_eats/features/order_list/pages/orders_list_page.dart';
+import 'package:porco_eats/features/splash/pages/splash_screen_page.dart';
+import 'package:porco_eats/models/user.dart';
 import 'package:porco_eats/routes.dart';
+import 'package:porco_eats/shared/services/app_remember_me.dart';
 import 'package:provider/provider.dart';
 import 'package:porco_eats/features/payment/controllers/payment_controller.dart';
 
@@ -18,8 +19,10 @@ Future<void> main() async {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({super.key, required this.preferences, this.rememberedUser});
 
+  final AppPreferences preferences;
+  final User? rememberedUser;
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -45,7 +48,7 @@ class MyApp extends StatelessWidget {
             return OrderListController();
           },
         ),
-           ChangeNotifierProvider(
+        ChangeNotifierProvider(
           create: (context) {
             return CartController();
           },
@@ -59,7 +62,7 @@ class MyApp extends StatelessWidget {
       builder: (context, child) {
         return MaterialApp(
           routes: AppRoutes.routes,
-         initialRoute: LoginPage.route,
+          home: SplashScreen(hasRememberedUser: rememberedUser != null),
         );
       },
     );

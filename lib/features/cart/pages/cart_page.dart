@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:porco_eats/features/cart/controllers/cart_controller.dart';
-import 'package:porco_eats/features/login/controllers/login_controller.dart';
 import 'package:porco_eats/features/payment/pages/payment_page.dart';
 import 'package:porco_eats/models/product.dart';
 import 'package:porco_eats/shared/widgets/app_colors.dart';
+import 'package:porco_eats/shared/widgets/app_elevated_button.dart';
 import 'package:provider/provider.dart';
 
 class CartPage extends StatelessWidget {
@@ -85,43 +85,28 @@ class CartPage extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 16),
-                  Consumer<LoginController>(
-                    builder: (context, loginController, child) {
-                      return SizedBox(
-                        width: double.infinity,
-                        height: 56,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (_) => const PaymentPage(),
-                              ),
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.redDelivery,
-                            foregroundColor: AppColors.fullWhite,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(14),
-                            ),
+                  SizedBox(
+                    width: double.infinity,
+                    child: AppElevatedButton(
+                      label: 'Continuar para o pagamento',
+                      labelStyle: GoogleFonts.poppins(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      type: ButtonType.filled,
+                      height: 56,
+                      backgroundColor: AppColors.darkBrown,
+                      borderRadius: BorderRadius.circular(14),
+                      suffixIcon: Icons.arrow_forward_rounded,
+                      suffixIconSize: 22,
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => const PaymentPage(),
                           ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                'Continuar para o pagamento',
-                                style: GoogleFonts.poppins(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              const SizedBox(width: 8),
-                              const Icon(Icons.arrow_forward_rounded, size: 22),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
+                        );
+                      },
+                    ),
                   ),
                 ],
               ),

@@ -6,7 +6,6 @@ import 'package:porco_eats/features/home/controllers/home_controller.dart';
 import 'package:porco_eats/features/login/controllers/login_controller.dart';
 import 'package:porco_eats/models/enums/user_role.dart';
 import 'package:porco_eats/models/product.dart';
-import 'package:porco_eats/shared/mock.dart';
 import 'package:porco_eats/shared/widgets/app_colors.dart';
 import 'package:porco_eats/shared/widgets/app_product_card.dart';
 import 'package:porco_eats/shared/widgets/app_promo_carousel.dart';
@@ -24,45 +23,38 @@ class HomePage extends StatelessWidget {
 
   const HomePage({super.key});
 
-  List<Product> _productsByIds(List<int> ids) {
-    final productsJson = Mocks().productsJson;
-    return ids
-        .map(
-          (id) => Product.fromJson(
-            productsJson.firstWhere((item) => item['id'] == id),
-          ),
-        )
-        .toList();
-  }
-
-  List<Product> get offerProducts => _productsByIds([1, 8, 12]);
-
-  List<Product> get mostOrderedProducts => _productsByIds([17, 1, 21]);
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          Navigator.pushNamed(context, CartPage.route);
+      floatingActionButton: Consumer<CartController>(
+        builder: (context, controller, child) {
+          if (controller.productsInCart.isEmpty) {
+            return SizedBox.shrink();
+          }
+
+          return FloatingActionButton.extended(
+            onPressed: () {
+              Navigator.pushNamed(context, CartPage.route);
+            },
+            backgroundColor: AppColors.redDelivery,
+            foregroundColor: AppColors.fullWhite,
+            icon: const Icon(Icons.shopping_cart),
+            label: Text(
+              'Ver carrinho',
+              style: GoogleFonts.poppins(
+                fontSize: 12,
+                color: AppColors.fullWhite,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          );
         },
-        backgroundColor: AppColors.redDelivery,
-        foregroundColor: AppColors.fullWhite,
-        icon: Icon(Icons.shopping_cart),
-        label: Text(
-          'Ver carrinho',
-          style: GoogleFonts.poppins(
-            fontSize: 12,
-            color: AppColors.fullWhite,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
       ),
       bottomNavigationBar: Consumer<LoginController>(
         builder: (context, controller, child) {
           return controller.user?.role == UserRole.customer
-              ? const AppHomeFooterCustomer()
-              : const AppHomeFooterManager();
+              ? const AppHomeNavigationBarCustomer()
+              : const AppHomeNavigationBarManager();
         },
       ),
       body: SingleChildScrollView(
@@ -195,8 +187,8 @@ class HomePage extends StatelessWidget {
                 child: Row(
                   children: [
                     SizedBox(width: 14),
-                    ...List.generate(offerProducts.length, (index) {
-                      final product = offerProducts[index];
+                    ...List.generate(controller.offerProducts.length, (index) {
+                      final product = controller.offerProducts[index];
                       final badges = ['-20%', '♛ Mais pedido', '-15%'];
                       final badgeColors = [
                         Colors.red,
@@ -239,8 +231,10 @@ class HomePage extends StatelessWidget {
                 child: Row(
                   children: [
                     SizedBox(width: 14),
-                    ...List.generate(mostOrderedProducts.length, (index) {
-                      final product = mostOrderedProducts[index];
+                    ...List.generate(controller.mostOrderedProducts.length, (
+                      index,
+                    ) {
+                      final product = controller.mostOrderedProducts[index];
 
                       return Padding(
                         padding: const EdgeInsets.only(right: 32),
