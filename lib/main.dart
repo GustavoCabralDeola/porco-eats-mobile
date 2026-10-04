@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:porco_eats/features/cart/controllers/cart_controller.dart';
+import 'package:porco_eats/features/Dashboard/controllers/dashboard_order_controller.dart';
 import 'package:porco_eats/features/home/controllers/home_controller.dart';
 import 'package:porco_eats/features/login/controllers/login_controller.dart';
 import 'package:porco_eats/features/login/controllers/signup_controller.dart';
@@ -29,7 +30,10 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(
           create: (context) {
-            return LoginController();
+            return LoginController(
+              preferences: preferences,
+              rememberedUser: rememberedUser,
+            );
           },
         ),
 
@@ -46,6 +50,11 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (context) {
             return OrderListController();
+          },
+        ),
+        ChangeNotifierProvider(
+          create: (context) {
+            return DashboardOrderController(preferences: preferences);
           },
         ),
         ChangeNotifierProvider(

@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:porco_eats/features/Dashboard/pages/dashboard_order_page.dart';
 import 'package:porco_eats/features/cart/pages/cart_page.dart';
 import 'package:porco_eats/features/home/pages/home_page.dart';
 import 'package:porco_eats/features/login/pages/login_page.dart';
@@ -17,6 +18,7 @@ class AppRoutes {
     CartPage.route: (context) => CartPage(),
     PaymentPage.route: (context) => PaymentPage(),
     OrdersPage.route: (context) => OrdersPage(),
+    DashboardOrderPage.route: (context) => const DashboardOrderPage(),
     ProfilePage.route: (context) => ProfilePage(),
   };
 }

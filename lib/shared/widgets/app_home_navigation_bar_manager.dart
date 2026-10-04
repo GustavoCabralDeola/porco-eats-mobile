@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:porco_eats/features/Dashboard/pages/dashboard_order_page.dart';
 import 'package:porco_eats/features/order_list/pages/orders_list_page.dart';
 import 'package:porco_eats/shared/widgets/app_colors.dart';
 import 'package:porco_eats/features/profile/pages/profile_page.dart';
@@ -34,7 +35,7 @@ class AppHomeNavigationBarManager extends StatelessWidget {
           AppNavigationBarItem(
             icon: Icons.bar_chart_rounded,
             label: 'Dashboard',
-            onTap: () {},
+            onTap: () => Navigator.pushNamed(context, DashboardOrderPage.route),
           ),
           AppNavigationBarItem(
             icon: Icons.person_rounded,
