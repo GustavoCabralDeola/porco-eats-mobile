@@ -11,8 +11,8 @@ import 'package:porco_eats/shared/widgets/app_product_card.dart';
 import 'package:porco_eats/shared/widgets/app_promo_carousel.dart';
 import 'package:porco_eats/shared/widgets/app_search_field.dart';
 import 'package:porco_eats/shared/widgets/app_text_style.dart';
-import 'package:porco_eats/shared/widgets/app_home_footer_customer.dart';
-import 'package:porco_eats/shared/widgets/app_home_footer_manager.dart';
+import 'package:porco_eats/shared/widgets/app_home_navigation_bar_customer.dart';
+import 'package:porco_eats/shared/widgets/app_home_navigation_bar_manager.dart';
 import 'package:provider/provider.dart';
 
 import '../../../shared/widgets/app_category_item.dart';

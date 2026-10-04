@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:porco_eats/features/order_list/pages/orders_list_page.dart';
+import 'package:porco_eats/features/home/pages/home_page.dart';
 import 'package:porco_eats/shared/widgets/app_colors.dart';
+import 'package:porco_eats/shared/widgets/navigationbar/app_navigation_bar_item.dart';
+import 'package:porco_eats/features/profile/pages/profile_page.dart';
 
-import 'navigationbar/app_navigation_bar_item.dart';
-
-class AppHomeNavigationBarManager extends StatelessWidget {
-  const AppHomeNavigationBarManager({super.key});
+class AppHomeNavigationBarCustomer extends StatelessWidget {
+  const AppHomeNavigationBarCustomer({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -20,25 +20,20 @@ class AppHomeNavigationBarManager extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           AppNavigationBarItem(
-            onTap: () {},
+            onTap: () => Navigator.pushNamed(context, HomePage.route),
             icon: Icons.home_rounded,
             label: 'Início',
             selected: true,
           ),
           AppNavigationBarItem(
-            icon: Icons.list_alt_rounded,
-            label: 'Pedidos',
-            onTap: () => Navigator.pushNamed(context, OrdersPage.route),
-          ),
-          AppNavigationBarItem(
-            icon: Icons.bar_chart_rounded,
-            label: 'Dashboard',
             onTap: () {},
+            icon: Icons.list_alt_rounded,
+            label: 'Meus pedidos',
           ),
           AppNavigationBarItem(
+            onTap: () {},
             icon: Icons.person_rounded,
             label: 'Perfil',
-            onTap: () {},
           ),
         ],
       ),
