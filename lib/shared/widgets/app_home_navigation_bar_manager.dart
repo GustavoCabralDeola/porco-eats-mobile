@@ -39,7 +39,7 @@ class AppHomeNavigationBarManager extends StatelessWidget {
           AppNavigationBarItem(
             icon: Icons.person_rounded,
             label: 'Perfil',
-            onTap: () {},
+            onTap: () => Navigator.pushNamed(context, ProfilePage.route),
           ),
         ],
       ),

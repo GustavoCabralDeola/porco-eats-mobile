@@ -31,7 +31,7 @@ class AppHomeNavigationBarCustomer extends StatelessWidget {
             label: 'Meus pedidos',
           ),
           AppNavigationBarItem(
-            onTap: () {},
+            onTap: () => Navigator.pushNamed(context, ProfilePage.route),
             icon: Icons.person_rounded,
             label: 'Perfil',
           ),

@@ -8,7 +8,7 @@ import 'package:porco_eats/features/profile/widgets/logout_modal.dart';
 import 'package:porco_eats/features/profile/widgets/profile_avatar.dart';
 import 'package:porco_eats/features/profile/widgets/profile_form.dart';
 import 'package:porco_eats/shared/widgets/app_colors.dart';
-import 'package:porco_eats/shared/widgets/app_home_header.dart';
+import 'package:porco_eats/shared/widgets/app_profile_header.dart';
 import 'package:provider/provider.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -32,9 +32,7 @@ class _ProfilePageState extends State<ProfilePage> {
   void initState() {
     super.initState();
     _loginController = context.read<LoginController>();
-    _controller = ProfileController(
-      user: _loginController.user,
-    );
+    _controller = ProfileController(user: _loginController.user);
     _controller.addListener(_handleProfileControllerChanged);
     _loadProfile();
   }
@@ -178,7 +176,7 @@ class _ProfilePageState extends State<ProfilePage> {
             : SingleChildScrollView(
                 child: Column(
                   children: [
-                    const AppHomeHeader(),
+                    const AppProfileHeader(),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(18, 18, 18, 30),
                       child: Column(
@@ -191,18 +189,18 @@ class _ProfilePageState extends State<ProfilePage> {
                                 icon: const Icon(Icons.arrow_back_ios),
                                 color: AppColors.darkBrown,
                               ),
-                              const SizedBox(width: 4),
+                              const SizedBox(width: 2),
                               const Text(
                                 'Meu perfil',
                                 style: TextStyle(
                                   color: AppColors.darkBrown,
-                                  fontSize: 28,
+                                  fontSize: 20,
                                   fontWeight: FontWeight.w800,
                                 ),
                               ),
                             ],
                           ),
-                          const SizedBox(height: 22),
+
                           Center(
                             child: Stack(
                               alignment: Alignment.center,
