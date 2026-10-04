@@ -1,4 +1,3 @@
-import 'package:porco_eats/models/category.dart';
 import 'package:porco_eats/models/product.dart';
 
 class Mocks {
@@ -11,7 +10,7 @@ class Mocks {
       'restaurant': 'Burger House',
       'name': 'X-Bacon Duplo',
       'imageUrl':
-          'assets/images/porco_eats_images/products_images/xbaconburgerhouse.png',
+          'assets/images/porco_eats_images/products/xbaconburgerhouse.png',
       'price': 27.92,
       'category': 'Lanches',
       'avaliation': 4.8,
@@ -98,7 +97,7 @@ class Mocks {
       'restaurant': 'Pizza do chef',
       'name': 'Pizza de Calabresa',
       'imageUrl':
-          'assets/images/porco_eats_images/products_images/pizzacalabresa.png',
+          'assets/images/porco_eats_images/products/pizzacalabresa.png',
       'price': 76.41,
       'category': 'Pizza',
       'avaliation': 4.7,
@@ -150,9 +149,10 @@ class Mocks {
       'restaurant': 'Tokyo Express',
       'name': 'Combo Sushi 60 peças',
       'imageUrl':
-          'assets/images/porco_eats_images/products_images/combosushi60pecas.png',
+          'assets/images/porco_eats_images/products/sushi60pecas.png',
       'price': 95.12,
       'category': 'Sushi',
+      'avaliation': 4.9,
       'description':
           'Combo com 60 peças variadas de sushi, preparado com ingredientes frescos e selecionados para uma experiência completa da culinária japonesa.',
     },
@@ -208,9 +208,10 @@ class Mocks {
       'restaurant': 'Frango Grill',
       'name': 'Frango Grelhado com Arroz e Salada',
       'imageUrl':
-          'assets/images/porco_eats_images/products_images/frangogrelhado.png',
+          'assets/images/porco_eats_images/products/frangogrelhado.png',
       'price': 42.90,
       'category': 'Executivos',
+      'avaliation': 4.8,
       'description':
           'Prato executivo com filé de frango grelhado, arroz branco e salada fresca, uma combinação equilibrada para uma refeição completa.',
     },
@@ -256,10 +257,10 @@ class Mocks {
       'restaurant': 'TipTeams',
       'name': 'Porção de Frango 400g',
       'imageUrl':
-          'assets/images/porco_eats_images/products_images/porcaodefrango.png',
+          'assets/images/porco_eats_images/products/porcaodefrango.png',
       'avaliation': 4.9,
       'price': 44.90,
-      'category': 'Executivos',
+    'category': 'Porções',
       'description':
           'Porção de 400g de frango preparado e temperado, servida em tamanho ideal para compartilhar ou aproveitar como acompanhamento.',
     },

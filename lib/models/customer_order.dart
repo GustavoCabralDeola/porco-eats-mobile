@@ -7,6 +7,7 @@ class CustomerOrder {
   final double total;
   final OrderStatus status;
   int quantity;
+  final String customerName;
 
   CustomerOrder({
     required this.id,
@@ -14,6 +15,7 @@ class CustomerOrder {
     required this.total,
     required this.status,
     this.quantity = 1,
+    required this.customerName,
   });
 
   Product? get firstProduct => products.isNotEmpty ? products.first : null;
@@ -38,6 +40,7 @@ class CustomerOrder {
         orElse: () => OrderStatus.received,
       ),
       quantity: json['quantity'] as int? ?? 1,
+      customerName: json['customerName']?.toString() ?? '',
     );
   }
 }
