@@ -10,6 +10,7 @@ import 'package:porco_eats/shared/widgets/app_colors.dart';
 import 'package:porco_eats/shared/widgets/app_product_card.dart';
 import 'package:porco_eats/shared/widgets/app_promo_carousel.dart';
 import 'package:porco_eats/shared/widgets/app_search_field.dart';
+import 'package:porco_eats/shared/widgets/app_snackbar.dart';
 import 'package:porco_eats/shared/widgets/app_text_style.dart';
 import 'package:porco_eats/shared/widgets/app_home_navigation_bar_customer.dart';
 import 'package:porco_eats/shared/widgets/app_home_navigation_bar_manager.dart';
@@ -543,17 +544,13 @@ void _showProductBottomSheet(BuildContext context, Product product) {
                                         onPressed: () {
                                           controller.addToCart(product);
 
-                                          ScaffoldMessenger.of(
-                                            context,
-                                          ).showSnackBar(
-                                            SnackBar(
-                                              content: Text(
+                                          AppSnackbar.showSuccess(
+                                            context: context,
+                                            title: 'Produto adicionado',
+                                            label:
                                                 '${product.name} adicionado ao carrinho!',
-                                                style: GoogleFonts.poppins(),
-                                              ),
-                                              duration: const Duration(
-                                                seconds: 2,
-                                              ),
+                                            duration: const Duration(
+                                              seconds: 3,
                                             ),
                                           );
                                         },

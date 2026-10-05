@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:custom_snackbar_plus/custom_snackbar_plus.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:porco_eats/features/home/pages/home_page.dart';
 import 'package:porco_eats/features/login/controllers/login_controller.dart';
 import 'package:porco_eats/features/login/pages/login_page.dart';
 import 'package:porco_eats/features/profile/controllers/profile_controller.dart';
@@ -7,7 +9,10 @@ import 'package:porco_eats/features/profile/widgets/change_password_modal.dart';
 import 'package:porco_eats/features/profile/widgets/logout_modal.dart';
 import 'package:porco_eats/features/profile/widgets/profile_avatar.dart';
 import 'package:porco_eats/features/profile/widgets/profile_form.dart';
+import 'package:porco_eats/models/enums/user_role.dart';
 import 'package:porco_eats/shared/widgets/app_colors.dart';
+import 'package:porco_eats/shared/widgets/app_home_navigation_bar_customer.dart';
+import 'package:porco_eats/shared/widgets/app_home_navigation_bar_manager.dart';
 import 'package:porco_eats/shared/widgets/app_profile_header.dart';
 import 'package:provider/provider.dart';
 
@@ -47,7 +52,10 @@ class _ProfilePageState extends State<ProfilePage> {
       await _controller.loadProfile();
     } catch (_) {
       if (mounted) {
-        _showMessage('Não foi possível carregar os dados do perfil.');
+        _showMessage(
+          'Não foi possível carregar os dados do perfil.',
+          type: SnackbarType.error,
+        );
       }
     } finally {
       if (mounted) setState(() => _isLoading = false);
@@ -57,16 +65,29 @@ class _ProfilePageState extends State<ProfilePage> {
   Future<void> _saveProfile() async {
     if (_controller.nameController.text.trim().isEmpty &&
         _controller.lastNameController.text.trim().isEmpty) {
-      _showMessage('Informe seu nome para continuar.');
+      _showMessage(
+        'Informe seu nome para continuar.',
+        type: SnackbarType.warning,
+      );
       return;
     }
 
     setState(() => _isSaving = true);
     try {
       await _controller.saveProfile();
-      if (mounted) _showMessage('Perfil atualizado com sucesso!');
+      if (mounted) {
+        _showMessage(
+          'Perfil atualizado com sucesso!',
+          type: SnackbarType.success,
+        );
+      }
     } catch (_) {
-      if (mounted) _showMessage('Não foi possível salvar as alterações.');
+      if (mounted) {
+        _showMessage(
+          'Não foi possível salvar as alterações.',
+          type: SnackbarType.error,
+        );
+      }
     } finally {
       if (mounted) setState(() => _isSaving = false);
     }
@@ -83,7 +104,12 @@ class _ProfilePageState extends State<ProfilePage> {
         hasUsedPassword: _controller.hasUsedPassword,
         onConfirm: (password) async {
           await _controller.changePassword(password);
-          if (mounted) _showMessage('Senha alterada com sucesso!');
+          if (mounted) {
+            _showMessage(
+              'Senha alterada com sucesso!',
+              type: SnackbarType.success,
+            );
+          }
         },
       ),
     );
@@ -127,7 +153,10 @@ class _ProfilePageState extends State<ProfilePage> {
       await _controller.saveProfilePhoto(await image.readAsBytes());
     } catch (_) {
       if (mounted) {
-        _showMessage('Não foi possível atualizar a foto do perfil.');
+        _showMessage(
+          'Não foi possível atualizar a foto do perfil.',
+          type: SnackbarType.error,
+        );
       }
     } finally {
       if (mounted) setState(() => _isPickingPhoto = false);
@@ -153,10 +182,30 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  void _showMessage(String message) {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(message)));
+  void _showMessage(String message, {required SnackbarType type}) {
+    final isSuccess = type == SnackbarType.success;
+    final isWarning = type == SnackbarType.warning;
+    CustomSnackbar.show(
+      context: context,
+      title: isSuccess
+          ? 'Sucesso'
+          : isWarning
+          ? 'Atenção'
+          : 'Erro',
+      label: message,
+      type: type,
+      color: isSuccess
+          ? Colors.green
+          : isWarning
+          ? Colors.orange
+          : const Color(0xFFC72C41),
+      svgColor: isSuccess
+          ? Colors.lightGreen
+          : isWarning
+          ? Colors.orangeAccent
+          : const Color(0xFFDF4F62),
+      duration: const Duration(seconds: 3),
+    );
   }
 
   @override
@@ -170,6 +219,13 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.brownWhite,
+      bottomNavigationBar: Consumer<LoginController>(
+        builder: (context, controller, child) {
+          return controller.user?.role == UserRole.customer
+              ? const AppHomeNavigationBarCustomer(selectedIndex: 2)
+              : const AppHomeNavigationBarManager(selectedIndex: 3);
+        },
+      ),
       body: SafeArea(
         child: _isLoading
             ? const Center(child: CircularProgressIndicator())
@@ -185,7 +241,10 @@ class _ProfilePageState extends State<ProfilePage> {
                           Row(
                             children: [
                               IconButton(
-                                onPressed: () => Navigator.maybePop(context),
+                                onPressed: () => Navigator.pushReplacementNamed(
+                                  context,
+                                  HomePage.route,
+                                ),
                                 icon: const Icon(Icons.arrow_back_ios),
                                 color: AppColors.darkBrown,
                               ),
