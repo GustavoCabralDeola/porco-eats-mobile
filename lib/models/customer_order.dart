@@ -26,6 +26,7 @@ class CustomerOrder {
     'total': total,
     'status': status.name,
     'quantity': quantity,
+    'customerName': customerName,
   };
 
   factory CustomerOrder.fromJson(Map<String, dynamic> json) {

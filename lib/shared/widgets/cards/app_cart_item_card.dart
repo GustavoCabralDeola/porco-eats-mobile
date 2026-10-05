@@ -5,6 +5,8 @@ import 'package:porco_eats/models/product.dart';
 import 'package:porco_eats/shared/widgets/app_colors.dart';
 import 'package:provider/provider.dart';
 
+import '../app_quantity_button.dart';
+
 class AppCartItemCard extends StatelessWidget {
   final Product product;
   final int quantity;
@@ -23,8 +25,8 @@ class AppCartItemCard extends StatelessWidget {
     final cartController = context.watch<CartController>();
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(12),
+      margin: EdgeInsets.only(bottom: 12),
+      padding: EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: AppColors.fullWhite,
         borderRadius: BorderRadius.circular(18),
@@ -44,7 +46,7 @@ class AppCartItemCard extends StatelessWidget {
                   fit: BoxFit.cover,
                 ),
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -57,7 +59,7 @@ class AppCartItemCard extends StatelessWidget {
                         color: AppColors.darkBrown,
                       ),
                     ),
-                    const SizedBox(height: 2),
+                    SizedBox(height: 2),
                     Text(
                       product.restaurant,
                       style: GoogleFonts.poppins(
@@ -65,7 +67,7 @@ class AppCartItemCard extends StatelessWidget {
                         color: AppColors.subTitle,
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    SizedBox(height: 8),
                     Text(
                       'R\$ ${product.price.toStringAsFixed(2)}',
                       style: GoogleFonts.poppins(
@@ -77,13 +79,13 @@ class AppCartItemCard extends StatelessWidget {
                   ],
                 ),
               ),
-              const Icon(
+              Icon(
                 Icons.keyboard_arrow_down_rounded,
                 color: AppColors.subTitle,
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           Row(
             children: [
               SizedBox(
@@ -91,7 +93,7 @@ class AppCartItemCard extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    _QuantityButton(
+                    AppQuantityButton(
                       icon: Icons.remove,
                       onPressed: () => onDecrease(),
                     ),
@@ -103,11 +105,11 @@ class AppCartItemCard extends StatelessWidget {
                         color: AppColors.darkBrown,
                       ),
                     ),
-                    _QuantityButton(icon: Icons.add, onPressed: onIncrease),
+                    AppQuantityButton(icon: Icons.add, onPressed: onIncrease),
                   ],
                 ),
               ),
-              const Spacer(),
+              Spacer(),
               Text(
                 'R\$ ${(product.price * quantity).toStringAsFixed(2)}',
                 style: GoogleFonts.poppins(
@@ -118,7 +120,7 @@ class AppCartItemCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           TextFormField(
             initialValue: product.observation ?? '',
             onChanged: (value) =>
@@ -133,7 +135,7 @@ class AppCartItemCard extends StatelessWidget {
               ),
               filled: true,
               fillColor: AppColors.brownWhite,
-              contentPadding: const EdgeInsets.symmetric(
+              contentPadding: EdgeInsets.symmetric(
                 horizontal: 12,
                 vertical: 10,
               ),
@@ -152,33 +154,6 @@ class AppCartItemCard extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _QuantityButton extends StatelessWidget {
-  final IconData icon;
-  final VoidCallback? onPressed;
-
-  const _QuantityButton({required this.icon, this.onPressed});
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onPressed,
-      borderRadius: BorderRadius.circular(10),
-      child: Container(
-        width: 30,
-        height: 30,
-        decoration: BoxDecoration(
-          color: onPressed == null
-              ? AppColors.borderInputColor
-              : AppColors.fullWhite,
-          border: Border.all(color: AppColors.borderInputColor),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Icon(icon, size: 18, color: AppColors.darkBrown),
       ),
     );
   }
