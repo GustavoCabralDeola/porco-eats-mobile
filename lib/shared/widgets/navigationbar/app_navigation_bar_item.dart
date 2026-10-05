@@ -4,15 +4,18 @@ import 'package:porco_eats/shared/widgets/app_colors.dart';
 
 class AppNavigationBarItem extends StatelessWidget {
   const AppNavigationBarItem({
+    super.key,
     required this.icon,
     required this.label,
     this.selected = false,
+    this.badgeCount = 0,
     required this.onTap,
   });
 
   final IconData icon;
   final String label;
   final bool selected;
+  final int badgeCount;
   final VoidCallback onTap;
 
   @override
@@ -28,6 +31,38 @@ class AppNavigationBarItem extends StatelessWidget {
             child: Icon(icon, color: AppColors.darkBrown, size: 24),
           )
         : Icon(icon, color: AppColors.fullWhite, size: 24);
+    final decoratedIcon = badgeCount > 0
+        ? Stack(
+            clipBehavior: Clip.none,
+            children: [
+              iconWidget,
+              Positioned(
+                top: -7,
+                right: -9,
+                child: Container(
+                  constraints: const BoxConstraints(
+                    minWidth: 17,
+                    minHeight: 17,
+                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  decoration: const BoxDecoration(
+                    color: AppColors.redDelivery,
+                    shape: BoxShape.circle,
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    badgeCount > 99 ? '99+' : '$badgeCount',
+                    style: const TextStyle(
+                      color: AppColors.fullWhite,
+                      fontSize: 9,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          )
+        : iconWidget;
 
     return InkWell(
       onTap: () {
@@ -36,7 +71,7 @@ class AppNavigationBarItem extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          iconWidget,
+          decoratedIcon,
           const SizedBox(height: 6),
           Text(
             label,
