@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:porco_eats/models/category.dart';
 import 'package:porco_eats/models/customer_order.dart';
@@ -9,6 +11,9 @@ enum CategoriesViewState { loading, sucess, error }
 enum ProductsViewState { loading, sucess, error }
 
 class HomeController extends ChangeNotifier {
+  Timer? _initialSkeletonTimer;
+  bool _isShowingInitialSkeleton = false;
+
   List<Category> listCategories = [];
   List<Product> listProducts = [];
   List<CustomerOrder> listCustomerOrdersInCart = [];
@@ -41,6 +46,21 @@ class HomeController extends ChangeNotifier {
   CategoriesViewState categoriesViewState = CategoriesViewState.loading;
   ProductsViewState productsViewState = ProductsViewState.loading;
 
+  bool get isShowingInitialSkeleton => _isShowingInitialSkeleton;
+
+  void showInitialSkeleton() {
+    if (_isShowingInitialSkeleton) return;
+
+    _isShowingInitialSkeleton = true;
+    notifyListeners();
+
+    _initialSkeletonTimer = Timer(const Duration(seconds: 3), () {
+      _isShowingInitialSkeleton = false;
+      _initialSkeletonTimer = null;
+      notifyListeners();
+    });
+  }
+
   void changeCategoriesState(CategoriesViewState state) {
     categoriesViewState = state;
     notifyListeners();
@@ -67,5 +87,11 @@ class HomeController extends ChangeNotifier {
       changeProductsState(ProductsViewState.error);
       print(productsViewState);
     }
+  }
+
+  @override
+  void dispose() {
+    _initialSkeletonTimer?.cancel();
+    super.dispose();
   }
 }

@@ -23,7 +23,7 @@ class OrdersPage extends StatelessWidget {
       bottomNavigationBar: Consumer<LoginController>(
         builder: (context, controller, child) {
           return controller.user?.role == UserRole.customer
-              ? const AppHomeNavigationBarCustomer()
+              ? const AppHomeNavigationBarCustomer(selectedIndex: 1)
               : const AppHomeNavigationBarManager(selectedIndex: 1);
         },
       ),

@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:porco_eats/features/cart/controllers/cart_controller.dart';
@@ -33,27 +31,16 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  Timer? _initialSkeletonTimer;
-  bool _isShowingInitialSkeleton = false;
-
   @override
   void initState() {
     super.initState();
-    _isShowingInitialSkeleton = widget.showInitialSkeleton;
-
-    if (_isShowingInitialSkeleton) {
-      _initialSkeletonTimer = Timer(const Duration(seconds: 3), () {
+    if (widget.showInitialSkeleton) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
-          setState(() => _isShowingInitialSkeleton = false);
+          context.read<HomeController>().showInitialSkeleton();
         }
       });
     }
-  }
-
-  @override
-  void dispose() {
-    _initialSkeletonTimer?.cancel();
-    super.dispose();
   }
 
   void _openCategory(String categoryName) {
@@ -64,6 +51,10 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final isShowingInitialSkeleton = context
+        .watch<HomeController>()
+        .isShowingInitialSkeleton;
+
     return Scaffold(
       floatingActionButton: Consumer<CartController>(
         builder: (context, controller, child) {
@@ -97,7 +88,7 @@ class _HomePageState extends State<HomePage> {
         },
       ),
       body: Skeletonizer(
-        enabled: _isShowingInitialSkeleton,
+        enabled: isShowingInitialSkeleton,
         child: SingleChildScrollView(
           child: Consumer<HomeController>(
             builder: (context, controller, child) => Column(
