@@ -102,7 +102,7 @@ class CartPage extends StatelessWidget {
                       onPressed: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (_) => const PaymentPage(),
+                            builder: (_) => PaymentPage(),
                           ),
                         );
                       },
@@ -220,7 +220,7 @@ class _CartItemCard extends StatelessWidget {
                   ],
                 ),
               ),
-              const Spacer(),
+              Spacer(),
               Text(
                 'R\$ ${(product.price * quantity).toStringAsFixed(2)}',
                 style: GoogleFonts.poppins(

@@ -83,8 +83,8 @@ class _HomePageState extends State<HomePage> {
       bottomNavigationBar: Consumer<LoginController>(
         builder: (context, controller, child) {
           return controller.user?.role == UserRole.customer
-              ? const AppHomeNavigationBarCustomer()
-              : const AppHomeNavigationBarManager();
+              ? AppHomeNavigationBarCustomer()
+              : AppHomeNavigationBarManager();
         },
       ),
       body: Skeletonizer(
@@ -316,8 +316,8 @@ class CategoryProductsPage extends StatelessWidget {
       bottomNavigationBar: Consumer<LoginController>(
         builder: (context, controller, child) {
           return controller.user?.role == UserRole.customer
-              ? const AppHomeNavigationBarCustomer()
-              : const AppHomeNavigationBarManager();
+              ? AppHomeNavigationBarCustomer()
+              : AppHomeNavigationBarManager();
         },
       ),
       body: Consumer<HomeController>(
