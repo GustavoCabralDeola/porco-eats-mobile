@@ -5,6 +5,7 @@ import 'package:porco_eats/models/customer_order.dart';
 import 'package:porco_eats/models/enums/order_status.dart';
 import 'package:porco_eats/shared/widgets/app_colors.dart';
 import 'package:porco_eats/shared/widgets/app_home_navigation_bar_customer.dart';
+import 'package:porco_eats/shared/widgets/app_product_image.dart';
 import 'package:provider/provider.dart';
 
 class CustomerOrderPage extends StatelessWidget {
@@ -267,17 +268,7 @@ class _CustomerOrderCard extends StatelessWidget {
                             color: AppColors.darkBrown,
                           ),
                         )
-                      : Image.network(
-                          product.imageUrl,
-                          fit: BoxFit.cover,
-                          errorBuilder: (_, _, _) => const ColoredBox(
-                            color: AppColors.brownWhite,
-                            child: Icon(
-                              Icons.fastfood_outlined,
-                              color: AppColors.darkBrown,
-                            ),
-                          ),
-                        ),
+                      : AppProductImage(imageUrl: product.imageUrl),
                 ),
               ),
               const SizedBox(width: 12),
