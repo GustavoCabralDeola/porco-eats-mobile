@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:porco_eats/models/category.dart';
 import 'package:porco_eats/models/customer_order.dart';
@@ -9,14 +11,55 @@ enum CategoriesViewState { loading, sucess, error }
 enum ProductsViewState { loading, sucess, error }
 
 class HomeController extends ChangeNotifier {
+  Timer? _initialSkeletonTimer;
+  bool _isShowingInitialSkeleton = false;
+
   List<Category> listCategories = [];
   List<Product> listProducts = [];
   List<CustomerOrder> listCustomerOrdersInCart = [];
 
   Mocks mockJson = Mocks();
 
+  List<Product> _productsByIds(List<int> ids) {
+    return ids
+        .map(
+          (id) => Product.fromJson(
+            mockJson.productsJson.firstWhere((item) => item['id'] == id),
+          ),
+        )
+        .toList();
+  }
+
+  List<Product> get offerProducts => _productsByIds([1, 8, 12]);
+
+  List<Product> get mostOrderedProducts => _productsByIds([17, 1, 21]);
+
+  List<Product> productsInCategory(String categoryName) {
+    final category = categoryName == 'Pizzas' ? 'Pizza' : categoryName;
+
+    return mockJson.productsJson
+        .where((item) => item['category'] == category)
+        .map(Product.fromJson)
+        .toList();
+  }
+
   CategoriesViewState categoriesViewState = CategoriesViewState.loading;
   ProductsViewState productsViewState = ProductsViewState.loading;
+
+  bool get isShowingInitialSkeleton => _isShowingInitialSkeleton;
+
+  void showInitialSkeleton() {
+    if (_isShowingInitialSkeleton) return;
+
+    _isShowingInitialSkeleton = true;
+    notifyListeners();
+
+    _initialSkeletonTimer = Timer(const Duration(seconds: 3), () {
+      _isShowingInitialSkeleton = false;
+      _initialSkeletonTimer = null;
+      notifyListeners();
+    });
+  }
 
   void changeCategoriesState(CategoriesViewState state) {
     categoriesViewState = state;
@@ -27,23 +70,6 @@ class HomeController extends ChangeNotifier {
     productsViewState = state;
     notifyListeners();
   }
-
-  // Future<void> getCategories() async {
-  //   changeCategoriesState(CategoriesViewState.loading);
-  //   await Future.delayed(Duration(seconds: 3));
-  //   try {
-  //     //deserializa e popula a nossa lista de categorias
-  //     listCategories = mockJson.categoriesJson.map((item) {
-  //       return Category.fromJson(item);
-  //     }).toList();
-  //     print(categoriesViewState);
-  //     changeCategoriesState(CategoriesViewState.sucess);
-  //     print(categoriesViewState);
-  //   } catch (e) {
-  //     //caso der erro na deserialização, emite o erro para a tela tratar
-  //     changeCategoriesState(CategoriesViewState.error);
-  //   }
-  // }
 
   Future<void> getProducts() async {
     changeProductsState(ProductsViewState.loading);
@@ -61,5 +87,11 @@ class HomeController extends ChangeNotifier {
       changeProductsState(ProductsViewState.error);
       print(productsViewState);
     }
+  }
+
+  @override
+  void dispose() {
+    _initialSkeletonTimer?.cancel();
+    super.dispose();
   }
 }

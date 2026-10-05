@@ -2,9 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class AppScreenLayout extends StatelessWidget {
-  const AppScreenLayout({super.key, this.header, required this.children});
+  const AppScreenLayout({
+    super.key,
+    this.header,
+    this.appBar,
+    required this.children,
+  });
 
   final Widget? header;
+  final PreferredSizeWidget? appBar;
   final List<Widget> children;
 
   @override
@@ -25,6 +31,7 @@ class AppScreenLayout extends StatelessWidget {
       ),
       child: Scaffold(
         backgroundColor: const Color(0xFFF7F6F2),
+        appBar: appBar,
         body: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,

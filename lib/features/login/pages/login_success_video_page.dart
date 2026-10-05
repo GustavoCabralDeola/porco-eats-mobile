@@ -33,13 +33,13 @@ class _LoginSuccessVideoPageState extends State<LoginSuccessVideoPage>
       if (!mounted) return;
       setState(() {});
       await _videoController.play();
-    } catch (_) {
-      // Continue to Home even if the video cannot be loaded.
-    }
+    } catch (_) {}
     await Future<void>.delayed(const Duration(seconds: 8));
     if (!mounted) return;
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) => const HomePage()),
+      MaterialPageRoute(
+        builder: (context) => const HomePage(showInitialSkeleton: true),
+      ),
     );
   }
 
