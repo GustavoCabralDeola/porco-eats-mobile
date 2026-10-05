@@ -18,10 +18,6 @@ class ProfileController extends ChangeNotifier {
     _setUserFields(user);
   }
 
-  static const _detailsKeyPrefix = 'porco_eats_profile_details_';
-  static const _photoKeyPrefix = 'porco_eats_profile_photo_';
-  static const _passwordHistoryKeyPrefix = 'porco_eats_password_history_';
-
   final AppPreferences _preferences;
   final SharedPreferencesAsync _profilePreferences;
 
@@ -191,13 +187,13 @@ class ProfileController extends ChangeNotifier {
   }
 
   String _detailsKey(String email) =>
-      '$_detailsKeyPrefix${email.trim().toLowerCase()}';
+      'porco_eats_profile_details_${email.trim().toLowerCase()}';
 
   String _photoKey(String email) =>
-      '$_photoKeyPrefix${email.trim().toLowerCase()}';
+      'porco_eats_profile_photo_${email.trim().toLowerCase()}';
 
   String _passwordHistoryKey(String email) =>
-      '$_passwordHistoryKeyPrefix${email.trim().toLowerCase()}';
+      'porco_eats_password_history_${email.trim().toLowerCase()}';
 
   String _passwordHash(String password) =>
       sha256.convert(utf8.encode(password.trim())).toString();
