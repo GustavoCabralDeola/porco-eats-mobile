@@ -4,8 +4,8 @@ import 'package:porco_eats/features/order_list/controllers/orders_list_controlle
 import 'package:porco_eats/models/customer_order.dart';
 import 'package:porco_eats/models/enums/order_status.dart';
 import 'package:porco_eats/models/enums/user_role.dart';
-import 'package:porco_eats/shared/widgets/app_home_footer_customer.dart';
-import 'package:porco_eats/shared/widgets/app_home_footer_manager.dart';
+import 'package:porco_eats/shared/widgets/app_home_navigation_bar_customer.dart';
+import 'package:porco_eats/shared/widgets/app_home_navigation_bar_manager.dart';
 import 'package:provider/provider.dart';
 
 class OrdersPage extends StatefulWidget {
@@ -48,12 +48,11 @@ class _OrdersPageState extends State<OrdersPage> {
       bottomNavigationBar: Consumer<LoginController>(
         builder: (context, controller, child) {
           return controller.user?.role == UserRole.customer
-              ? const AppHomeFooterCustomer()
-              : const AppHomeFooterManager();
+              ? const AppHomeNavigationBarCustomer()
+              : const AppHomeNavigationBarManager();
         },
       ),
 
-      
       appBar: AppBar(
         backgroundColor: const Color(0xFF351708),
         foregroundColor: Colors.white,
@@ -104,7 +103,6 @@ class _OrdersPageState extends State<OrdersPage> {
 
       body: Column(
         children: [
-         
           Padding(
             padding: const EdgeInsets.fromLTRB(20, 16, 12, 12),
             child: Row(
@@ -479,7 +477,6 @@ class _OrdersPageState extends State<OrdersPage> {
     );
   }
 
-  
   void _showStatusFilter() {
     showModalBottomSheet(
       context: context,

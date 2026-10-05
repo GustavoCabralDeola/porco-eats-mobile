@@ -29,6 +29,15 @@ class HomeController extends ChangeNotifier {
 
   List<Product> get mostOrderedProducts => _productsByIds([17, 1, 21]);
 
+  List<Product> productsInCategory(String categoryName) {
+    final category = categoryName == 'Pizzas' ? 'Pizza' : categoryName;
+
+    return mockJson.productsJson
+        .where((item) => item['category'] == category)
+        .map(Product.fromJson)
+        .toList();
+  }
+
   CategoriesViewState categoriesViewState = CategoriesViewState.loading;
   ProductsViewState productsViewState = ProductsViewState.loading;
 
