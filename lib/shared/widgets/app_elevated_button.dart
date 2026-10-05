@@ -11,6 +11,12 @@ class AppElevatedButton extends StatelessWidget {
   final ButtonType type;
   final bool isLoading;
   final IconData? prefixIcon;
+  final IconData? suffixIcon;
+  final double suffixIconSize;
+  final Color? backgroundColor;
+  final BorderRadius? borderRadius;
+  final double height;
+
   const AppElevatedButton({
     super.key,
     this.onPressed,
@@ -19,6 +25,11 @@ class AppElevatedButton extends StatelessWidget {
     required this.type,
     this.isLoading = false,
     this.prefixIcon,
+    this.suffixIcon,
+    this.suffixIconSize = 24,
+    this.backgroundColor,
+    this.borderRadius,
+    this.height = 48,
   });
 
   @override
@@ -41,11 +52,12 @@ class AppElevatedButton extends StatelessWidget {
               children: [
                 if (prefixIcon != null) Icon(prefixIcon),
                 if (prefixIcon != null) SizedBox(width: 5),
-
                 Padding(
-                  padding: const EdgeInsets.only(right: 10),
+                  padding: EdgeInsets.only(right: suffixIcon == null ? 10 : 0),
                   child: Text(label, style: labelStyle),
                 ),
+                if (suffixIcon != null) SizedBox(width: 8),
+                if (suffixIcon != null) Icon(suffixIcon, size: suffixIconSize),
               ],
             ),
     );
@@ -55,16 +67,22 @@ class AppElevatedButton extends StatelessWidget {
     switch (type) {
       case ButtonType.filled:
         return ElevatedButton.styleFrom(
-          minimumSize: Size.fromHeight(48),
+          minimumSize: Size.fromHeight(height),
           foregroundColor: AppColors.fullWhite,
-          backgroundColor: AppColors.redDelivery,
+          backgroundColor: backgroundColor ?? AppColors.redDelivery,
+          shape: borderRadius == null
+              ? null
+              : RoundedRectangleBorder(borderRadius: borderRadius!),
         );
 
       case ButtonType.outlined:
         return ElevatedButton.styleFrom(
-          minimumSize: Size.fromHeight(48),
+          minimumSize: Size.fromHeight(height),
           foregroundColor: AppColors.redDelivery,
           backgroundColor: AppColors.fullWhite,
+          shape: borderRadius == null
+              ? null
+              : RoundedRectangleBorder(borderRadius: borderRadius!),
         );
     }
   }

@@ -7,11 +7,13 @@ class AppOrderSection extends StatelessWidget {
     required this.title,
     required this.children,
     this.actionLabel = 'Ver todos',
+    this.onActionPressed,
   });
 
   final String title;
   final List<Widget> children;
   final String actionLabel;
+  final VoidCallback? onActionPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +32,7 @@ class AppOrderSection extends StatelessWidget {
               ),
             ),
             TextButton(
-              onPressed: () {},
+              onPressed: onActionPressed ?? () {},
               style: TextButton.styleFrom(
                 padding: EdgeInsets.zero,
                 minimumSize: Size.zero,

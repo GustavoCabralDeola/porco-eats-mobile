@@ -4,6 +4,7 @@ import 'package:porco_eats/models/user.dart';
 import 'package:porco_eats/shared/services/app_remember_me.dart';
 import 'package:porco_eats/shared/widgets/exceptions/auth_exception.dart';
 
+
 class LoginController extends ChangeNotifier {
   final AppPreferences _preferences;
 

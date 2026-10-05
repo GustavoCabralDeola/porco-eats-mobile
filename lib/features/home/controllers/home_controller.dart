@@ -15,6 +15,20 @@ class HomeController extends ChangeNotifier {
 
   Mocks mockJson = Mocks();
 
+  List<Product> _productsByIds(List<int> ids) {
+    return ids
+        .map(
+          (id) => Product.fromJson(
+            mockJson.productsJson.firstWhere((item) => item['id'] == id),
+          ),
+        )
+        .toList();
+  }
+
+  List<Product> get offerProducts => _productsByIds([1, 8, 12]);
+
+  List<Product> get mostOrderedProducts => _productsByIds([17, 1, 21]);
+
   CategoriesViewState categoriesViewState = CategoriesViewState.loading;
   ProductsViewState productsViewState = ProductsViewState.loading;
 
@@ -27,23 +41,6 @@ class HomeController extends ChangeNotifier {
     productsViewState = state;
     notifyListeners();
   }
-
-  // Future<void> getCategories() async {
-  //   changeCategoriesState(CategoriesViewState.loading);
-  //   await Future.delayed(Duration(seconds: 3));
-  //   try {
-  //     //deserializa e popula a nossa lista de categorias
-  //     listCategories = mockJson.categoriesJson.map((item) {
-  //       return Category.fromJson(item);
-  //     }).toList();
-  //     print(categoriesViewState);
-  //     changeCategoriesState(CategoriesViewState.sucess);
-  //     print(categoriesViewState);
-  //   } catch (e) {
-  //     //caso der erro na deserialização, emite o erro para a tela tratar
-  //     changeCategoriesState(CategoriesViewState.error);
-  //   }
-  // }
 
   Future<void> getProducts() async {
     changeProductsState(ProductsViewState.loading);

@@ -29,7 +29,7 @@ class CartController extends ChangeNotifier {
   }
 
   Future<void> loadOrders() async {
-    orders = await _preferences.loadOrders();
+    orders = List<CustomerOrder>.from(await _preferences.loadOrders());
     print(
       'Pedidos salvos no localStorage: ${orders.map((order) => order.toJson()).toList()}',
     );
