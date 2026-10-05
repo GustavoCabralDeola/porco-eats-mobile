@@ -1,27 +1,26 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:porco_eats/features/customer_order/controllers/customer_order_controller.dart';
 import 'package:porco_eats/models/customer_order.dart';
 import 'package:porco_eats/models/enums/order_status.dart';
-import 'package:porco_eats/shared/services/app_remember_me.dart';
 import 'package:porco_eats/shared/widgets/app_colors.dart';
 
 class DashboardOrderController extends ChangeNotifier {
-  DashboardOrderController({AppPreferences? preferences})
-    : _preferences = preferences ?? AppPreferences() {
-    unawaited(loadOrders());
+  DashboardOrderController(this._orderController) {
+    _orderController.addListener(_syncOrders);
+    unawaited(_orderController.loadOrders());
   }
 
-  final AppPreferences _preferences;
-  List<CustomerOrder> _orders = [];
+  final CustomerOrderController _orderController;
 
-  bool isLoading = true;
-  String? errorMessage;
+  bool get isLoading => _orderController.isLoading;
+  String? get errorMessage => _orderController.errorMessage;
 
-  List<CustomerOrder> get orders => List.unmodifiable(_orders);
+  List<CustomerOrder> get orders => _orderController.orders;
 
   List<CustomerOrder> get ongoingOrders => List.unmodifiable(
-    _orders.where(
+    orders.where(
       (order) =>
           order.status != OrderStatus.delivered &&
           order.status != OrderStatus.cancelled,
@@ -29,31 +28,21 @@ class DashboardOrderController extends ChangeNotifier {
   );
 
   List<CustomerOrder> get recentOrders => List.unmodifiable(
-    _orders
-        .where(
-          (order) =>
-              order.status == OrderStatus.delivered ||
-              order.status == OrderStatus.cancelled,
-        )
-        .take(3),
+    orders.where((order) => order.status == OrderStatus.delivered),
   );
 
   int countForStatus(OrderStatus status) =>
-      _orders.where((order) => order.status == status).length;
+      orders.where((order) => order.status == status).length;
 
-  Future<void> loadOrders() async {
-    isLoading = true;
-    errorMessage = null;
-    notifyListeners();
+  Future<void> loadOrders() =>
+      _orderController.loadOrders(forceRefresh: true);
 
-    try {
-      _orders = await _preferences.loadOrders();
-    } catch (error) {
-      errorMessage = 'Não foi possível carregar os pedidos: $error';
-    } finally {
-      isLoading = false;
-      notifyListeners();
-    }
+  void _syncOrders() => notifyListeners();
+
+  @override
+  void dispose() {
+    _orderController.removeListener(_syncOrders);
+    super.dispose();
   }
 
   Color colorForStatus(OrderStatus status) {
