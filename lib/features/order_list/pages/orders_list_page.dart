@@ -93,12 +93,12 @@ class OrdersPage extends StatelessWidget {
                 ),
                 const SizedBox(width: 8),
                 _buildFilter(
-                  label: controller.selectedStatus?.label ?? 'Status',
-                  selected: controller.selectedStatus != null,
+                  label: controller.statusFilterLabel,
+                  selected: controller.hasStatusFilter,
                   icon: Icons.keyboard_arrow_down,
                   onTap: () => _showStatusFilter(context, controller),
                 ),
-                const Spacer(),
+                Spacer(),
                 Material(
                   color: const Color(0xFFEDEBE8),
                   shape: const CircleBorder(),

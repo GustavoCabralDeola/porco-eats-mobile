@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:porco_eats/features/Dashboard/controllers/dashboard_order_controller.dart';
 import 'package:porco_eats/features/home/pages/home_page.dart';
+import 'package:porco_eats/features/order_list/controllers/orders_list_controller.dart';
 import 'package:porco_eats/features/order_list/pages/orders_list_page.dart';
 import 'package:porco_eats/features/login/controllers/login_controller.dart';
 import 'package:porco_eats/models/customer_order.dart';
@@ -292,6 +293,10 @@ class DashboardOrderPage extends StatelessWidget {
         const SizedBox(height: 24),
         AppOrderSection(
           title: 'Pedidos em andamento',
+          onActionPressed: () {
+            context.read<OrderListController>().showOngoingOrders();
+            Navigator.pushNamed(context, OrdersPage.route);
+          },
           children: controller.ongoingOrders.isEmpty
               ? [_buildEmptyOrdersMessage('Nenhum pedido em andamento')]
               : controller.ongoingOrders
@@ -302,7 +307,12 @@ class DashboardOrderPage extends StatelessWidget {
         AppOrderSection(
           title: 'Últimos pedidos',
           actionLabel: 'Ver todos',
-          onActionPressed: () => Navigator.pushNamed(context, OrdersPage.route),
+          onActionPressed: () {
+            context
+                .read<OrderListController>()
+                .showOrdersWithStatus(OrderStatus.delivered);
+            Navigator.pushNamed(context, OrdersPage.route);
+          },
           children: controller.recentOrders.isEmpty
               ? [_buildEmptyOrdersMessage('Nenhum pedido finalizado ainda')]
               : controller.recentOrders
