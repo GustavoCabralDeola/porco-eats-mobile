@@ -3,6 +3,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:porco_eats/features/cart/controllers/cart_controller.dart';
 import 'package:porco_eats/features/cart/pages/cart_page.dart';
 import 'package:porco_eats/features/home/controllers/home_controller.dart';
+import 'package:porco_eats/features/home/widgets/catalog_filter_dialog.dart';
+import 'package:porco_eats/features/home/widgets/home_category_list.dart';
+import 'package:porco_eats/features/home/pages/category_products_page.dart';
+import 'package:porco_eats/features/home/widgets/product_catalog_section.dart';
+import 'package:porco_eats/features/home/widgets/product_details_sheet.dart';
+import 'package:porco_eats/features/home/widgets/recommended_stores_section.dart';
 import 'package:porco_eats/features/login/controllers/login_controller.dart';
 import 'package:porco_eats/models/enums/user_role.dart';
 import 'package:porco_eats/models/product.dart';
@@ -16,11 +22,10 @@ import 'package:porco_eats/shared/widgets/app_home_navigation_bar_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-import '../../../shared/widgets/app_category_item.dart';
 import '../../../shared/widgets/app_home_header.dart';
 
 class HomePage extends StatefulWidget {
-  static String route = '/home';
+  static const String route = '/home';
 
   const HomePage({super.key, this.showInitialSkeleton = false});
 
@@ -50,6 +55,27 @@ class _HomePageState extends State<HomePage> {
   }
 
   @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  late final TextEditingController _searchInput;
+
+  @override
+  void initState() {
+    super.initState();
+    _searchInput = TextEditingController(
+      text: context.read<HomeController>().searchText,
+    );
+  }
+
+  @override
+  void dispose() {
+    _searchInput.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final isShowingInitialSkeleton = context
         .watch<HomeController>()
@@ -57,15 +83,13 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       floatingActionButton: Consumer<CartController>(
-        builder: (context, controller, child) {
-          if (controller.productsInCart.isEmpty) {
-            return SizedBox.shrink();
+        builder: (context, cart, child) {
+          if (cart.productsInCart.isEmpty) {
+            return const SizedBox.shrink();
           }
 
           return FloatingActionButton.extended(
-            onPressed: () {
-              Navigator.pushNamed(context, CartPage.route);
-            },
+            onPressed: () => Navigator.pushNamed(context, CartPage.route),
             backgroundColor: AppColors.redDelivery,
             foregroundColor: AppColors.fullWhite,
             icon: const Icon(Icons.shopping_cart),
@@ -81,522 +105,164 @@ class _HomePageState extends State<HomePage> {
         },
       ),
       bottomNavigationBar: Consumer<LoginController>(
-        builder: (context, controller, child) {
-          return controller.user?.role == UserRole.customer
+        builder: (context, user, child) {
+          return user.user?.role == UserRole.customer
               ? const AppHomeNavigationBarCustomer()
               : const AppHomeNavigationBarManager();
         },
       ),
-      body: Skeletonizer(
-        enabled: isShowingInitialSkeleton,
-        child: SingleChildScrollView(
-          child: Consumer<HomeController>(
-            builder: (context, controller, child) => Column(
-              children: [
-                Skeleton.ignore(child: AppHomeHeader()),
-                SizedBox(height: 10),
-                AppSearchField(
-                  hintText: 'O que você deseja comer hoje?',
-                  enableFilter: true,
-                ),
-                SizedBox(height: 20),
-
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-                      SizedBox(width: 20),
-                      AppCategoryItem(
-                        label: 'Lanches',
-                        onTap: () => _openCategory('Lanches'),
-                        image:
-                            'assets/images/porco_eats_images/categories_icons/hamburguerIcon.png',
-                        imageWidth: 43,
-                        imageHeight: 43,
-                      ),
-
-                      SizedBox(width: 10),
-
-                      AppCategoryItem(
-                        label: 'Pizzas',
-                        onTap: () => _openCategory('Pizzas'),
-                        image:
-                            'assets/images/porco_eats_images/categories_icons/pizzaIcon.png',
-                        imageWidth: 43,
-                        imageHeight: 43,
-                      ),
-
-                      SizedBox(width: 10),
-
-                      AppCategoryItem(
-                        label: 'Sushi',
-                        onTap: () => _openCategory('Sushi'),
-                        image:
-                            'assets/images/porco_eats_images/categories_icons/sushiIcon.png',
-                        imageWidth: 50,
-                        imageHeight: 50,
-                      ),
-
-                      SizedBox(width: 10),
-
-                      AppCategoryItem(
-                        label: 'Executivos',
-                        onTap: () => _openCategory('Executivos'),
-                        image:
-                            'assets/images/porco_eats_images/categories_icons/executivoIcon.png',
-                        imageWidth: 100,
-                        imageHeight: 55,
-                        scale: 1.5,
-                      ),
-
-                      SizedBox(width: 10),
-                      AppCategoryItem(
-                        label: 'Porções',
-                        onTap: () => _openCategory('Porções'),
-                        image:
-                            'assets/images/porco_eats_images/categories_icons/porcoesIcon.png',
-                        imageWidth: 74,
-                        imageHeight: 58,
-                      ),
-
-                      SizedBox(width: 10),
-                      AppCategoryItem(
-                        label: 'Bebidas',
-                        onTap: () => _openCategory('Bebidas'),
-                        image:
-                            'assets/images/porco_eats_images/categories_icons/bebidaIcon.png',
-                        imageWidth: 60,
-                        imageHeight: 80,
-                      ),
-
-                      SizedBox(width: 10),
-                    ],
-                  ),
-                ),
-
-                SizedBox(height: 20),
-
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-                      SizedBox(width: 10),
-                      AppPromoCarousel(
-                        banners: [
-                          'assets/images/porco_eats_images/carousel_images/hamburguerCarousel.png',
-                          'assets/images/porco_eats_images/carousel_images/pizzaCarousel.png',
-                          'assets/images/porco_eats_images/carousel_images/sushiCarousel.png',
-                        ],
-                      ),
-                      SizedBox(width: 4),
-                      AppPromoCarousel(
-                        fit: BoxFit.contain,
-                        alignment: Alignment.centerLeft,
-                        width: 300,
-                        height: 127,
-                        banners: [
-                          'assets/images/porco_eats_images/carousel_images/firstcupomcarousel.png',
-                          'assets/images/porco_eats_images/carousel_images/secoundcupomcarousel.png',
-                        ],
-                      ),
-                      SizedBox(width: 10),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 20),
-
-                Row(
-                  children: [
-                    SizedBox(width: 20),
-                    Text('Ofertas para você', style: AppTextStyle.sectionTitle),
-                  ],
-                ),
-
-                SizedBox(height: 20),
-
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-                      SizedBox(width: 14),
-                      ...List.generate(controller.offerProducts.length, (
-                        index,
-                      ) {
-                        final product = controller.offerProducts[index];
-                        final badges = ['-20%', '♛ Mais pedido', '-15%'];
-                        final badgeColors = [
-                          Colors.red,
-                          Colors.orange,
-                          Colors.red,
-                        ];
-
-                        return Padding(
-                          padding: const EdgeInsets.only(right: 32),
-                          child: AppProductCard(
-                            product: product,
-                            badgeLabel: badges[index],
-                            badgeColor: badgeColors[index],
-                            onTap: () =>
-                                _showProductBottomSheet(context, product),
-                          ),
-                        );
-                      }),
-                      SizedBox(width: 14),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 20),
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    SizedBox(width: 20),
-                    Container(
-                      child: Text(
-                        'Mais pedidos',
-                        style: AppTextStyle.sectionTitle,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 20),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-                      SizedBox(width: 14),
-                      ...List.generate(controller.mostOrderedProducts.length, (
-                        index,
-                      ) {
-                        final product = controller.mostOrderedProducts[index];
-
-                        return Padding(
-                          padding: const EdgeInsets.only(right: 32),
-                          child: AppProductCard(
-                            product: product,
-                            onTap: () =>
-                                _showProductBottomSheet(context, product),
-                          ),
-                        );
-                      }),
-                      SizedBox(width: 14),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+      body: SingleChildScrollView(
+        child: Consumer<HomeController>(
+          builder: (context, home, child) => Column(
+            children: [
+              AppHomeHeader(),
+              const SizedBox(height: 10),
+              _buildSearchField(home),
+              const SizedBox(height: 20),
+              _buildCategories(home),
+              const SizedBox(height: 20),
+              _buildCatalog(home),
+            ],
           ),
         ),
       ),
     );
   }
-}
 
-class CategoryProductsPage extends StatelessWidget {
-  static const route = '/category-products';
+  Widget _buildSearchField(HomeController home) {
+    return AppSearchField(
+      hintText: 'O que você deseja comer hoje?',
+      enableFilter: true,
+      controller: _searchInput,
+      onChanged: home.setSearchText,
+      onFilterPressed: () => CatalogFilterDialog.show(
+        context: context,
+        selectedCategories: home.selectedCategories,
+        onApply: home.setSelectedCategories,
+      ),
+    );
+  }
 
-  const CategoryProductsPage({super.key, required this.categoryName});
+  Widget _buildCategories(HomeController home) {
+    return HomeCategoryList(
+      selectedCategories: home.selectedCategories,
+      onCategoryPressed: (category) {
+        Navigator.pushNamed(
+          context,
+          CategoryProductsPage.route,
+          arguments: category,
+        );
+      },
+    );
+  }
 
-  final String categoryName;
+  Widget _buildCatalog(HomeController home) {
+    if (home.hasCatalogFilters) {
+      return ProductCatalogSection(
+        title: home.selectedCategories.isEmpty
+            ? 'Resultados da busca'
+            : 'Resultados do filtro',
+        products: home.filteredProducts,
+        onProductTap: _openProduct,
+        showGrid: true,
+      );
+    }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.brownWhite,
-      appBar: AppBar(
-        backgroundColor: AppColors.brownWhite,
-        foregroundColor: AppColors.darkBrown,
-        elevation: 0,
-        leading: IconButton(
-          onPressed: () => Navigator.of(context).pop(),
-          icon: const Icon(Icons.arrow_back),
+    return _buildRecommendations(home);
+  }
+
+  Widget _buildRecommendations(HomeController home) {
+    return Column(
+      children: [
+        _buildBanners(),
+        const SizedBox(height: 20),
+        _buildOffers(home.offerProducts),
+        const SizedBox(height: 20),
+        ProductCatalogSection(
+          title: 'Mais pedidos',
+          products: home.mostOrderedProducts,
+          onProductTap: _openProduct,
         ),
-        title: Text(categoryName),
-      ),
-      bottomNavigationBar: Consumer<LoginController>(
-        builder: (context, controller, child) {
-          return controller.user?.role == UserRole.customer
-              ? const AppHomeNavigationBarCustomer()
-              : const AppHomeNavigationBarManager();
-        },
-      ),
-      body: Consumer<HomeController>(
-        builder: (context, controller, child) {
-          final products = controller.productsInCategory(categoryName);
+        const SizedBox(height: 24),
+        RecommendedStoresSection(
+          stores: home.recommendedStores,
+          onStoreTap: (store) {
+            home.setSelectedCategories({});
+            _searchInput.text = store;
+            home.setSearchText(store);
+          },
+        ),
+        const SizedBox(height: 24),
+      ],
+    );
+  }
 
-          if (products.isEmpty) {
-            return const Center(child: Text('Nenhum produto encontrado.'));
-          }
+  Widget _buildBanners() {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          const SizedBox(width: 10),
+          AppPromoCarousel(
+            banners: [
+              'assets/images/porco_eats_images/carousel_images/hamburguerCarousel.png',
+              'assets/images/porco_eats_images/carousel_images/pizzaCarousel.png',
+              'assets/images/porco_eats_images/carousel_images/sushiCarousel.png',
+            ],
+          ),
+          const SizedBox(width: 4),
+          AppPromoCarousel(
+            fit: BoxFit.contain,
+            alignment: Alignment.centerLeft,
+            width: 300,
+            height: 127,
+            banners: [
+              'assets/images/porco_eats_images/carousel_images/firstcupomcarousel.png',
+              'assets/images/porco_eats_images/carousel_images/secoundcupomcarousel.png',
+            ],
+          ),
+          const SizedBox(width: 10),
+        ],
+      ),
+    );
+  }
 
-          return GridView.builder(
-            padding: const EdgeInsets.all(16),
-            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-              maxCrossAxisExtent: 180,
-              mainAxisExtent: 190,
-              crossAxisSpacing: 12,
-              mainAxisSpacing: 16,
-            ),
+  Widget _buildOffers(List<Product> products) {
+    const badges = ['-20%', '♛ Mais pedido', '-15%'];
+    const badgeColors = [Colors.red, Colors.orange, Colors.red];
+
+    return Column(
+      children: [
+        Row(
+          children: [
+            const SizedBox(width: 20),
+            Text('Ofertas para você', style: AppTextStyle.sectionTitle),
+          ],
+        ),
+        const SizedBox(height: 20),
+        SizedBox(
+          height: 174,
+          child: ListView.separated(
+            padding: const EdgeInsets.symmetric(horizontal: 14),
+            scrollDirection: Axis.horizontal,
             itemCount: products.length,
+            separatorBuilder: (context, index) => const SizedBox(width: 32),
             itemBuilder: (context, index) {
               final product = products[index];
               return AppProductCard(
                 product: product,
-                onTap: () => _showProductBottomSheet(context, product),
+                badgeLabel: badges[index],
+                badgeColor: badgeColors[index],
+                onTap: () => _openProduct(product),
               );
             },
-          );
-        },
-      ),
+          ),
+        ),
+      ],
     );
   }
-}
 
-void _showProductBottomSheet(BuildContext context, Product product) {
-  showModalBottomSheet(
-    context: context,
-    isScrollControlled: true,
-    isDismissible: true,
-    backgroundColor: Colors.transparent,
-    barrierColor: Colors.black87,
-    builder: (context) => DraggableScrollableSheet(
-      initialChildSize: 0.7,
-      minChildSize: 0.3,
-      maxChildSize: 0.7,
-      expand: false,
-      builder: (context, scrollController) {
-        return Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),
-            ),
-          ),
-          child: Column(
-            children: [
-              // PUXADOR
-              Padding(
-                padding: const EdgeInsets.only(top: 10, bottom: 20),
-                child: Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: Colors.black,
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-              ),
-
-              // CONTEÚDO
-              Expanded(
-                child: SingleChildScrollView(
-                  controller: scrollController,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // IMAGEM DO PRODUTO
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(16),
-                          child: Image.asset(
-                            _productDetailImage(product),
-                            width: double.infinity,
-                            height: 280,
-                            fit: BoxFit.cover,
-                            filterQuality: FilterQuality.high,
-                            cacheWidth: 1000,
-                          ),
-                        ),
-
-                        const SizedBox(height: 20),
-
-                        // NOME
-                        Text(
-                          product.name,
-                          style: GoogleFonts.poppins(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-
-                        const SizedBox(height: 8),
-
-                        // RESTAURANTE
-                        Text(
-                          product.restaurant,
-                          style: GoogleFonts.poppins(
-                            fontSize: 14,
-                            color: Colors.grey,
-                          ),
-                        ),
-
-                        const SizedBox(height: 12),
-
-                        // AVALIAÇÃO
-                        Row(
-                          children: [
-                            const Icon(
-                              Icons.star,
-                              color: Colors.amber,
-                              size: 16,
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              product.avaliation.toString(),
-                              style: GoogleFonts.poppins(fontSize: 14),
-                            ),
-                          ],
-                        ),
-
-                        const SizedBox(height: 20),
-
-                        // DESCRIÇÃO
-                        Text(
-                          'Descrição',
-                          style: GoogleFonts.poppins(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-
-                        const SizedBox(height: 8),
-
-                        Text(
-                          product.description ?? 'Sem descrição',
-                          style: GoogleFonts.poppins(fontSize: 13),
-                        ),
-
-                        const SizedBox(height: 30),
-
-                        // PREÇO + CARRINHO
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'R\$ ${product.price.toStringAsFixed(2)}',
-                              style: GoogleFonts.poppins(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-
-                            Consumer<CartController>(
-                              builder: (context, controller, child) {
-                                final quantity = controller.getQuantity(
-                                  product,
-                                );
-
-                                return Row(
-                                  children: [
-                                    if (quantity > 0)
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          color: Colors.orange.shade50,
-                                          borderRadius: BorderRadius.circular(
-                                            12,
-                                          ),
-                                        ),
-                                        child: Row(
-                                          children: [
-                                            IconButton(
-                                              onPressed: () {
-                                                controller.decreaseQuantity(
-                                                  product,
-                                                );
-                                              },
-                                              icon: const Icon(
-                                                Icons.remove,
-                                                size: 18,
-                                              ),
-                                              color: Colors.orange,
-                                              splashRadius: 18,
-                                            ),
-
-                                            Text(
-                                              quantity.toString(),
-                                              style: GoogleFonts.poppins(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.orange,
-                                              ),
-                                            ),
-
-                                            IconButton(
-                                              onPressed: () {
-                                                controller.increaseQuantity(
-                                                  product,
-                                                );
-                                              },
-                                              icon: const Icon(
-                                                Icons.add,
-                                                size: 18,
-                                              ),
-                                              color: Colors.orange,
-                                              splashRadius: 18,
-                                            ),
-                                          ],
-                                        ),
-                                      )
-                                    else
-                                      ElevatedButton.icon(
-                                        onPressed: () {
-                                          controller.addToCart(product);
-
-                                          ScaffoldMessenger.of(
-                                            context,
-                                          ).showSnackBar(
-                                            SnackBar(
-                                              content: Text(
-                                                '${product.name} adicionado ao carrinho!',
-                                                style: GoogleFonts.poppins(),
-                                              ),
-                                              duration: const Duration(
-                                                seconds: 2,
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                        icon: Icon(Icons.shopping_cart),
-                                        label: Text('Adicionar'),
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.orange,
-                                          foregroundColor: Colors.white,
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 20,
-                                            vertical: 12,
-                                          ),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                              25,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                  ],
-                                );
-                              },
-                            ),
-                          ],
-                        ),
-
-                        const SizedBox(height: 30),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    ),
-  );
-}
-
-String _productDetailImage(Product product) {
-  if (product.id == 8) {
-    return 'assets/images/porco_eats_images/products/pizzacalabresa.jpg';
+  void _openProduct(Product product) {
+    ProductDetailsSheet.show(context, product);
   }
-  return product.imageUrl;
 }

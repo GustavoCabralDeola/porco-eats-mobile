@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:porco_eats/features/order_list/widgets/order_card.dart';
 import 'package:porco_eats/features/login/controllers/login_controller.dart';
+import 'package:porco_eats/features/order_list/widgets/order_list_filter.dart';
 import 'package:porco_eats/features/order_list/controllers/orders_list_controller.dart';
 import 'package:porco_eats/models/enums/order_status.dart';
 import 'package:porco_eats/models/enums/user_role.dart';
 import 'package:porco_eats/shared/widgets/app_home_navigation_bar_customer.dart';
 import 'package:porco_eats/shared/widgets/app_home_navigation_bar_manager.dart';
-import 'package:porco_eats/shared/widgets/cards/app_order_card.dart';
 import 'package:provider/provider.dart';
 
 class OrdersPage extends StatelessWidget {
@@ -14,17 +15,41 @@ class OrdersPage extends StatelessWidget {
   const OrdersPage({super.key});
 
   @override
+  State<OrdersPage> createState() => _OrdersPageState();
+}
+
+class _OrdersPageState extends State<OrdersPage> {
+  final TextEditingController _searchController = TextEditingController();
+  bool _isSearching = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    context.read<OrderListController>().loadOrdersFromStorage();
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final controller = context.watch<OrderListController>();
-    final hasFilters = controller.hasFilters;
+    final orderController = context.watch<OrderListController>();
+    final hasFilters =
+        orderController.selectedStatus != null ||
+        orderController.selectedCustomer != null ||
+        orderController.searchQuery.trim().isNotEmpty;
 
     return Scaffold(
       backgroundColor: const Color(0xFFF7F6F3),
       bottomNavigationBar: Consumer<LoginController>(
         builder: (context, controller, child) {
           return controller.user?.role == UserRole.customer
-              ? const AppHomeNavigationBarCustomer(selectedIndex: 1)
-              : const AppHomeNavigationBarManager(selectedIndex: 1);
+              ? const AppHomeNavigationBarCustomer()
+              : const AppHomeNavigationBarManager();
         },
       ),
 
@@ -53,6 +78,7 @@ class OrdersPage extends StatelessWidget {
                   hintStyle: TextStyle(color: Colors.white70, fontSize: 14),
                   border: InputBorder.none,
                 ),
+                onChanged: context.read<OrderListController>().setSearchQuery,
               )
             : const Text(
                 'Pedidos',
@@ -61,12 +87,17 @@ class OrdersPage extends StatelessWidget {
 
         actions: [
           IconButton(
-            tooltip: controller.isSearching ? 'Fechar busca' : 'Buscar pedidos',
-            onPressed: controller.toggleSearch,
-            icon: Icon(
-              controller.isSearching ? Icons.close : Icons.search,
-              size: 23,
-            ),
+            tooltip: _isSearching ? 'Fechar busca' : 'Buscar pedidos',
+            onPressed: () {
+              setState(() {
+                _isSearching = !_isSearching;
+                if (!_isSearching) _searchController.clear();
+                if (!_isSearching) {
+                  context.read<OrderListController>().setSearchQuery('');
+                }
+              });
+            },
+            icon: Icon(_isSearching ? Icons.close : Icons.search, size: 23),
           ),
 
           const SizedBox(width: 6),
@@ -79,24 +110,24 @@ class OrdersPage extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(20, 16, 12, 12),
             child: Row(
               children: [
-                _buildFilter(
+                OrderListFilter(
                   label: 'Todos',
                   selected: !hasFilters,
-                  onTap: controller.clearFilters,
+                  onPressed: _clearFilters,
                 ),
                 const SizedBox(width: 8),
-                _buildFilter(
-                  label: controller.selectedCustomer ?? 'Cliente',
-                  selected: controller.selectedCustomer != null,
+                OrderListFilter(
+                  label: orderController.selectedCustomer ?? 'Cliente',
+                  selected: orderController.selectedCustomer != null,
                   icon: Icons.keyboard_arrow_down,
-                  onTap: () => _showClientFilter(context, controller),
+                  onPressed: _showClientFilter,
                 ),
                 const SizedBox(width: 8),
-                _buildFilter(
-                  label: controller.selectedStatus?.label ?? 'Status',
-                  selected: controller.selectedStatus != null,
+                OrderListFilter(
+                  label: orderController.selectedStatus?.label ?? 'Status',
+                  selected: orderController.selectedStatus != null,
                   icon: Icons.keyboard_arrow_down,
-                  onTap: () => _showStatusFilter(context, controller),
+                  onPressed: _showStatusFilter,
                 ),
                 const Spacer(),
                 Material(
@@ -118,66 +149,20 @@ class OrdersPage extends StatelessWidget {
     );
   }
 
-  Widget _buildFilter({
-    required String label,
-    bool selected = false,
-    IconData? icon,
-    VoidCallback? onTap,
-  }) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(20),
-        child: Container(
-          height: 40,
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          decoration: BoxDecoration(
-            color: selected ? const Color(0xFFFFC928) : const Color(0xFFEDEBE8),
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                label,
-                style: const TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF292929),
-                ),
-              ),
-
-              if (icon != null) ...[
-                const SizedBox(width: 3),
-
-                Icon(icon, size: 16, color: const Color(0xFF292929)),
-              ],
-            ],
-          ),
-        ),
-      ),
-    );
+  void _clearFilters() {
+    context.read<OrderListController>().clearFilters();
+    _searchController.clear();
   }
 
-  Widget _buildOrdersList(OrderListController controller) {
-    if (controller.isLoading) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
-    if (controller.errorMessage != null) {
-      return Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              controller.errorMessage!,
-              textAlign: TextAlign.center,
-              style: const TextStyle(color: Color(0xFF292929)),
-            ),
-            TextButton(
-              onPressed: controller.loadOrdersFromStorage,
-              child: const Text('Tentar novamente'),
+  Widget _buildOrdersList() {
+    return Consumer<OrderListController>(
+      builder: (context, controller, _) {
+        final orders = controller.orders;
+        if (orders.isEmpty) {
+          return const Center(
+            child: Text(
+              'Nenhum pedido encontrado',
+              style: TextStyle(fontSize: 16, color: Color(0xFF292929)),
             ),
           ],
         ),
@@ -200,15 +185,18 @@ class OrdersPage extends StatelessWidget {
       itemBuilder: (context, index) {
         final order = orders[index];
 
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 10),
-          child: AppOrderCard(order: order),
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: OrderCard(order: order),
+            );
+          },
         );
       },
     );
   }
 
-  void _showClientFilter(BuildContext context, OrderListController controller) {
+  void _showClientFilter() {
+    final controller = context.read<OrderListController>();
     final customers = controller.customers;
 
     showModalBottomSheet(
@@ -234,7 +222,7 @@ class OrdersPage extends StatelessWidget {
                   contentPadding: EdgeInsets.zero,
                   title: const Text('Todos os clientes'),
                   onTap: () {
-                    controller.setSelectedCustomer(null);
+                    controller.setCustomer(null);
                     Navigator.pop(sheetContext);
                   },
                 ),
@@ -256,7 +244,7 @@ class OrdersPage extends StatelessWidget {
                                   )
                                 : null,
                             onTap: () {
-                              controller.setSelectedCustomer(customer);
+                              controller.setCustomer(customer);
                               Navigator.pop(sheetContext);
                             },
                           ),
@@ -301,20 +289,31 @@ class OrdersPage extends StatelessWidget {
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 16),
-                TextField(
-                  controller: controller.searchController,
-                  autofocus: true,
-                  decoration: InputDecoration(
-                    labelText: 'ID do pedido ou nome do cliente',
-                    prefixIcon: const Icon(Icons.search),
-                    suffixIcon: controller.searchController.text.isEmpty
-                        ? null
-                        : IconButton(
-                            tooltip: 'Limpar busca',
-                            onPressed: controller.clearSearch,
-                            icon: const Icon(Icons.close),
-                          ),
-                    border: const OutlineInputBorder(),
+                ValueListenableBuilder<TextEditingValue>(
+                  valueListenable: _searchController,
+                  builder: (context, value, _) => TextField(
+                    controller: _searchController,
+                    autofocus: true,
+                    decoration: InputDecoration(
+                      labelText: 'ID, cliente ou produto',
+                      prefixIcon: const Icon(Icons.search),
+                      suffixIcon: value.text.isEmpty
+                          ? null
+                          : IconButton(
+                              tooltip: 'Limpar busca',
+                              onPressed: () {
+                                _searchController.clear();
+                                context
+                                    .read<OrderListController>()
+                                    .setSearchQuery('');
+                              },
+                              icon: const Icon(Icons.close),
+                            ),
+                      border: const OutlineInputBorder(),
+                    ),
+                    onChanged: context
+                        .read<OrderListController>()
+                        .setSearchQuery,
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -377,8 +376,12 @@ class OrdersPage extends StatelessWidget {
     return ListTile(
       contentPadding: EdgeInsets.zero,
       title: Text(label, style: const TextStyle(fontSize: 15)),
+      trailing:
+          context.read<OrderListController>().selectedStatus == status
+          ? const Icon(Icons.check, color: Color(0xFF351708))
+          : null,
       onTap: () {
-        controller.setSelectedStatus(status);
+        context.read<OrderListController>().setStatus(status);
         Navigator.pop(sheetContext);
       },
     );

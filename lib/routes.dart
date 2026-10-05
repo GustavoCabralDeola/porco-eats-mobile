@@ -1,8 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:porco_eats/features/Dashboard/pages/dashboard_order_page.dart';
 import 'package:porco_eats/features/cart/pages/cart_page.dart';
-import 'package:porco_eats/features/customer_order/pages/customer_order_page.dart';
-import 'package:porco_eats/features/order_list/pages/order_details_page.dart';
+import 'package:porco_eats/features/home/pages/category_products_page.dart';
 import 'package:porco_eats/features/home/pages/home_page.dart';
 import 'package:porco_eats/features/login/pages/login_page.dart';
 import 'package:porco_eats/features/login/pages/signup_page.dart';
@@ -18,7 +17,8 @@ class AppRoutes {
     LoginPage.route: (context) => LoginPage(),
     HomePage.route: (context) => HomePage(),
     CategoryProductsPage.route: (context) => CategoryProductsPage(
-      categoryName: ModalRoute.of(context)!.settings.arguments! as String,
+      categoryName:
+          ModalRoute.of(context)!.settings.arguments! as String,
     ),
     RecoverPage.route: (context) => RecoverPage(),
     SignupPage.route: (context) => SignupPage(),
