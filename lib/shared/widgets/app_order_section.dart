@@ -32,7 +32,7 @@ class AppOrderSection extends StatelessWidget {
               ),
             ),
             TextButton(
-              onPressed: onActionPressed,
+              onPressed: onActionPressed ?? () {},
               style: TextButton.styleFrom(
                 padding: EdgeInsets.zero,
                 minimumSize: Size.zero,

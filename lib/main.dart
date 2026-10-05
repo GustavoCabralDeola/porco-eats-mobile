@@ -10,7 +10,6 @@ import 'package:porco_eats/models/user.dart';
 import 'package:porco_eats/routes.dart';
 import 'package:porco_eats/shared/services/app_remember_me.dart';
 import 'package:provider/provider.dart';
-import 'package:porco_eats/features/payment/controllers/payment_controller.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,10 +35,9 @@ class MyApp extends StatelessWidget {
             );
           },
         ),
-
         ChangeNotifierProvider(
           create: (context) {
-            return SignupController();
+            return SignupController(preferences: preferences);
           },
         ),
         ChangeNotifierProvider(
