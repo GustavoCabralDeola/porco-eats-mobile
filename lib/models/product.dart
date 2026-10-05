@@ -3,18 +3,21 @@ class Product {
   final String name;
   final String? description;
   final String restaurant;
-  final double avaliation;
+  final double rating;
   final String category;
   final double price;
   final String imageUrl;
   String? observation;
+
+  bool get hasRating => rating > 0;
+  String get ratingLabel => hasRating ? rating.toString() : 'Sem avaliação';
 
   Product({
     required this.id,
     required this.name,
     required this.description,
     required this.restaurant,
-    required this.avaliation,
+    required this.rating,
     required this.category,
     required this.price,
     required this.imageUrl,
@@ -26,7 +29,7 @@ class Product {
     String? name,
     String? description,
     String? restaurant,
-    double? avaliation,
+    double? rating,
     String? category,
     double? price,
     String? imageUrl,
@@ -37,7 +40,7 @@ class Product {
       name: name ?? this.name,
       description: description ?? this.description,
       restaurant: restaurant ?? this.restaurant,
-      avaliation: avaliation ?? this.avaliation,
+      rating: rating ?? this.rating,
       category: category ?? this.category,
       price: price ?? this.price,
       imageUrl: imageUrl ?? this.imageUrl,
@@ -49,7 +52,7 @@ class Product {
     'id': id,
     'name': name,
     'description': description,
-    'avaliation': avaliation,
+    'avaliation': rating,
     'restaurant': restaurant,
     'category': category,
     'price': price,
@@ -62,8 +65,8 @@ class Product {
       id: json['id'] ?? 0,
       name: json['name'] as String,
       description: json['description'] as String?,
-      restaurant: json['restaurant'] as String,
-      avaliation: (json['avaliation'] as num).toDouble(),
+      restaurant: (json['restaurant'] ?? json['brand']) as String,
+      rating: (json['avaliation'] as num?)?.toDouble() ?? 0,
       category: json['category'] as String,
       price: (json['price'] as num).toDouble(),
       imageUrl: json['imageUrl'] as String,

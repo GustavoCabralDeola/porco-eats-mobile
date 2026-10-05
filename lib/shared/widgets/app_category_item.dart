@@ -11,6 +11,7 @@ class AppCategoryItem extends StatelessWidget {
     required this.imageHeight,
     this.scale = 1,
     this.onTap,
+    this.selected = false,
   });
 
   final String label;
@@ -19,6 +20,7 @@ class AppCategoryItem extends StatelessWidget {
   final double imageHeight;
   final double scale;
   final VoidCallback? onTap;
+  final bool selected;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +34,10 @@ class AppCategoryItem extends StatelessWidget {
             width: 60,
             height: 60,
             decoration: BoxDecoration(
-              border: Border.all(color: AppColors.darkBrown),
+              border: Border.all(
+                color: selected ? AppColors.yellowAgility : AppColors.darkBrown,
+                width: selected ? 3 : 1,
+              ),
               borderRadius: BorderRadius.circular(30),
               color: AppColors.categoryBackground,
             ),

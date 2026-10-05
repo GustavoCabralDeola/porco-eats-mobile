@@ -4,11 +4,16 @@ import 'package:porco_eats/models/product.dart';
 import 'package:porco_eats/shared/widgets/app_colors.dart';
 
 class AppProductCard extends StatelessWidget {
+  static const double cardWidth = 160;
+  static const double cardHeight = 174;
+
   final Product product;
   final VoidCallback onTap;
   final String? badgeLabel;
   final Color? badgeColor;
   final double? discountPercent;
+  final double width;
+  final double height;
 
   const AppProductCard({
     required this.product,
@@ -16,6 +21,8 @@ class AppProductCard extends StatelessWidget {
     this.badgeLabel,
     this.badgeColor = Colors.red,
     this.discountPercent,
+    this.width = cardWidth,
+    this.height = cardHeight,
     super.key,
   });
 
@@ -27,8 +34,8 @@ class AppProductCard extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(20),
         child: Container(
-          width: 160,
-          height: 174,
+          width: width,
+          height: height,
           clipBehavior: Clip.antiAlias,
           decoration: BoxDecoration(
             color: AppColors.brownWhite,
@@ -43,8 +50,17 @@ class AppProductCard extends StatelessWidget {
                   Image.asset(
                     product.imageUrl,
                     width: double.infinity,
-                    height: 88,
+                    height: height * 0.48,
                     fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => Container(
+                      width: double.infinity,
+                      height: height * 0.48,
+                      color: AppColors.categoryBackground,
+                      child: const Icon(
+                        Icons.restaurant,
+                        color: AppColors.darkBrown,
+                      ),
+                    ),
                   ),
                   if (badgeLabel != null)
                     Positioned(
@@ -94,10 +110,12 @@ class AppProductCard extends StatelessWidget {
                     ),
                     Row(
                       children: [
-                        const Icon(Icons.star, color: Colors.amber, size: 14),
-                        const SizedBox(width: 3),
+                        if (product.hasRating) ...[
+                          const Icon(Icons.star, color: Colors.amber, size: 14),
+                          const SizedBox(width: 3),
+                        ],
                         Text(
-                          product.avaliation.toString(),
+                          product.ratingLabel,
                           style: const TextStyle(fontSize: 11),
                         ),
                       ],
