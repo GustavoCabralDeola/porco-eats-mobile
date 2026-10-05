@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:porco_eats/features/login/controllers/login_controller.dart';
@@ -11,174 +13,59 @@ import 'package:porco_eats/shared/widgets/app_colors.dart';
 import 'package:porco_eats/shared/widgets/app_profile_header.dart';
 import 'package:provider/provider.dart';
 
-class ProfilePage extends StatefulWidget {
+class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
   static const route = '/profile';
 
   @override
-  State<ProfilePage> createState() => _ProfilePageState();
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (context) {
+        final loginController = context.read<LoginController>();
+        final profileController = ProfileController(user: loginController.user);
+        profileController.addListener(() {
+          loginController.user = profileController.user;
+        });
+        unawaited(profileController.loadProfile());
+        return profileController;
+      },
+      child: const _ProfileView(),
+    );
+  }
 }
 
-class _ProfilePageState extends State<ProfilePage> {
-  late final LoginController _loginController;
-  late final ProfileController _controller;
-  final ImagePicker _imagePicker = ImagePicker();
-  bool _isLoading = true;
-  bool _isSaving = false;
-  bool _isPickingPhoto = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _loginController = context.read<LoginController>();
-    _controller = ProfileController(user: _loginController.user);
-    _controller.addListener(_handleProfileControllerChanged);
-    _loadProfile();
-  }
-
-  void _handleProfileControllerChanged() {
-    _loginController.user = _controller.user;
-    if (mounted) setState(() {});
-  }
-
-  Future<void> _loadProfile() async {
-    try {
-      await _controller.loadProfile();
-    } catch (_) {
-      if (mounted) {
-        _showMessage('Não foi possível carregar os dados do perfil.');
-      }
-    } finally {
-      if (mounted) setState(() => _isLoading = false);
-    }
-  }
-
-  Future<void> _saveProfile() async {
-    if (_controller.nameController.text.trim().isEmpty &&
-        _controller.lastNameController.text.trim().isEmpty) {
-      _showMessage('Informe seu nome para continuar.');
-      return;
-    }
-
-    setState(() => _isSaving = true);
-    try {
-      await _controller.saveProfile();
-      if (mounted) _showMessage('Perfil atualizado com sucesso!');
-    } catch (_) {
-      if (mounted) _showMessage('Não foi possível salvar as alterações.');
-    } finally {
-      if (mounted) setState(() => _isSaving = false);
-    }
-  }
-
-  void _openChangePasswordModal() {
-    showDialog<void>(
-      context: context,
-      builder: (context) => ChangePasswordModal(
-        currentPasswordController: _controller.currentPasswordController,
-        newPasswordController: _controller.newPasswordController,
-        confirmPasswordController: _controller.confirmPasswordController,
-        currentPassword: _controller.user?.password ?? '',
-        hasUsedPassword: _controller.hasUsedPassword,
-        onConfirm: (password) async {
-          await _controller.changePassword(password);
-          if (mounted) _showMessage('Senha alterada com sucesso!');
-        },
-      ),
-    );
-  }
-
-  Future<void> _chooseProfilePhoto() async {
-    final source = await showModalBottomSheet<ImageSource>(
-      context: context,
-      showDragHandle: true,
-      builder: (context) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: const Icon(Icons.camera_alt_outlined),
-              title: const Text('Tirar uma foto'),
-              onTap: () => Navigator.pop(context, ImageSource.camera),
-            ),
-            ListTile(
-              leading: const Icon(Icons.photo_library_outlined),
-              title: const Text('Escolher da galeria'),
-              onTap: () => Navigator.pop(context, ImageSource.gallery),
-            ),
-            const SizedBox(height: 8),
-          ],
-        ),
-      ),
-    );
-    if (source == null || !mounted) return;
-
-    setState(() => _isPickingPhoto = true);
-    try {
-      final image = await _imagePicker.pickImage(
-        source: source,
-        imageQuality: 80,
-        maxWidth: 512,
-        maxHeight: 512,
-      );
-      if (image == null) return;
-
-      await _controller.saveProfilePhoto(await image.readAsBytes());
-    } catch (_) {
-      if (mounted) {
-        _showMessage('Não foi possível atualizar a foto do perfil.');
-      }
-    } finally {
-      if (mounted) setState(() => _isPickingPhoto = false);
-    }
-  }
-
-  void _openLogoutModal() {
-    showDialog<void>(
-      context: context,
-      builder: (dialogContext) => LogoutModal(
-        onConfirm: () async {
-          final navigator = Navigator.of(dialogContext);
-          await _controller.logout();
-          _loginController.isActiveCheckBox = false;
-          if (!mounted) return;
-          navigator.pop();
-          await navigator.pushNamedAndRemoveUntil(
-            LoginPage.route,
-            (route) => false,
-          );
-        },
-      ),
-    );
-  }
-
-  void _showMessage(String message) {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(message)));
-  }
-
-  @override
-  void dispose() {
-    _controller.removeListener(_handleProfileControllerChanged);
-    _controller.dispose();
-    super.dispose();
-  }
+class _ProfileView extends StatelessWidget {
+  const _ProfileView();
 
   @override
   Widget build(BuildContext context) {
+    final controller = context.watch<ProfileController>();
+
     return Scaffold(
       backgroundColor: AppColors.brownWhite,
       body: SafeArea(
-        child: _isLoading
-            ? const Center(child: CircularProgressIndicator())
+        child: controller.isLoading
+            ? Center(child: CircularProgressIndicator())
+            : controller.loadError != null
+            ? Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(controller.loadError!, textAlign: TextAlign.center),
+                    TextButton(
+                      onPressed: controller.loadProfile,
+                      child: const Text('Tentar novamente'),
+                    ),
+                  ],
+                ),
+              )
             : SingleChildScrollView(
                 child: Column(
                   children: [
-                    const AppProfileHeader(),
+                    AppProfileHeader(),
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(18, 18, 18, 30),
+                      padding: EdgeInsets.fromLTRB(18, 18, 18, 30),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -186,11 +73,11 @@ class _ProfilePageState extends State<ProfilePage> {
                             children: [
                               IconButton(
                                 onPressed: () => Navigator.maybePop(context),
-                                icon: const Icon(Icons.arrow_back_ios),
+                                icon: Icon(Icons.arrow_back_ios),
                                 color: AppColors.darkBrown,
                               ),
-                              const SizedBox(width: 2),
-                              const Text(
+                              SizedBox(width: 2),
+                              Text(
                                 'Meu perfil',
                                 style: TextStyle(
                                   color: AppColors.darkBrown,
@@ -206,13 +93,16 @@ class _ProfilePageState extends State<ProfilePage> {
                               alignment: Alignment.center,
                               children: [
                                 ProfileAvatar(
-                                  initials: _controller.initials,
-                                  imageBytes: _controller.profileImageBytes,
-                                  onEditPressed: _isPickingPhoto
+                                  initials: controller.initials,
+                                  imageBytes: controller.profileImageBytes,
+                                  onEditPressed: controller.isPickingPhoto
                                       ? () {}
-                                      : _chooseProfilePhoto,
+                                      : () => _chooseProfilePhoto(
+                                          context,
+                                          controller,
+                                        ),
                                 ),
-                                if (_isPickingPhoto)
+                                if (controller.isPickingPhoto)
                                   const SizedBox(
                                     width: 26,
                                     height: 26,
@@ -225,17 +115,19 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                           const SizedBox(height: 22),
                           ProfileForm(
-                            nameController: _controller.nameController,
-                            lastNameController: _controller.lastNameController,
-                            emailController: _controller.emailController,
-                            phoneController: _controller.phoneController,
-                            addressController: _controller.addressController,
+                            nameController: controller.nameController,
+                            lastNameController: controller.lastNameController,
+                            emailController: controller.emailController,
+                            phoneController: controller.phoneController,
+                            addressController: controller.addressController,
                           ),
                           const SizedBox(height: 24),
                           SizedBox(
                             width: double.infinity,
                             child: ElevatedButton(
-                              onPressed: _isSaving ? null : _saveProfile,
+                              onPressed: controller.isSaving
+                                  ? null
+                                  : () => _saveProfile(context, controller),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: AppColors.yellowAgility,
                                 foregroundColor: AppColors.darkBrown,
@@ -244,7 +136,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                               ),
-                              child: _isSaving
+                              child: controller.isSaving
                                   ? const SizedBox(
                                       width: 20,
                                       height: 20,
@@ -265,14 +157,15 @@ class _ProfilePageState extends State<ProfilePage> {
                           _actionTile(
                             icon: Icons.lock_outline,
                             title: 'Alterar senha',
-                            onTap: _openChangePasswordModal,
+                            onTap: () =>
+                                _openChangePasswordModal(context, controller),
                           ),
                           const SizedBox(height: 12),
                           _actionTile(
                             icon: Icons.logout,
                             title: 'Sair da conta',
                             color: AppColors.redDelivery,
-                            onTap: _openLogoutModal,
+                            onTap: () => _openLogoutModal(context, controller),
                           ),
                         ],
                       ),
@@ -282,6 +175,121 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
       ),
     );
+  }
+
+  Future<void> _saveProfile(
+    BuildContext context,
+    ProfileController controller,
+  ) async {
+    if (controller.nameController.text.trim().isEmpty &&
+        controller.lastNameController.text.trim().isEmpty) {
+      _showMessage(context, 'Informe seu nome para continuar.');
+      return;
+    }
+
+    try {
+      await controller.saveProfile();
+      if (context.mounted) {
+        _showMessage(context, 'Perfil atualizado com sucesso!');
+      }
+    } catch (_) {
+      if (context.mounted) {
+        _showMessage(context, 'Não foi possível salvar as alterações.');
+      }
+    }
+  }
+
+  void _openChangePasswordModal(
+    BuildContext context,
+    ProfileController controller,
+  ) {
+    showDialog<void>(
+      context: context,
+      builder: (context) => ChangePasswordModal(
+        currentPasswordController: controller.currentPasswordController,
+        newPasswordController: controller.newPasswordController,
+        confirmPasswordController: controller.confirmPasswordController,
+        currentPassword: controller.user?.password ?? '',
+        hasUsedPassword: controller.hasUsedPassword,
+        onConfirm: (password) async {
+          await controller.changePassword(password);
+          if (context.mounted) {
+            _showMessage(context, 'Senha alterada com sucesso!');
+          }
+        },
+      ),
+    );
+  }
+
+  Future<void> _chooseProfilePhoto(
+    BuildContext context,
+    ProfileController controller,
+  ) async {
+    final source = await showModalBottomSheet<ImageSource>(
+      context: context,
+      showDragHandle: true,
+      builder: (context) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: Icon(Icons.camera_alt_outlined),
+              title: Text('Tirar uma foto'),
+              onTap: () => Navigator.pop(context, ImageSource.camera),
+            ),
+            ListTile(
+              leading: Icon(Icons.photo_library_outlined),
+              title: Text('Escolher da galeria'),
+              onTap: () => Navigator.pop(context, ImageSource.gallery),
+            ),
+            SizedBox(height: 8),
+          ],
+        ),
+      ),
+    );
+    if (source == null || !context.mounted) return;
+
+    try {
+      final image = await ImagePicker().pickImage(
+        source: source,
+        imageQuality: 80,
+        maxWidth: 512,
+        maxHeight: 512,
+      );
+      if (image == null) return;
+
+      await controller.saveProfilePhoto(await image.readAsBytes());
+    } catch (_) {
+      if (context.mounted) {
+        _showMessage(context, 'Não foi possível atualizar a foto do perfil.');
+      }
+    }
+  }
+
+  void _openLogoutModal(BuildContext context, ProfileController controller) {
+    final loginController = context.read<LoginController>();
+    showDialog<void>(
+      context: context,
+      builder: (dialogContext) => LogoutModal(
+        onConfirm: () async {
+          final navigator = Navigator.of(dialogContext);
+          await controller.logout();
+          loginController.isActiveCheckBox = false;
+          if (!dialogContext.mounted) return;
+          navigator.pop();
+          await navigator.pushNamedAndRemoveUntil(
+            LoginPage.route,
+            (route) => false,
+          );
+        },
+      ),
+    );
+  }
+
+  void _showMessage(BuildContext context, String message) {
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
   Widget _actionTile({
