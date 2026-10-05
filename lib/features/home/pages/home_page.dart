@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:porco_eats/features/cart/controllers/cart_controller.dart';
@@ -14,14 +16,51 @@ import 'package:porco_eats/shared/widgets/app_text_style.dart';
 import 'package:porco_eats/shared/widgets/app_home_navigation_bar_customer.dart';
 import 'package:porco_eats/shared/widgets/app_home_navigation_bar_manager.dart';
 import 'package:provider/provider.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../shared/widgets/app_category_item.dart';
 import '../../../shared/widgets/app_home_header.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   static String route = '/home';
 
-  const HomePage({super.key});
+  const HomePage({super.key, this.showInitialSkeleton = false});
+
+  final bool showInitialSkeleton;
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  Timer? _initialSkeletonTimer;
+  bool _isShowingInitialSkeleton = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _isShowingInitialSkeleton = widget.showInitialSkeleton;
+
+    if (_isShowingInitialSkeleton) {
+      _initialSkeletonTimer = Timer(const Duration(seconds: 3), () {
+        if (mounted) {
+          setState(() => _isShowingInitialSkeleton = false);
+        }
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _initialSkeletonTimer?.cancel();
+    super.dispose();
+  }
+
+  void _openCategory(String categoryName) {
+    Navigator.of(
+      context,
+    ).pushNamed(CategoryProductsPage.route, arguments: categoryName);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,201 +96,265 @@ class HomePage extends StatelessWidget {
               : const AppHomeNavigationBarManager();
         },
       ),
-      body: SingleChildScrollView(
-        child: Consumer<HomeController>(
-          builder: (context, controller, child) => Column(
-            children: [
-              AppHomeHeader(),
-              SizedBox(height: 10),
-              AppSearchField(
-                hintText: 'O que você deseja comer hoje?',
-                enableFilter: true,
-              ),
-              SizedBox(height: 20),
+      body: Skeletonizer(
+        enabled: _isShowingInitialSkeleton,
+        child: SingleChildScrollView(
+          child: Consumer<HomeController>(
+            builder: (context, controller, child) => Column(
+              children: [
+                Skeleton.ignore(child: AppHomeHeader()),
+                SizedBox(height: 10),
+                AppSearchField(
+                  hintText: 'O que você deseja comer hoje?',
+                  enableFilter: true,
+                ),
+                SizedBox(height: 20),
 
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      SizedBox(width: 20),
+                      AppCategoryItem(
+                        label: 'Lanches',
+                        onTap: () => _openCategory('Lanches'),
+                        image:
+                            'assets/images/porco_eats_images/categories_icons/hamburguerIcon.png',
+                        imageWidth: 43,
+                        imageHeight: 43,
+                      ),
+
+                      SizedBox(width: 10),
+
+                      AppCategoryItem(
+                        label: 'Pizzas',
+                        onTap: () => _openCategory('Pizzas'),
+                        image:
+                            'assets/images/porco_eats_images/categories_icons/pizzaIcon.png',
+                        imageWidth: 43,
+                        imageHeight: 43,
+                      ),
+
+                      SizedBox(width: 10),
+
+                      AppCategoryItem(
+                        label: 'Sushi',
+                        onTap: () => _openCategory('Sushi'),
+                        image:
+                            'assets/images/porco_eats_images/categories_icons/sushiIcon.png',
+                        imageWidth: 50,
+                        imageHeight: 50,
+                      ),
+
+                      SizedBox(width: 10),
+
+                      AppCategoryItem(
+                        label: 'Executivos',
+                        onTap: () => _openCategory('Executivos'),
+                        image:
+                            'assets/images/porco_eats_images/categories_icons/executivoIcon.png',
+                        imageWidth: 100,
+                        imageHeight: 55,
+                        scale: 1.5,
+                      ),
+
+                      SizedBox(width: 10),
+                      AppCategoryItem(
+                        label: 'Porções',
+                        onTap: () => _openCategory('Porções'),
+                        image:
+                            'assets/images/porco_eats_images/categories_icons/porcoesIcon.png',
+                        imageWidth: 74,
+                        imageHeight: 58,
+                      ),
+
+                      SizedBox(width: 10),
+                      AppCategoryItem(
+                        label: 'Bebidas',
+                        onTap: () => _openCategory('Bebidas'),
+                        image:
+                            'assets/images/porco_eats_images/categories_icons/bebidaIcon.png',
+                        imageWidth: 60,
+                        imageHeight: 80,
+                      ),
+
+                      SizedBox(width: 10),
+                    ],
+                  ),
+                ),
+
+                SizedBox(height: 20),
+
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      SizedBox(width: 10),
+                      AppPromoCarousel(
+                        banners: [
+                          'assets/images/porco_eats_images/carousel_images/hamburguerCarousel.png',
+                          'assets/images/porco_eats_images/carousel_images/pizzaCarousel.png',
+                          'assets/images/porco_eats_images/carousel_images/sushiCarousel.png',
+                        ],
+                      ),
+                      SizedBox(width: 4),
+                      AppPromoCarousel(
+                        fit: BoxFit.contain,
+                        alignment: Alignment.centerLeft,
+                        width: 300,
+                        height: 127,
+                        banners: [
+                          'assets/images/porco_eats_images/carousel_images/firstcupomcarousel.png',
+                          'assets/images/porco_eats_images/carousel_images/secoundcupomcarousel.png',
+                        ],
+                      ),
+                      SizedBox(width: 10),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 20),
+
+                Row(
                   children: [
                     SizedBox(width: 20),
-                    AppCategoryItem(
-                      label: 'Lanches',
-                      onTap: () {},
-                      image:
-                          'assets/images/porco_eats_images/categories_icons/hamburguerIcon.png',
-                      imageWidth: 43,
-                      imageHeight: 43,
-                    ),
-
-                    SizedBox(width: 10),
-
-                    AppCategoryItem(
-                      label: 'Pizzas',
-                      onTap: () {},
-                      image:
-                          'assets/images/porco_eats_images/categories_icons/pizzaIcon.png',
-                      imageWidth: 43,
-                      imageHeight: 43,
-                    ),
-
-                    SizedBox(width: 10),
-
-                    AppCategoryItem(
-                      label: 'Sushi',
-                      onTap: () {},
-                      image:
-                          'assets/images/porco_eats_images/categories_icons/sushiIcon.png',
-                      imageWidth: 50,
-                      imageHeight: 50,
-                    ),
-
-                    SizedBox(width: 10),
-
-                    AppCategoryItem(
-                      label: 'Executivos',
-                      onTap: () {},
-                      image:
-                          'assets/images/porco_eats_images/categories_icons/executivoIcon.png',
-                      imageWidth: 100,
-                      imageHeight: 55,
-                      scale: 1.5,
-                    ),
-
-                    SizedBox(width: 10),
-                    AppCategoryItem(
-                      label: 'Porções',
-                      onTap: () {},
-                      image:
-                          'assets/images/porco_eats_images/categories_icons/porcoesIcon.png',
-                      imageWidth: 74,
-                      imageHeight: 58,
-                    ),
-
-                    SizedBox(width: 10),
-                    AppCategoryItem(
-                      label: 'Bebidas',
-                      onTap: () {},
-                      image:
-                          'assets/images/porco_eats_images/categories_icons/bebidaIcon.png',
-                      imageWidth: 60,
-                      imageHeight: 80,
-                    ),
-
-                    SizedBox(width: 10),
+                    Text('Ofertas para você', style: AppTextStyle.sectionTitle),
                   ],
                 ),
-              ),
 
-              SizedBox(height: 20),
+                SizedBox(height: 20),
 
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    SizedBox(width: 10),
-                    AppPromoCarousel(
-                      banners: [
-                        'assets/images/porco_eats_images/carousel_images/hamburguerCarousel.png',
-                        'assets/images/porco_eats_images/carousel_images/pizzaCarousel.png',
-                        'assets/images/porco_eats_images/carousel_images/sushiCarousel.png',
-                      ],
-                    ),
-                    SizedBox(width: 4),
-                    AppPromoCarousel(
-                      fit: BoxFit.contain,
-                      alignment: Alignment.centerLeft,
-                      width: 300,
-                      height: 127,
-                      banners: [
-                        'assets/images/porco_eats_images/carousel_images/firstcupomcarousel.png',
-                        'assets/images/porco_eats_images/carousel_images/secoundcupomcarousel.png',
-                      ],
-                    ),
-                    SizedBox(width: 10),
-                  ],
-                ),
-              ),
-              SizedBox(height: 20),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      SizedBox(width: 14),
+                      ...List.generate(controller.offerProducts.length, (
+                        index,
+                      ) {
+                        final product = controller.offerProducts[index];
+                        final badges = ['-20%', '♛ Mais pedido', '-15%'];
+                        final badgeColors = [
+                          Colors.red,
+                          Colors.orange,
+                          Colors.red,
+                        ];
 
-              Row(
-                children: [
-                  SizedBox(width: 20),
-                  Text('Ofertas para você', style: AppTextStyle.sectionTitle),
-                ],
-              ),
-
-              SizedBox(height: 20),
-
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    SizedBox(width: 14),
-                    ...List.generate(controller.offerProducts.length, (index) {
-                      final product = controller.offerProducts[index];
-                      final badges = ['-20%', '♛ Mais pedido', '-15%'];
-                      final badgeColors = [
-                        Colors.red,
-                        Colors.orange,
-                        Colors.red,
-                      ];
-
-                      return Padding(
-                        padding: const EdgeInsets.only(right: 32),
-                        child: AppProductCard(
-                          product: product,
-                          badgeLabel: badges[index],
-                          badgeColor: badgeColors[index],
-                          onTap: () =>
-                              _showProductBottomSheet(context, product),
-                        ),
-                      );
-                    }),
-                    SizedBox(width: 14),
-                  ],
-                ),
-              ),
-              SizedBox(height: 20),
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  SizedBox(width: 20),
-                  Container(
-                    child: Text(
-                      'Mais pedidos',
-                      style: AppTextStyle.sectionTitle,
-                    ),
+                        return Padding(
+                          padding: const EdgeInsets.only(right: 32),
+                          child: AppProductCard(
+                            product: product,
+                            badgeLabel: badges[index],
+                            badgeColor: badgeColors[index],
+                            onTap: () =>
+                                _showProductBottomSheet(context, product),
+                          ),
+                        );
+                      }),
+                      SizedBox(width: 14),
+                    ],
                   ),
-                ],
-              ),
-              SizedBox(height: 20),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    SizedBox(width: 14),
-                    ...List.generate(controller.mostOrderedProducts.length, (
-                      index,
-                    ) {
-                      final product = controller.mostOrderedProducts[index];
+                ),
+                SizedBox(height: 20),
 
-                      return Padding(
-                        padding: const EdgeInsets.only(right: 32),
-                        child: AppProductCard(
-                          product: product,
-                          onTap: () =>
-                              _showProductBottomSheet(context, product),
-                        ),
-                      );
-                    }),
-                    SizedBox(width: 14),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    SizedBox(width: 20),
+                    Container(
+                      child: Text(
+                        'Mais pedidos',
+                        style: AppTextStyle.sectionTitle,
+                      ),
+                    ),
                   ],
                 ),
-              ),
-            ],
+                SizedBox(height: 20),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      SizedBox(width: 14),
+                      ...List.generate(controller.mostOrderedProducts.length, (
+                        index,
+                      ) {
+                        final product = controller.mostOrderedProducts[index];
+
+                        return Padding(
+                          padding: const EdgeInsets.only(right: 32),
+                          child: AppProductCard(
+                            product: product,
+                            onTap: () =>
+                                _showProductBottomSheet(context, product),
+                          ),
+                        );
+                      }),
+                      SizedBox(width: 14),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class CategoryProductsPage extends StatelessWidget {
+  static const route = '/category-products';
+
+  const CategoryProductsPage({super.key, required this.categoryName});
+
+  final String categoryName;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.brownWhite,
+      appBar: AppBar(
+        backgroundColor: AppColors.brownWhite,
+        foregroundColor: AppColors.darkBrown,
+        elevation: 0,
+        leading: IconButton(
+          onPressed: () => Navigator.of(context).pop(),
+          icon: const Icon(Icons.arrow_back),
+        ),
+        title: Text(categoryName),
+      ),
+      bottomNavigationBar: Consumer<LoginController>(
+        builder: (context, controller, child) {
+          return controller.user?.role == UserRole.customer
+              ? const AppHomeNavigationBarCustomer()
+              : const AppHomeNavigationBarManager();
+        },
+      ),
+      body: Consumer<HomeController>(
+        builder: (context, controller, child) {
+          final products = controller.productsInCategory(categoryName);
+
+          if (products.isEmpty) {
+            return const Center(child: Text('Nenhum produto encontrado.'));
+          }
+
+          return GridView.builder(
+            padding: const EdgeInsets.all(16),
+            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+              maxCrossAxisExtent: 180,
+              mainAxisExtent: 190,
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 16,
+            ),
+            itemCount: products.length,
+            itemBuilder: (context, index) {
+              final product = products[index];
+              return AppProductCard(
+                product: product,
+                onTap: () => _showProductBottomSheet(context, product),
+              );
+            },
+          );
+        },
       ),
     );
   }

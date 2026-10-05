@@ -37,7 +37,9 @@ class _LoginSuccessVideoPageState extends State<LoginSuccessVideoPage>
     await Future<void>.delayed(const Duration(seconds: 8));
     if (!mounted) return;
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) => const HomePage()),
+      MaterialPageRoute(
+        builder: (context) => const HomePage(showInitialSkeleton: true),
+      ),
     );
   }
 

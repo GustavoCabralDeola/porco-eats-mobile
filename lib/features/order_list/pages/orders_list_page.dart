@@ -334,7 +334,7 @@ class OrdersPage extends StatelessWidget {
   }
 
   void _showStatusFilter(BuildContext context, OrderListController controller) {
-    showModalBottomSheet(
+    showModalBottomSheet<void>(
       context: context,
       backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
@@ -351,9 +351,7 @@ class OrdersPage extends StatelessWidget {
                 'Status do pedido',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
-
               const SizedBox(height: 16),
-
               _buildStatusOption(sheetContext, controller, null, 'Todos'),
               ...OrderStatus.values.map(
                 (status) => _buildStatusOption(
