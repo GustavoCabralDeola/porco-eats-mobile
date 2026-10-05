@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:porco_eats/models/customer_order.dart';
 import 'package:porco_eats/models/enums/order_status.dart';
@@ -6,7 +8,9 @@ import 'package:porco_eats/shared/widgets/app_colors.dart';
 
 class DashboardOrderController extends ChangeNotifier {
   DashboardOrderController({AppPreferences? preferences})
-    : _preferences = preferences ?? AppPreferences();
+    : _preferences = preferences ?? AppPreferences() {
+    unawaited(loadOrders());
+  }
 
   final AppPreferences _preferences;
   List<CustomerOrder> _orders = [];
