@@ -61,6 +61,8 @@ class Product {
   };
 
   factory Product.fromJson(Map<String, dynamic> json) {
+    final restaurant = json['restaurant'] ?? json['brand'];
+
     return Product(
       id: json['id'] ?? 0,
       name: json['name'] as String,

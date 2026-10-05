@@ -159,6 +159,7 @@ class Mocks {
       'imageUrl': 'assets/images/porco_eats_images/products/sushi20pecas.png',
       'price': 44.99,
       'category': 'Sushi',
+      'avaliation': 4.7,
       'description':
           'Combo com 20 peças variadas de sushi, ideal para uma refeição individual ou para experimentar diferentes sabores da culinária japonesa.',
     },
@@ -170,6 +171,7 @@ class Mocks {
           'assets/images/porco_eats_images/products/barcasushi60pecas.jpg',
       'price': 176.23,
       'category': 'Sushi',
+      'avaliation': 4.8,
       'description':
           'Barca com 60 peças variadas de sushi, combinando diferentes preparos da culinária japonesa em uma opção perfeita para compartilhar.',
     },
@@ -180,6 +182,7 @@ class Mocks {
       'imageUrl': 'assets/images/porco_eats_images/products/temaki.png',
       'price': 32.90,
       'category': 'Sushi',
+      'avaliation': 4.7,
       'description':
           'Temaki de 30cm recheado com salmão e ingredientes selecionados, preparado na hora e envolvido em alga nori.',
     },
@@ -191,6 +194,7 @@ class Mocks {
           'assets/images/porco_eats_images/products/tempeirojapones.png',
       'price': 12.00,
       'category': 'Sushi',
+      'avaliation': 4.5,
       'description':
           'Porção de 30g de tempero japonês com gengibre e wasabi, ideal para acompanhar sushis, sashimis e outros pratos da culinária japonesa.',
     },
@@ -216,6 +220,7 @@ class Mocks {
       'imageUrl': 'assets/images/porco_eats_images/products/bifeacebolado.jpg',
       'price': 40.90,
       'category': 'Executivos',
+      'avaliation': 4.7,
       'description':
           'Prato executivo com bife acebolado preparado na chapa, acompanhado de arroz branco e salada fresca.',
     },
@@ -226,6 +231,7 @@ class Mocks {
       'imageUrl': 'assets/images/porco_eats_images/products/peixegrelhado.png',
       'price': 49.90,
       'category': 'Executivos',
+      'avaliation': 4.6,
       'description':
           'Prato executivo com peixe grelhado, arroz branco e salada fresca, preparado para uma refeição leve e saborosa.',
     },
@@ -237,6 +243,7 @@ class Mocks {
           'assets/images/porco_eats_images/products/carneporcoassada.png',
       'price': 45.90,
       'category': 'Executivos',
+      'avaliation': 4.8,
       'description':
           'Prato executivo com carne de porco assada e bem temperada, acompanhada de arroz branco e salada fresca.',
     },

@@ -9,7 +9,7 @@ import 'package:porco_eats/shared/widgets/app_home_navigation_bar_customer.dart'
 import 'package:porco_eats/shared/widgets/app_home_navigation_bar_manager.dart';
 import 'package:provider/provider.dart';
 
-class OrdersPage extends StatefulWidget {
+class OrdersPage extends StatelessWidget {
   static String route = '/orders';
 
   const OrdersPage({super.key});
@@ -53,7 +53,6 @@ class _OrdersPageState extends State<OrdersPage> {
         },
       ),
 
-      
       appBar: AppBar(
         backgroundColor: const Color(0xFF351708),
         foregroundColor: Colors.white,
@@ -69,9 +68,9 @@ class _OrdersPageState extends State<OrdersPage> {
           icon: const Icon(Icons.arrow_back, size: 26),
         ),
 
-        title: _isSearching
+        title: controller.isSearching
             ? TextField(
-                controller: _searchController,
+                controller: controller.searchController,
                 autofocus: true,
                 style: const TextStyle(color: Colors.white, fontSize: 16),
                 decoration: const InputDecoration(
@@ -107,7 +106,6 @@ class _OrdersPageState extends State<OrdersPage> {
 
       body: Column(
         children: [
-         
           Padding(
             padding: const EdgeInsets.fromLTRB(20, 16, 12, 12),
             child: Row(
@@ -137,7 +135,7 @@ class _OrdersPageState extends State<OrdersPage> {
                   shape: const CircleBorder(),
                   child: IconButton(
                     tooltip: 'Abrir filtros',
-                    onPressed: _showAdvancedFilters,
+                    onPressed: () => _showAdvancedFilters(context, controller),
                     icon: const Icon(Icons.filter_list, size: 19),
                   ),
                 ),
@@ -145,7 +143,7 @@ class _OrdersPageState extends State<OrdersPage> {
             ),
           ),
 
-          Expanded(child: _buildOrdersList()),
+          Expanded(child: _buildOrdersList(controller)),
         ],
       ),
     );
@@ -166,14 +164,26 @@ class _OrdersPageState extends State<OrdersPage> {
               'Nenhum pedido encontrado',
               style: TextStyle(fontSize: 16, color: Color(0xFF292929)),
             ),
-          );
-        }
+          ],
+        ),
+      );
+    }
 
-        return ListView.builder(
-          padding: const EdgeInsets.fromLTRB(12, 4, 12, 20),
-          itemCount: orders.length,
-          itemBuilder: (context, index) {
-            final order = orders[index];
+    final orders = controller.filteredOrders;
+    if (orders.isEmpty) {
+      return const Center(
+        child: Text(
+          'Nenhum pedido encontrado',
+          style: TextStyle(fontSize: 16, color: Color(0xFF292929)),
+        ),
+      );
+    }
+
+    return ListView.builder(
+      padding: const EdgeInsets.fromLTRB(12, 4, 12, 20),
+      itemCount: orders.length,
+      itemBuilder: (context, index) {
+        final order = orders[index];
 
             return Padding(
               padding: const EdgeInsets.only(bottom: 10),
@@ -250,7 +260,10 @@ class _OrdersPageState extends State<OrdersPage> {
     );
   }
 
-  void _showAdvancedFilters() {
+  void _showAdvancedFilters(
+    BuildContext context,
+    OrderListController controller,
+  ) {
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -319,9 +332,8 @@ class _OrdersPageState extends State<OrdersPage> {
     );
   }
 
-  
-  void _showStatusFilter() {
-    showModalBottomSheet(
+  void _showStatusFilter(BuildContext context, OrderListController controller) {
+    showModalBottomSheet<void>(
       context: context,
       backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
@@ -338,13 +350,15 @@ class _OrdersPageState extends State<OrdersPage> {
                 'Status do pedido',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
-
               const SizedBox(height: 16),
-
-              _buildStatusOption(sheetContext, null, 'Todos'),
+              _buildStatusOption(sheetContext, controller, null, 'Todos'),
               ...OrderStatus.values.map(
-                (status) =>
-                    _buildStatusOption(sheetContext, status, status.label),
+                (status) => _buildStatusOption(
+                  sheetContext,
+                  controller,
+                  status,
+                  status.label,
+                ),
               ),
             ],
           ),
@@ -355,6 +369,7 @@ class _OrdersPageState extends State<OrdersPage> {
 
   Widget _buildStatusOption(
     BuildContext sheetContext,
+    OrderListController controller,
     OrderStatus? status,
     String label,
   ) {

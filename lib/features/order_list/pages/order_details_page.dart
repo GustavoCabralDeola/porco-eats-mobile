@@ -1,35 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:porco_eats/features/customer_order/controllers/customer_order_controller.dart';
+import 'package:porco_eats/features/order_list/controllers/order_details_controller.dart';
 import 'package:porco_eats/models/customer_order.dart';
 import 'package:porco_eats/models/enums/order_status.dart';
+import 'package:porco_eats/shared/widgets/app_colors.dart';
+import 'package:porco_eats/shared/widgets/app_elevated_button.dart';
+import 'package:provider/provider.dart';
 
-class OrderDetailsPage extends StatefulWidget {
+class OrderDetailsPage extends StatelessWidget {
+  final CustomerOrder customerOrder;
   static const String route = '/order-details';
+
+  const OrderDetailsPage({super.key, required this.customerOrder});
+
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) =>
+          OrderDetailsController(initialStatus: customerOrder.status),
+      child: _OrderDetailsView(customerOrder: customerOrder),
+    );
+  }
+}
+
+class _OrderDetailsView extends StatelessWidget {
+  const _OrderDetailsView({required this.customerOrder});
 
   final CustomerOrder customerOrder;
 
-  const OrderDetailsPage({
-    super.key,
-    required this.customerOrder,
-  });
-
-  @override
-  State<OrderDetailsPage> createState() => _OrderDetailsPageState();
-}
-
-class _OrderDetailsPageState extends State<OrderDetailsPage> {
-  late OrderStatus _selectedStatus;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _selectedStatus = widget.customerOrder.status;
-  }
-
   bool get _isCanceled {
-    return widget.customerOrder.status.name.toLowerCase() == 'cancelled' ||
-        widget.customerOrder.status.name.toLowerCase() == 'canceled' ||
-        widget.customerOrder.status.name.toLowerCase() == 'cancelado';
+    return customerOrder.status.name.toLowerCase() == 'cancelled' ||
+        customerOrder.status.name.toLowerCase() == 'canceled' ||
+        customerOrder.status.name.toLowerCase() == 'cancelado';
   }
 
   String _statusLabel(OrderStatus status) {
@@ -53,7 +55,8 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final order = widget.customerOrder;
+    final controller = context.watch<OrderDetailsController>();
+    final order = customerOrder;
 
     return Scaffold(
       backgroundColor: const Color(0xFFF7F6F3),
@@ -94,22 +97,14 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                   const Spacer(),
                   IconButton(
                     onPressed: () {},
-                    icon: const Icon(
-                      Icons.more_horiz,
-                      color: Colors.white,
-                    ),
+                    icon: const Icon(Icons.more_horiz, color: Colors.white),
                   ),
                 ],
               ),
             ),
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(
-                  16,
-                  18,
-                  16,
-                  24,
-                ),
+                padding: const EdgeInsets.fromLTRB(16, 18, 16, 24),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -155,9 +150,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                       value: 'R\$ ${order.total.toStringAsFixed(2)}',
                     ),
                     const SizedBox(height: 22),
-                    const Divider(
-                      color: Color(0xFFE5E2DE),
-                    ),
+                    const Divider(color: Color(0xFFE5E2DE)),
                     const SizedBox(height: 16),
                     const Text(
                       'Itens do pedido',
@@ -167,15 +160,13 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                       ),
                     ),
                     const SizedBox(height: 12),
-                    ...order.products.map(
-                      (product) {
-                        return _buildProductItem(
-                          product.name,
-                          product.price,
-                          product.imageUrl,
-                        );
-                      },
-                    ),
+                    ...order.products.map((product) {
+                      return _buildProductItem(
+                        product.name,
+                        product.price,
+                        product.imageUrl,
+                      );
+                    }),
                     const SizedBox(height: 18),
                     if (_isCanceled) _buildCanceledMessage(),
                     const SizedBox(height: 18),
@@ -188,33 +179,24 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                     ),
                     const SizedBox(height: 10),
                     _buildStatusDropdown(
+                      controller: controller,
                       enabled: !_isCanceled,
                     ),
                     const SizedBox(height: 12),
                     SizedBox(
                       width: double.infinity,
-                      height: 48,
-                      child: OutlinedButton(
+                      child: AppElevatedButton(
+                        label: 'Confirmar alteração',
+                        labelStyle: TextStyle(
+                          color: AppColors.fullWhite,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        type: ButtonType.filled,
+                        height: 48,
+                        borderRadius: BorderRadius.circular(10),
                         onPressed: _isCanceled
                             ? null
-                            : () {
-                                _confirmStatus();
-                              },
-                        style: OutlinedButton.styleFrom(
-                          side: const BorderSide(
-                            color: Color(0xFF9E9E9E),
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                        child: const Text(
-                          'Confirmar alteração',
-                          style: TextStyle(
-                            color: Color(0xFF351708),
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
+                            : () => _confirmStatus(context, controller),
                       ),
                     ),
                   ],
@@ -229,10 +211,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
 
   Widget _buildStatusChip(OrderStatus status) {
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 12,
-        vertical: 7,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
       decoration: BoxDecoration(
         color: _statusColor(status),
         borderRadius: BorderRadius.circular(20),
@@ -273,11 +252,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(
-          icon,
-          size: 21,
-          color: const Color(0xFF4A4A4A),
-        ),
+        Icon(icon, size: 21, color: const Color(0xFF4A4A4A)),
         const SizedBox(width: 8),
         Expanded(
           child: Column(
@@ -285,10 +260,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
             children: [
               Text(
                 title,
-                style: const TextStyle(
-                  fontSize: 10,
-                  color: Color(0xFF777777),
-                ),
+                style: const TextStyle(fontSize: 10, color: Color(0xFF777777)),
               ),
               const SizedBox(height: 2),
               Text(
@@ -305,21 +277,11 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
     );
   }
 
-  Widget _buildProductItem(
-    String name,
-    double price,
-    String imageUrl,
-  ) {
+  Widget _buildProductItem(String name, double price, String imageUrl) {
     return Container(
-      padding: const EdgeInsets.symmetric(
-        vertical: 10,
-      ),
+      padding: const EdgeInsets.symmetric(vertical: 10),
       decoration: const BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: Color(0xFFE8E5E1),
-          ),
-        ),
+        border: Border(bottom: BorderSide(color: Color(0xFFE8E5E1))),
       ),
       child: Row(
         children: [
@@ -334,7 +296,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
             child: Image.network(
               imageUrl,
               fit: BoxFit.cover,
-              errorBuilder: (_, __, ___) {
+              errorBuilder: (_, _, _) {
                 return const Icon(
                   Icons.fastfood_outlined,
                   color: Color(0xFF8D3B25),
@@ -366,11 +328,8 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
             ),
           ),
           Text(
-            '${widget.customerOrder.quantity}x',
-            style: const TextStyle(
-              fontSize: 11,
-              color: Color(0xFF777777),
-            ),
+            '${customerOrder.quantity}x',
+            style: const TextStyle(fontSize: 11, color: Color(0xFF777777)),
           ),
         ],
       ),
@@ -387,11 +346,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
       ),
       child: const Row(
         children: [
-          Icon(
-            Icons.lock_outline,
-            color: Color(0xFFE52B2B),
-            size: 20,
-          ),
+          Icon(Icons.lock_outline, color: Color(0xFFE52B2B), size: 20),
           SizedBox(width: 10),
           Expanded(
             child: Text(
@@ -409,62 +364,64 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
   }
 
   Widget _buildStatusDropdown({
+    required OrderDetailsController controller,
     required bool enabled,
   }) {
     return Container(
       width: double.infinity,
       height: 48,
-      padding: const EdgeInsets.symmetric(
-        horizontal: 14,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 14),
       decoration: BoxDecoration(
-        color: enabled
-            ? Colors.white
-            : const Color(0xFFEDEBE8),
-        border: Border.all(
-          color: const Color(0xFFD5D1CC),
-        ),
+        color: enabled ? Colors.white : const Color(0xFFEDEBE8),
+        border: Border.all(color: const Color(0xFFD5D1CC)),
         borderRadius: BorderRadius.circular(10),
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<OrderStatus>(
-          value: _selectedStatus,
+          value: controller.selectedStatus,
           isExpanded: true,
           onChanged: enabled
               ? (status) {
                   if (status == null) return;
 
-                  setState(() {
-                    _selectedStatus = status;
-                  });
+                  controller.setSelectedStatus(status);
                 }
               : null,
-          items: OrderStatus.values.map(
-            (status) {
-              return DropdownMenuItem<OrderStatus>(
-                value: status,
-                child: Text(
-                  _statusLabel(status),
-                  style: const TextStyle(
-                    fontSize: 12,
-                  ),
-                ),
-              );
-            },
-          ).toList(),
+          items: OrderStatus.values.map((status) {
+            return DropdownMenuItem<OrderStatus>(
+              value: status,
+              child: Text(
+                _statusLabel(status),
+                style: const TextStyle(fontSize: 12),
+              ),
+            );
+          }).toList(),
         ),
       ),
     );
   }
 
-  void _confirmStatus() {
-    if (_selectedStatus == widget.customerOrder.status) {
+  Future<void> _confirmStatus(
+    BuildContext context,
+    OrderDetailsController controller,
+  ) async {
+    final selectedStatus = controller.selectedStatus;
+    if (selectedStatus == customerOrder.status) {
       return;
     }
 
-    Navigator.pop(
-      context,
-      _selectedStatus,
-    );
+    try {
+      await context.read<CustomerOrderController>().updateOrderStatus(
+        customerOrder.id,
+        selectedStatus,
+      );
+      if (!context.mounted) return;
+      Navigator.pop(context, selectedStatus);
+    } catch (error) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Não foi possível atualizar o status: $error')),
+      );
+    }
   }
 }

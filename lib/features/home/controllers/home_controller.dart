@@ -128,4 +128,10 @@ class HomeController extends ChangeNotifier {
     _selectedCategories.clear();
     notifyListeners();
   }
+
+  @override
+  void dispose() {
+    _initialSkeletonTimer?.cancel();
+    super.dispose();
+  }
 }

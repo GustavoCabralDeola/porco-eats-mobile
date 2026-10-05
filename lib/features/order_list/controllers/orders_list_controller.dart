@@ -2,12 +2,33 @@ import 'package:flutter/foundation.dart';
 import 'package:porco_eats/models/customer_order.dart';
 import 'package:porco_eats/models/enums/order_status.dart';
 import 'package:porco_eats/shared/services/app_remember_me.dart';
+import 'dart:async';
+
+import 'package:flutter/material.dart';
+import 'package:porco_eats/features/customer_order/controllers/customer_order_controller.dart';
+import 'package:porco_eats/models/customer_order.dart';
+import 'package:porco_eats/models/enums/order_status.dart';
 
 class OrderListController extends ChangeNotifier {
+  OrderListController(this._orderController) {
+    searchController.addListener(_notifySearchChanged);
+    _orderController.addListener(_syncOrders);
+    _syncOrders();
+    unawaited(_orderController.loadOrders());
+  }
+
+  final CustomerOrderController _orderController;
+  final TextEditingController searchController = TextEditingController();
   final List<CustomerOrder> _orders = [];
   OrderStatus? _selectedStatus;
   String? _selectedCustomer;
   String _searchQuery = '';
+
+  OrderStatus? _selectedStatus;
+  String? _selectedCustomer;
+  bool _isSearching = false;
+  bool _isLoading = false;
+  String? _errorMessage;
 
   List<CustomerOrder> get allOrders => List.unmodifiable(_orders);
   OrderStatus? get selectedStatus => _selectedStatus;
@@ -77,6 +98,10 @@ class OrderListController extends ChangeNotifier {
     if (_searchQuery == query) return;
     _searchQuery = query;
     notifyListeners();
+  }
+
+  void clearSearch() {
+    searchController.clear();
   }
 
   void clearFilters() {
