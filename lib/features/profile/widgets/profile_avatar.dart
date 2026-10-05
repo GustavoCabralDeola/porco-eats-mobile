@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'dart:typed_data';
-import 'package:porco_eats/shared/widgets/app_colors.dart';
 
 class ProfileAvatar extends StatelessWidget {
   const ProfileAvatar({
@@ -25,7 +24,7 @@ class ProfileAvatar extends StatelessWidget {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             gradient: const LinearGradient(
-              colors: [AppColors.title, AppColors.darkBrown],
+              colors: [Color(0xFF4A2B1A), Color(0xFF2D170B)],
             ),
             boxShadow: [
               BoxShadow(
@@ -61,7 +60,7 @@ class ProfileAvatar extends StatelessWidget {
           child: Tooltip(
             message: 'Alterar foto do perfil',
             child: Material(
-              color: AppColors.yellowAgility,
+              color: const Color(0xFFFFB719),
               shape: const CircleBorder(),
               child: InkWell(
                 onTap: onEditPressed,
@@ -76,7 +75,7 @@ class ProfileAvatar extends StatelessWidget {
                   child: const Icon(
                     Icons.camera_alt,
                     size: 20,
-                    color: AppColors.darkBrown,
+                    color: Color(0xFF2D170B),
                   ),
                 ),
               ),

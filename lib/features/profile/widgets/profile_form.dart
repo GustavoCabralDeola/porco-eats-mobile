@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:porco_eats/shared/widgets/app_colors.dart';
 
 class ProfileForm extends StatelessWidget {
   const ProfileForm({
@@ -20,22 +19,7 @@ class ProfileForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Seus dados',
-          style: TextStyle(
-            color: AppColors.darkBrown,
-            fontSize: 17,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        const SizedBox(height: 4),
-        const Text(
-          'Assim podemos cuidar melhor da sua entrega.',
-          style: TextStyle(color: AppColors.subTitle, fontSize: 13),
-        ),
-        const SizedBox(height: 18),
         Row(
           children: [
             Expanded(
@@ -83,18 +67,18 @@ class ProfileForm extends StatelessWidget {
     return InputDecoration(
       labelText: label,
       filled: true,
-      fillColor: AppColors.fullWhite,
+      fillColor: Colors.white,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: AppColors.borderInputColor),
+        borderSide: const BorderSide(color: Color(0xFFD9D7D3)),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: AppColors.borderInputColor),
+        borderSide: const BorderSide(color: Color(0xFFD9D7D3)),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: AppColors.yellowAgility, width: 2),
+        borderSide: const BorderSide(color: Color(0xFFFFB719), width: 2),
       ),
     );
   }

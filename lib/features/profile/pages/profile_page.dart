@@ -5,10 +5,8 @@ import 'package:porco_eats/features/login/pages/login_page.dart';
 import 'package:porco_eats/features/profile/controllers/profile_controller.dart';
 import 'package:porco_eats/features/profile/widgets/change_password_modal.dart';
 import 'package:porco_eats/features/profile/widgets/logout_modal.dart';
-import 'package:porco_eats/features/profile/widgets/profile_actions.dart';
+import 'package:porco_eats/features/profile/widgets/profile_avatar.dart';
 import 'package:porco_eats/features/profile/widgets/profile_form.dart';
-import 'package:porco_eats/features/profile/widgets/profile_introduction.dart';
-import 'package:porco_eats/features/profile/widgets/profile_save_button.dart';
 import 'package:porco_eats/shared/widgets/app_colors.dart';
 import 'package:porco_eats/shared/widgets/app_profile_header.dart';
 import 'package:provider/provider.dart';
@@ -184,16 +182,48 @@ class _ProfilePageState extends State<ProfilePage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          ProfileIntroduction(
-                            initials: _controller.initials,
-                            imageBytes: _controller.profileImageBytes,
-                            isPickingPhoto: _isPickingPhoto,
-                            onBack: () => Navigator.maybePop(context),
-                            onEditPhoto: _isPickingPhoto
-                                ? () {}
-                                : _chooseProfilePhoto,
+                          Row(
+                            children: [
+                              IconButton(
+                                onPressed: () => Navigator.maybePop(context),
+                                icon: const Icon(Icons.arrow_back_ios),
+                                color: AppColors.darkBrown,
+                              ),
+                              const SizedBox(width: 2),
+                              const Text(
+                                'Meu perfil',
+                                style: TextStyle(
+                                  color: AppColors.darkBrown,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
+                            ],
                           ),
-                          const SizedBox(height: 28),
+
+                          Center(
+                            child: Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                ProfileAvatar(
+                                  initials: _controller.initials,
+                                  imageBytes: _controller.profileImageBytes,
+                                  onEditPressed: _isPickingPhoto
+                                      ? () {}
+                                      : _chooseProfilePhoto,
+                                ),
+                                if (_isPickingPhoto)
+                                  const SizedBox(
+                                    width: 26,
+                                    height: 26,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 22),
                           ProfileForm(
                             nameController: _controller.nameController,
                             lastNameController: _controller.lastNameController,
@@ -202,14 +232,47 @@ class _ProfilePageState extends State<ProfilePage> {
                             addressController: _controller.addressController,
                           ),
                           const SizedBox(height: 24),
-                          ProfileSaveButton(
-                            isSaving: _isSaving,
-                            onPressed: _saveProfile,
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              onPressed: _isSaving ? null : _saveProfile,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.yellowAgility,
+                                foregroundColor: AppColors.darkBrown,
+                                minimumSize: const Size(0, 54),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              child: _isSaving
+                                  ? const SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                      ),
+                                    )
+                                  : const Text(
+                                      'Salvar alterações',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 18,
+                                      ),
+                                    ),
+                            ),
                           ),
-                          const SizedBox(height: 24),
-                          ProfileActions(
-                            onChangePassword: _openChangePasswordModal,
-                            onLogout: _openLogoutModal,
+                          const SizedBox(height: 18),
+                          _actionTile(
+                            icon: Icons.lock_outline,
+                            title: 'Alterar senha',
+                            onTap: _openChangePasswordModal,
+                          ),
+                          const SizedBox(height: 12),
+                          _actionTile(
+                            icon: Icons.logout,
+                            title: 'Sair da conta',
+                            color: AppColors.redDelivery,
+                            onTap: _openLogoutModal,
                           ),
                         ],
                       ),
@@ -221,4 +284,26 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
+  Widget _actionTile({
+    required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+    Color color = AppColors.darkBrown,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: const Color(0xFFE7E2DA)),
+      ),
+      child: ListTile(
+        contentPadding: EdgeInsets.zero,
+        leading: Icon(icon, color: color),
+        title: Text(title, style: TextStyle(color: color)),
+        trailing: Icon(Icons.chevron_right, color: color),
+        onTap: onTap,
+      ),
+    );
+  }
 }
