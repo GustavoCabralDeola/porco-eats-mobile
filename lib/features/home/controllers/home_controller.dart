@@ -13,6 +13,7 @@ enum ProductsViewState { loading, sucess, error }
 class HomeController extends ChangeNotifier {
   Timer? _initialSkeletonTimer;
   bool _isShowingInitialSkeleton = false;
+  bool _hasShownInitialSkeleton = false;
 
   List<Category> listCategories = [];
   List<Product> listProducts = [];
@@ -49,8 +50,9 @@ class HomeController extends ChangeNotifier {
   bool get isShowingInitialSkeleton => _isShowingInitialSkeleton;
 
   void showInitialSkeleton() {
-    if (_isShowingInitialSkeleton) return;
+    if (_isShowingInitialSkeleton || _hasShownInitialSkeleton) return;
 
+    _hasShownInitialSkeleton = true;
     _isShowingInitialSkeleton = true;
     notifyListeners();
 
