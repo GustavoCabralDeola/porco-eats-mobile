@@ -69,8 +69,8 @@ class _SplashScreenState extends State<SplashScreen>
     if (status != AnimationStatus.completed || !mounted) return;
 
     final destination = widget.hasRememberedUser
-        ? const HomePage()
-        : const LoginPage();
+        ? HomePage()
+        : LoginPage();
 
     Navigator.of(context).pushAndRemoveUntil(
       PageRouteBuilder(

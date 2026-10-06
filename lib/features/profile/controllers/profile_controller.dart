@@ -26,6 +26,10 @@ class ProfileController extends ChangeNotifier {
   final SharedPreferencesAsync _profilePreferences;
 
   User? user;
+  bool isLoading = true;
+  bool isSaving = false;
+  bool isPickingPhoto = false;
+  String? loadError;
   final nameController = TextEditingController();
   final lastNameController = TextEditingController();
   final emailController = TextEditingController();
@@ -46,70 +50,94 @@ class ProfileController extends ChangeNotifier {
   }
 
   Future<void> loadProfile() async {
+    isLoading = true;
+    loadError = null;
+    notifyListeners();
+
     final currentUser = user;
-    if (currentUser == null) return;
+    try {
+      if (currentUser == null) return;
 
-    final key = _detailsKey(currentUser.email);
-    final value = await _profilePreferences.getString(key);
-    if (value != null) {
-      try {
-        final details = jsonDecode(value) as Map<String, dynamic>;
-        phoneController.text = details['phone'] as String? ?? '';
-        addressController.text = details['address'] as String? ?? '';
-      } on FormatException {
-        await _profilePreferences.remove(key);
-      } on TypeError {
-        await _profilePreferences.remove(key);
+      final key = _detailsKey(currentUser.email);
+      final value = await _profilePreferences.getString(key);
+      if (value != null) {
+        try {
+          final details = jsonDecode(value) as Map<String, dynamic>;
+          phoneController.text = details['phone'] as String? ?? '';
+          addressController.text = details['address'] as String? ?? '';
+        } on FormatException {
+          await _profilePreferences.remove(key);
+        } on TypeError {
+          await _profilePreferences.remove(key);
+        }
       }
-    }
 
-    final photo = await _profilePreferences.getString(
-      _photoKey(currentUser.email),
-    );
-    if (photo != null) {
-      try {
-        profileImageBytes = base64Decode(photo);
-      } on FormatException {
-        await _profilePreferences.remove(_photoKey(currentUser.email));
+      final photo = await _profilePreferences.getString(
+        _photoKey(currentUser.email),
+      );
+      if (photo != null) {
+        try {
+          profileImageBytes = base64Decode(photo);
+        } on FormatException {
+          await _profilePreferences.remove(_photoKey(currentUser.email));
+        }
       }
+    } catch (error) {
+      loadError = 'Não foi possível carregar os dados do perfil: $error';
+    } finally {
+      isLoading = false;
+      notifyListeners();
     }
   }
 
   Future<void> saveProfilePhoto(Uint8List imageBytes) async {
-    final currentUser = user;
-    if (currentUser == null) return;
-
-    await _profilePreferences.setString(
-      _photoKey(currentUser.email),
-      base64Encode(imageBytes),
-    );
-    profileImageBytes = imageBytes;
+    isPickingPhoto = true;
     notifyListeners();
+    try {
+      final currentUser = user;
+      if (currentUser == null) return;
+
+      await _profilePreferences.setString(
+        _photoKey(currentUser.email),
+        base64Encode(imageBytes),
+      );
+      profileImageBytes = imageBytes;
+    } finally {
+      isPickingPhoto = false;
+      notifyListeners();
+    }
   }
 
   Future<void> saveProfile() async {
-    final currentUser = user;
-    if (currentUser == null) return;
+    isSaving = true;
+    notifyListeners();
+    try {
+      final currentUser = user;
+      if (currentUser == null) return;
 
-    final fullName = [
-      nameController.text.trim(),
-      lastNameController.text.trim(),
-    ].where((part) => part.isNotEmpty).join(' ');
-    final updatedUser = User(
-      name: fullName,
-      email: currentUser.email,
-      password: currentUser.password,
-      role: currentUser.role,
-    );
+      final fullName = [
+        nameController.text.trim(),
+        lastNameController.text.trim(),
+      ].where((part) => part.isNotEmpty).join(' ');
+      final updatedUser = User(
+        name: fullName,
+        email: currentUser.email,
+        password: currentUser.password,
+        role: currentUser.role,
+      );
 
-    await _profilePreferences.setString(
-      _detailsKey(currentUser.email),
-      jsonEncode({
-        'phone': phoneController.text.trim(),
-        'address': addressController.text.trim(),
-      }),
-    );
-    await _persistUser(updatedUser);
+      await _profilePreferences.setString(
+        _detailsKey(currentUser.email),
+        jsonEncode({
+          'phone': phoneController.text.trim(),
+          'address': addressController.text.trim(),
+        }),
+      );
+      await _persistUser(updatedUser);
+    } finally {
+      isSaving = false;
+      notifyListeners();
+    }
   }
 
   Future<void> changePassword(String password) async {
