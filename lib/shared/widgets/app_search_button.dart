@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:porco_eats/shared/widgets/app_colors.dart';
 
 class AppSearchButton extends StatelessWidget {
-  const AppSearchButton({super.key});
+  const AppSearchButton({super.key, this.onPressed});
+
+  final VoidCallback? onPressed;
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: () {
-        // Abrir dialog do filtro (fazer)
-      },
+      onPressed: onPressed,
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.transparent,
         shadowColor: Colors.transparent,

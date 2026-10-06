@@ -7,10 +7,17 @@ class AppSearchField extends StatelessWidget {
     super.key,
     required this.hintText,
     this.enableFilter = false,
+    this.controller,
+    this.onChanged,
+    this.onFilterPressed,
   });
 
   final String hintText;
   final bool? enableFilter;
+  final TextEditingController? controller;
+  final ValueChanged<String>? onChanged;
+  final VoidCallback? onFilterPressed;
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -19,8 +26,9 @@ class AppSearchField extends StatelessWidget {
         children: [
           Expanded(
             child: TextFormField(
+              controller: controller,
               keyboardType: TextInputType.webSearch,
-
+              onChanged: onChanged,
               decoration: InputDecoration(
                 hintText: hintText,
                 hintStyle: TextStyle(color: AppColors.subTitle, fontSize: 14),
@@ -39,7 +47,10 @@ class AppSearchField extends StatelessWidget {
             ),
           ),
 
-          if (enableFilter == true) ...[SizedBox(width: 5), AppSearchButton()],
+          if (enableFilter == true) ...[
+            const SizedBox(width: 5),
+            AppSearchButton(onPressed: onFilterPressed),
+          ],
         ],
       ),
     );

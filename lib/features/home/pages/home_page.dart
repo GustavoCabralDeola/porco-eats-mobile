@@ -39,15 +39,13 @@ class HomePage extends StatelessWidget {
 
     return Scaffold(
       floatingActionButton: Consumer<CartController>(
-        builder: (context, controller, child) {
-          if (controller.productsInCart.isEmpty) {
-            return SizedBox.shrink();
+        builder: (context, cart, child) {
+          if (cart.productsInCart.isEmpty) {
+            return const SizedBox.shrink();
           }
 
           return FloatingActionButton.extended(
-            onPressed: () {
-              Navigator.pushNamed(context, CartPage.route);
-            },
+            onPressed: () => Navigator.pushNamed(context, CartPage.route),
             backgroundColor: AppColors.redDelivery,
             foregroundColor: AppColors.fullWhite,
             icon: const Icon(Icons.shopping_cart),
@@ -109,66 +107,6 @@ class HomePage extends StatelessWidget {
             ),
     );
   }
-}
-
-// class CategoryProductsPage extends StatelessWidget {
-//   static const route = '/category-products';
-
-//   const CategoryProductsPage({super.key, required this.categoryName});
-
-//   final String categoryName;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       backgroundColor: AppColors.brownWhite,
-//       appBar: AppBar(
-//         backgroundColor: AppColors.brownWhite,
-//         foregroundColor: AppColors.darkBrown,
-//         elevation: 0,
-//         leading: IconButton(
-//           onPressed: () => Navigator.of(context).pop(),
-//           icon: const Icon(Icons.arrow_back),
-//         ),
-//         title: Text(categoryName),
-//       ),
-//       bottomNavigationBar: Consumer<LoginController>(
-//         builder: (context, controller, child) {
-//           return controller.user?.role == UserRole.customer
-//               ? AppHomeNavigationBarCustomer()
-//               : AppHomeNavigationBarManager();
-//         },
-//       ),
-//       body: Consumer<HomeController>(
-//         builder: (context, controller, child) {
-//           final products = controller.productsInCategory(categoryName);
-
-//           if (products.isEmpty) {
-//             return const Center(child: Text('Nenhum produto encontrado.'));
-//           }
-
-//           return GridView.builder(
-//             padding: const EdgeInsets.all(16),
-//             gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-//               maxCrossAxisExtent: 180,
-//               mainAxisExtent: 190,
-//               crossAxisSpacing: 12,
-//               mainAxisSpacing: 16,
-//             ),
-//             itemCount: products.length,
-//             itemBuilder: (context, index) {
-//               final product = products[index];
-//               return AppProductCard(
-//                 product: product,
-//                 onTap: () => _showProductBottomSheet(context, product),
-//               );
-//             },
-//           );
-//         },
-//       ),
-//     );
-//   }
-// }
 
 void _showProductBottomSheet(BuildContext context, Product product) {
   showModalBottomSheet(
@@ -193,7 +131,7 @@ void _showProductBottomSheet(BuildContext context, Product product) {
           ),
           child: Column(
             children: [
-              // PUXADOR
+            
               Padding(
                 padding: const EdgeInsets.only(top: 10, bottom: 20),
                 child: Container(
@@ -407,9 +345,7 @@ void _showProductBottomSheet(BuildContext context, Product product) {
   );
 }
 
-String _productDetailImage(Product product) {
-  if (product.id == 8) {
-    return 'assets/images/porco_eats_images/products/pizzacalabresa.jpg';
+  void _openProduct(Product product) {
+    ProductDetailsSheet.show(context, product);
   }
-  return product.imageUrl;
 }

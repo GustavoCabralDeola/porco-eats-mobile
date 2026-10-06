@@ -19,7 +19,8 @@ class AppRoutes {
     LoginPage.route: (context) => LoginPage(),
     HomePage.route: (context) => HomePage(),
     CategoryProductsPage.route: (context) => CategoryProductsPage(
-      categoryName: ModalRoute.of(context)!.settings.arguments! as String,
+      categoryName:
+          ModalRoute.of(context)!.settings.arguments! as String,
     ),
     RecoverPage.route: (context) => RecoverPage(),
     SignupPage.route: (context) => SignupPage(),

@@ -1,14 +1,6 @@
-import 'dart:async';
-
-import 'package:flutter/material.dart';
-import 'package:porco_eats/models/category.dart';
-import 'package:porco_eats/models/customer_order.dart';
+import 'package:flutter/foundation.dart' show ChangeNotifier;
 import 'package:porco_eats/models/product.dart';
 import 'package:porco_eats/shared/mock.dart';
-
-enum CategoriesViewState { loading, sucess, error }
-
-enum ProductsViewState { loading, sucess, error }
 
 class HomeController extends ChangeNotifier {
   Timer? _initialSkeletonTimer;
@@ -21,33 +13,76 @@ class HomeController extends ChangeNotifier {
 
   Mocks mockJson = Mocks();
 
-  List<Product> _productsByIds(List<int> ids) {
-    return ids
-        .map(
-          (id) => Product.fromJson(
-            mockJson.productsJson.firstWhere((item) => item['id'] == id),
-          ),
+  static const List<int> _offerProductIds = [1, 8, 12];
+  static const List<int> _mostOrderedProductIds = [17, 1, 21];
+
+  static const List<String> availableCategories = [
+    'Lanches',
+    'Pizzas',
+    'Sushi',
+    'Executivos',
+    'Porções',
+    'Bebidas',
+  ];
+
+  late final List<Product> _products;
+
+  String _searchText = '';
+  final Set<String> _selectedCategories = {};
+
+  String get searchText => _searchText;
+  Set<String> get selectedCategories =>
+      Set<String>.unmodifiable(_selectedCategories);
+
+  List<Product> get offerProducts => _findProductsByIds(_offerProductIds);
+  List<Product> get mostOrderedProducts =>
+      _findProductsByIds(_mostOrderedProductIds);
+  List<String> get recommendedStores =>
+      _products.map((product) => product.restaurant).toSet().toList()..sort();
+
+  List<Product> productsForCategory(String category) {
+    return _products
+        .where(
+          (product) =>
+              _normalizeCategory(product.category) ==
+              _normalizeCategory(category),
         )
-        .toList();
+        .toList(growable: false);
   }
 
-  List<Product> get offerProducts => _productsByIds([1, 8, 12]);
+  bool get hasCatalogFilters =>
+      _searchText.trim().isNotEmpty || _selectedCategories.isNotEmpty;
 
-  List<Product> get mostOrderedProducts => _productsByIds([17, 1, 21]);
+  List<Product> get filteredProducts {
+    final visibleProducts = _products
+        .where(_matchesSelectedCategory)
+        .where(_matchesSearch)
+        .toList(growable: false);
 
-  List<Product> productsInCategory(String categoryName) {
-    final category = categoryName == 'Pizzas' ? 'Pizza' : categoryName;
+    final offers = visibleProducts.where(
+      (product) => _offerProductIds.contains(product.id),
+    );
+    final otherProducts = visibleProducts.where(
+      (product) => !_offerProductIds.contains(product.id),
+    );
 
-    return mockJson.productsJson
-        .where((item) => item['category'] == category)
-        .map(Product.fromJson)
-        .toList();
+    return [...offers, ...otherProducts];
   }
 
-  CategoriesViewState categoriesViewState = CategoriesViewState.loading;
-  ProductsViewState productsViewState = ProductsViewState.loading;
+  List<Product> _findProductsByIds(List<int> ids) {
+    return ids
+        .map((id) => _products.firstWhere((product) => product.id == id))
+        .toList(growable: false);
+  }
 
-  bool get isShowingInitialSkeleton => _isShowingInitialSkeleton;
+  bool _matchesSelectedCategory(Product product) {
+    if (_selectedCategories.isEmpty) return true;
+
+    return _selectedCategories.any(
+      (category) =>
+          _normalizeCategory(product.category) == _normalizeCategory(category),
+    );
+  }
 
   void showInitialSkeleton() {
     if (_isShowingInitialSkeleton || _hasShownInitialSkeleton) return;
@@ -56,39 +91,44 @@ class HomeController extends ChangeNotifier {
     _isShowingInitialSkeleton = true;
     notifyListeners();
 
-    _initialSkeletonTimer = Timer(const Duration(seconds: 3), () {
-      _isShowingInitialSkeleton = false;
-      _initialSkeletonTimer = null;
-      notifyListeners();
-    });
+  String _normalizeCategory(String category) {
+    final normalizedCategory = category.trim().toLowerCase();
+    return normalizedCategory == 'pizzas' ? 'pizza' : normalizedCategory;
   }
 
-  void changeCategoriesState(CategoriesViewState state) {
-    categoriesViewState = state;
+  void setSearchText(String value) {
+    if (_searchText == value) return;
+
+    _searchText = value;
     notifyListeners();
   }
 
-  void changeProductsState(ProductsViewState state) {
-    productsViewState = state;
-    notifyListeners();
-  }
-
-  Future<void> getProducts() async {
-    changeProductsState(ProductsViewState.loading);
-
-    await Future.delayed(const Duration(seconds: 3));
-
-    try {
-      listProducts = mockJson.productsJson.map((item) {
-        return Product.fromJson(item);
-      }).toList();
-
-      changeProductsState(ProductsViewState.sucess);
-      print(productsViewState);
-    } catch (e) {
-      changeProductsState(ProductsViewState.error);
-      print(productsViewState);
+  void toggleCategory(String category) {
+    if (!_selectedCategories.add(category)) {
+      _selectedCategories.remove(category);
     }
+
+    notifyListeners();
+  }
+
+  void setSelectedCategories(Set<String> categories) {
+    final hasSameCategories =
+        _selectedCategories.length == categories.length &&
+        _selectedCategories.containsAll(categories);
+    if (hasSameCategories) return;
+
+    _selectedCategories
+      ..clear()
+      ..addAll(categories);
+    notifyListeners();
+  }
+
+  void clearCatalogFilters() {
+    if (_searchText.isEmpty && _selectedCategories.isEmpty) return;
+
+    _searchText = '';
+    _selectedCategories.clear();
+    notifyListeners();
   }
 
   @override

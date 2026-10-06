@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:porco_eats/features/order_list/widgets/order_card.dart';
 import 'package:porco_eats/features/login/controllers/login_controller.dart';
+import 'package:porco_eats/features/order_list/widgets/order_list_filter.dart';
 import 'package:porco_eats/features/order_list/controllers/orders_list_controller.dart';
 import 'package:porco_eats/models/enums/order_status.dart';
 import 'package:porco_eats/models/enums/user_role.dart';
@@ -14,17 +16,41 @@ class OrdersPage extends StatelessWidget {
   const OrdersPage({super.key});
 
   @override
+  State<OrdersPage> createState() => _OrdersPageState();
+}
+
+class _OrdersPageState extends State<OrdersPage> {
+  final TextEditingController _searchController = TextEditingController();
+  bool _isSearching = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    context.read<OrderListController>().loadOrdersFromStorage();
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final controller = context.watch<OrderListController>();
-    final hasFilters = controller.hasFilters;
+    final orderController = context.watch<OrderListController>();
+    final hasFilters =
+        orderController.selectedStatus != null ||
+        orderController.selectedCustomer != null ||
+        orderController.searchQuery.trim().isNotEmpty;
 
     return Scaffold(
       backgroundColor: const Color(0xFFF7F6F3),
       bottomNavigationBar: Consumer<LoginController>(
         builder: (context, controller, child) {
           return controller.user?.role == UserRole.customer
-              ? const AppHomeNavigationBarCustomer(selectedIndex: 1)
-              : const AppHomeNavigationBarManager(selectedIndex: 1);
+              ? const AppHomeNavigationBarCustomer()
+              : const AppHomeNavigationBarManager();
         },
       ),
 
