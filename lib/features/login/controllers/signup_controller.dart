@@ -5,41 +5,47 @@ import 'package:porco_eats/shared/services/app_remember_me.dart';
 
 class SignupController extends ChangeNotifier {
   final AppPreferences _preferences;
-  final RegExp _emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+
+  final RegExp _emailRegex = RegExp(r'^[\w-\.]+@gmail\.com$');
 
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmarSenhaController =
+  final TextEditingController confirmPasswordController =
       TextEditingController();
 
   bool isLoading = false;
   bool isPasswordVisible = false;
   bool isConfirmPasswordVisible = false;
-  String? cadastroErrorMessage;
-  UserRole selectedRole = UserRole.customer;
+  String? signupErrorMessage;
+  UserRole? selectedRole;
 
   SignupController({AppPreferences? preferences})
     : _preferences = preferences ?? AppPreferences();
 
-  bool get podeCadastrar {
+  bool get canSignup {
     return nameController.text.isNotEmpty &&
         emailController.text.isNotEmpty &&
         passwordController.text.isNotEmpty &&
-        confirmarSenhaController.text.isNotEmpty &&
-        validarNome() == null &&
-        validarEmail() == null &&
-        validarSenha() == null &&
-        validarConfirmarSenha() == null;
+        confirmPasswordController.text.isNotEmpty &&
+        selectedRole != null &&
+        validateName() == null &&
+        validateEmail() == null &&
+        validatePassword() == null &&
+        validateConfirmPassword() == null;
   }
 
   List<Map<String, bool>> getPasswordRequirements() {
     return [
-      {'minLength': passwordController.text.length >= 6},
+      {'minLength': passwordController.text.length >= 5},
       {'hasUpperCase': passwordController.text.contains(RegExp(r'[A-Z]'))},
       {'hasLowerCase': passwordController.text.contains(RegExp(r'[a-z]'))},
       {'hasNumber': passwordController.text.contains(RegExp(r'[0-9]'))},
     ];
+  }
+
+  void onFieldChanged() {
+    notifyListeners();
   }
 
   void setSelectedRole(UserRole role) {
@@ -47,11 +53,7 @@ class SignupController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void onFieldChanged() {
-    notifyListeners();
-  }
-
-  String? validarNome() {
+  String? validateName() {
     if (nameController.text.isEmpty) {
       return 'O nome não pode estar vazio';
     }
@@ -63,7 +65,7 @@ class SignupController extends ChangeNotifier {
     return null;
   }
 
-  String? validarEmail() {
+  String? validateEmail() {
     if (emailController.text.isEmpty) {
       return 'O email não pode estar vazio';
     }
@@ -75,13 +77,13 @@ class SignupController extends ChangeNotifier {
     return null;
   }
 
-  String? validarSenha() {
+  String? validatePassword() {
     if (passwordController.text.isEmpty) {
       return 'A senha não pode estar vazia';
     }
 
-    if (passwordController.text.length < 6) {
-      return 'A senha deve ter pelo menos 6 caracteres';
+    if (passwordController.text.length < 5) {
+      return 'A senha deve conter no mínimo 5 caracteres';
     }
 
     if (!passwordController.text.contains(RegExp(r'[A-Z]'))) {
@@ -99,12 +101,12 @@ class SignupController extends ChangeNotifier {
     return null;
   }
 
-  String? validarConfirmarSenha() {
-    if (confirmarSenhaController.text.isEmpty) {
+  String? validateConfirmPassword() {
+    if (confirmPasswordController.text.isEmpty) {
       return 'A confirmação de senha não pode estar vazia';
     }
 
-    if (confirmarSenhaController.text != passwordController.text) {
+    if (confirmPasswordController.text != passwordController.text) {
       return 'As senhas não coincidem';
     }
 
@@ -121,17 +123,17 @@ class SignupController extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> cadastrarUsuario() async {
-    cadastroErrorMessage = null;
+  Future<bool> signupUser() async {
+    signupErrorMessage = null;
 
-    if (!podeCadastrar) {
+    if (!canSignup) {
       return false;
     }
 
-    if (validarNome() != null ||
-        validarEmail() != null ||
-        validarSenha() != null ||
-        validarConfirmarSenha() != null) {
+    if (validateName() != null ||
+        validateEmail() != null ||
+        validatePassword() != null ||
+        validateConfirmPassword() != null) {
       return false;
     }
 
@@ -139,17 +141,12 @@ class SignupController extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final registeredUsers = List<User>.from(
-        await _preferences.loadRegisteredUsers(),
-      );
-      final emailAtual = emailController.text.trim().toLowerCase();
+      final registeredUser = await _preferences.loadRegisteredUser();
+      final currentEmail = emailController.text.trim().toLowerCase();
 
-      final usuarioExistente = registeredUsers.any(
-        (user) => user.email.trim().toLowerCase() == emailAtual,
-      );
-
-      if (usuarioExistente) {
-        cadastroErrorMessage = 'Já existe um cadastro com este e-mail.';
+      if (registeredUser != null &&
+          registeredUser.email.trim().toLowerCase() == currentEmail) {
+        signupErrorMessage = 'Já existe um cadastro com este e-mail.';
         isLoading = false;
         notifyListeners();
         return false;
@@ -157,16 +154,16 @@ class SignupController extends ChangeNotifier {
 
       await Future.delayed(const Duration(seconds: 2));
 
-      final novoUsuario = User(
+      final newUser = User(
         name: nameController.text.trim(),
         email: emailController.text.trim(),
         password: passwordController.text.trim(),
-        role: selectedRole,
+        role: selectedRole ?? UserRole.customer,
       );
 
-      // Adicionar o novo usuário à lista
-      registeredUsers.add(novoUsuario);
-      await _preferences.saveRegisteredUsers(registeredUsers);
+      await Future.delayed(const Duration(seconds: 2));
+
+      await _preferences.saveRegisteredUser(newUser);
 
       isLoading = false;
       notifyListeners();
@@ -176,7 +173,7 @@ class SignupController extends ChangeNotifier {
       isLoading = false;
       notifyListeners();
 
-      cadastroErrorMessage = 'Não foi possível concluir o cadastro.';
+      signupErrorMessage = 'Não foi possível concluir o cadastro.';
       return false;
     }
   }
@@ -186,7 +183,7 @@ class SignupController extends ChangeNotifier {
     nameController.dispose();
     emailController.dispose();
     passwordController.dispose();
-    confirmarSenhaController.dispose();
+    confirmPasswordController.dispose();
 
     super.dispose();
   }
