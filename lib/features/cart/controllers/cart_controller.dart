@@ -7,6 +7,7 @@ import 'package:porco_eats/models/user.dart';
 
 class CartController extends ChangeNotifier {
   final List<Product> productsInCart = [];
+  bool isLoading = false;
 
   List<Product> get uniqueProductsInCart {
     final uniqueProducts = <Product>[];
@@ -19,6 +20,11 @@ class CartController extends ChangeNotifier {
     }
 
     return uniqueProducts;
+  }
+
+  void changeIsLoading(bool value) {
+    isLoading = value;
+    notifyListeners();
   }
 
   void addToCart(Product product) {
@@ -78,19 +84,28 @@ class CartController extends ChangeNotifier {
       return null;
     }
 
-    final order = CustomerOrder(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
-      products: List<Product>.from(productsInCart),
-      total: totalPrice,
-      status: OrderStatus.received,
-      quantity: productsInCart.length,
-      customerName: user.name.trim(),
-      customerEmail: user.email.trim(),
-      createdAt: DateTime.now(),
-    );
+    changeIsLoading(true);
 
-    await orderController.addOrder(order);
-    clearCart();
-    return order;
+    try {
+      final order = CustomerOrder(
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        products: List<Product>.from(productsInCart),
+        total: totalPrice,
+        status: OrderStatus.received,
+        quantity: productsInCart.length,
+        customerName: user.name.trim(),
+        customerEmail: user.email.trim(),
+        createdAt: DateTime.now(),
+      );
+
+      await Future.delayed(const Duration(seconds: 2));
+      await orderController.addOrder(order);
+
+      clearCart();
+
+      return order;
+    } finally {
+      changeIsLoading(false);
+    }
   }
 }
