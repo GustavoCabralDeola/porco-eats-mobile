@@ -111,6 +111,65 @@ class HomePage extends StatelessWidget {
   }
 }
 
+// class CategoryProductsPage extends StatelessWidget {
+//   static const route = '/category-products';
+
+//   const CategoryProductsPage({super.key, required this.categoryName});
+
+//   final String categoryName;
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       backgroundColor: AppColors.brownWhite,
+//       appBar: AppBar(
+//         backgroundColor: AppColors.brownWhite,
+//         foregroundColor: AppColors.darkBrown,
+//         elevation: 0,
+//         leading: IconButton(
+//           onPressed: () => Navigator.of(context).pop(),
+//           icon: const Icon(Icons.arrow_back),
+//         ),
+//         title: Text(categoryName),
+//       ),
+//       bottomNavigationBar: Consumer<LoginController>(
+//         builder: (context, controller, child) {
+//           return controller.user?.role == UserRole.customer
+//               ? AppHomeNavigationBarCustomer()
+//               : AppHomeNavigationBarManager();
+//         },
+//       ),
+//       body: Consumer<HomeController>(
+//         builder: (context, controller, child) {
+//           final products = controller.productsInCategory(categoryName);
+
+//           if (products.isEmpty) {
+//             return const Center(child: Text('Nenhum produto encontrado.'));
+//           }
+
+//           return GridView.builder(
+//             padding: const EdgeInsets.all(16),
+//             gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+//               maxCrossAxisExtent: 180,
+//               mainAxisExtent: 190,
+//               crossAxisSpacing: 12,
+//               mainAxisSpacing: 16,
+//             ),
+//             itemCount: products.length,
+//             itemBuilder: (context, index) {
+//               final product = products[index];
+//               return AppProductCard(
+//                 product: product,
+//                 onTap: () => _showProductBottomSheet(context, product),
+//               );
+//             },
+//           );
+//         },
+//       ),
+//     );
+//   }
+// }
+
 void _showProductBottomSheet(BuildContext context, Product product) {
   showModalBottomSheet(
     context: context,

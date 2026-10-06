@@ -7,23 +7,20 @@ import 'package:porco_eats/models/enums/order_status.dart';
 import 'package:porco_eats/shared/widgets/app_colors.dart';
 
 class DashboardOrderController extends ChangeNotifier {
-  DashboardOrderController(CustomerOrderController customerOrderController)
-    : _customerOrderController = customerOrderController {
-    _customerOrderController.addListener(_syncOrders);
-    _syncOrders();
-    unawaited(loadOrders());
+  DashboardOrderController(this._orderController) {
+    _orderController.addListener(_syncOrders);
+    unawaited(_orderController.loadOrders());
   }
 
-  final CustomerOrderController _customerOrderController;
-  List<CustomerOrder> _orders = [];
+  final CustomerOrderController _orderController;
 
-  bool isLoading = true;
-  String? errorMessage;
+  bool get isLoading => _orderController.isLoading;
+  String? get errorMessage => _orderController.errorMessage;
 
-  List<CustomerOrder> get orders => List.unmodifiable(_orders);
+  List<CustomerOrder> get orders => _orderController.orders;
 
   List<CustomerOrder> get ongoingOrders => List.unmodifiable(
-    _orders.where(
+    orders.where(
       (order) =>
           order.status != OrderStatus.delivered &&
           order.status != OrderStatus.cancelled,
@@ -31,27 +28,15 @@ class DashboardOrderController extends ChangeNotifier {
   );
 
   List<CustomerOrder> get recentOrders => List.unmodifiable(
-    _orders
-        .where(
-          (order) =>
-              order.status == OrderStatus.delivered ||
-              order.status == OrderStatus.cancelled,
-        )
-        .take(3),
+    orders.where((order) => order.status == OrderStatus.delivered),
   );
 
   int countForStatus(OrderStatus status) =>
-      _orders.where((order) => order.status == status).length;
+      orders.where((order) => order.status == status).length;
 
-  Future<void> loadOrders({bool forceRefresh = true}) =>
-      _customerOrderController.loadOrders(forceRefresh: forceRefresh);
+  Future<void> loadOrders() => _orderController.loadOrders(forceRefresh: true);
 
-  void _syncOrders() {
-    _orders = List<CustomerOrder>.of(_customerOrderController.orders);
-    isLoading = _customerOrderController.isLoading;
-    errorMessage = _customerOrderController.errorMessage;
-    notifyListeners();
-  }
+  void _syncOrders() => notifyListeners();
 
   Color colorForStatus(OrderStatus status) {
     switch (status) {
@@ -78,7 +63,7 @@ class DashboardOrderController extends ChangeNotifier {
 
   @override
   void dispose() {
-    _customerOrderController.removeListener(_syncOrders);
+    _orderController.removeListener(_syncOrders);
     super.dispose();
   }
 }

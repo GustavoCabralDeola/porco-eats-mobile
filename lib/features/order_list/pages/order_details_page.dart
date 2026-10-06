@@ -95,7 +95,7 @@ class _OrderDetailsView extends StatelessWidget {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  const Spacer(),
+                  Spacer(),
                   IconButton(
                     onPressed: () {},
                     icon: const Icon(Icons.more_horiz, color: Colors.white),
@@ -166,6 +166,7 @@ class _OrderDetailsView extends StatelessWidget {
                         product.name,
                         product.price,
                         product.imageUrl,
+                        product.observation,
                       );
                     }),
                     const SizedBox(height: 18),
@@ -278,7 +279,14 @@ class _OrderDetailsView extends StatelessWidget {
     );
   }
 
-  Widget _buildProductItem(String name, double price, String imageUrl) {
+  Widget _buildProductItem(
+    String name,
+    double price,
+    String imageUrl,
+    String? observation,
+  ) {
+    final observationText = observation?.trim();
+
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 10),
       decoration: const BoxDecoration(
@@ -316,6 +324,16 @@ class _OrderDetailsView extends StatelessWidget {
                     color: Color(0xFF666666),
                   ),
                 ),
+                if (observationText != null && observationText.isNotEmpty) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    'Observação: $observationText',
+                    style: const TextStyle(
+                      fontSize: 10,
+                      color: Color(0xFF777777),
+                    ),
+                  ),
+                ],
               ],
             ),
           ),
