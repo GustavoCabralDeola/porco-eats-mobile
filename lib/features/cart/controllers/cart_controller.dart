@@ -1,19 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:porco_eats/features/customer_order/controllers/customer_order_controller.dart';
 import 'package:porco_eats/models/customer_order.dart';
 import 'package:porco_eats/models/enums/order_status.dart';
 import 'package:porco_eats/models/product.dart';
 import 'package:porco_eats/models/user.dart';
-import 'package:porco_eats/shared/services/app_remember_me.dart';
 
 class CartController extends ChangeNotifier {
-  final AppPreferences _preferences;
   final List<Product> productsInCart = [];
-  List<CustomerOrder> orders = [];
-
-  CartController({AppPreferences? preferences})
-    : _preferences = preferences ?? AppPreferences() {
-    loadOrders();
-  }
+  bool isLoading = false;
 
   List<Product> get uniqueProductsInCart {
     final uniqueProducts = <Product>[];
@@ -28,16 +22,8 @@ class CartController extends ChangeNotifier {
     return uniqueProducts;
   }
 
-  Future<void> loadOrders() async {
-    orders = List<CustomerOrder>.from(await _preferences.loadOrders());
-    print(
-      'Pedidos salvos no localStorage: ${orders.map((order) => order.toJson()).toList()}',
-    );
-    notifyListeners();
-  }
-
-  Future<void> _saveOrders() async {
-    await _preferences.saveOrders(orders);
+  void changeIsLoading(bool value) {
+    isLoading = value;
     notifyListeners();
   }
 
@@ -90,22 +76,36 @@ class CartController extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> checkout(User user) async {
+  Future<CustomerOrder?> checkout(
+    User user,
+    CustomerOrderController orderController,
+  ) async {
     if (productsInCart.isEmpty) {
-      return;
+      return null;
     }
 
-    final order = CustomerOrder(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
-      products: List<Product>.from(productsInCart),
-      total: totalPrice,
-      status: OrderStatus.received,
-      quantity: productsInCart.length,
-      customerName: user.name,
-    );
+    changeIsLoading(true);
 
-    orders.insert(0, order);
-    await _saveOrders();
-    clearCart();
+    try {
+      final order = CustomerOrder(
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        products: List<Product>.from(productsInCart),
+        total: totalPrice,
+        status: OrderStatus.received,
+        quantity: productsInCart.length,
+        customerName: user.name.trim(),
+        customerEmail: user.email.trim(),
+        createdAt: DateTime.now(),
+      );
+
+      await Future.delayed(const Duration(seconds: 2));
+      await orderController.addOrder(order);
+
+      clearCart();
+
+      return order;
+    } finally {
+      changeIsLoading(false);
+    }
   }
 }

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:porco_eats/features/cart/controllers/cart_controller.dart';
+import 'package:porco_eats/features/customer_order/controllers/customer_order_controller.dart';
 import 'package:porco_eats/features/Dashboard/controllers/dashboard_order_controller.dart';
 import 'package:porco_eats/features/home/controllers/home_controller.dart';
 import 'package:porco_eats/features/login/controllers/login_controller.dart';
 import 'package:porco_eats/features/login/controllers/signup_controller.dart';
 import 'package:porco_eats/features/order_list/controllers/orders_list_controller.dart';
+import 'package:porco_eats/features/payment/controllers/payment_controller.dart';
 import 'package:porco_eats/features/splash/pages/splash_screen_page.dart';
 import 'package:porco_eats/models/user.dart';
 import 'package:porco_eats/routes.dart';
@@ -47,12 +49,14 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (context) {
-            return OrderListController();
+            return CustomerOrderController(preferences: preferences);
           },
         ),
         ChangeNotifierProvider(
           create: (context) {
-            return DashboardOrderController(preferences: preferences);
+            return DashboardOrderController(
+              context.read<CustomerOrderController>(),
+            );
           },
         ),
         ChangeNotifierProvider(
@@ -63,6 +67,11 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (context) {
             return PaymentController();
+          },
+        ),
+        ChangeNotifierProvider(
+          create: (context) {
+            return OrderListController(context.read<CustomerOrderController>());
           },
         ),
       ],

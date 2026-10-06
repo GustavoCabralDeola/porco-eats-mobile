@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:porco_eats/features/order_list/widgets/order_card.dart';
 import 'package:porco_eats/features/login/controllers/login_controller.dart';
@@ -9,7 +11,13 @@ import 'package:porco_eats/shared/widgets/app_home_navigation_bar_customer.dart'
 import 'package:porco_eats/shared/widgets/app_home_navigation_bar_manager.dart';
 import 'package:provider/provider.dart';
 
-class OrdersPage extends StatefulWidget {
+import '../../../shared/widgets/app_order_list.dart';
+import '../../../shared/widgets/filters/app_advanced_filter_bottom_sheet.dart';
+import '../../../shared/widgets/filters/app_order_filters.dart';
+import '../../../shared/widgets/filters/app_status_filter_bottom_sheet.dart';
+import '../../../shared/widgets/order_app_bar.dart';
+
+class OrdersPage extends StatelessWidget {
   static String route = '/orders';
 
   const OrdersPage({super.key});
@@ -192,7 +200,7 @@ class _OrdersPageState extends State<OrdersPage> {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (sheetContext) {
@@ -250,12 +258,15 @@ class _OrdersPageState extends State<OrdersPage> {
     );
   }
 
-  void _showAdvancedFilters() {
+  void _showAdvancedFilters(
+    BuildContext context,
+    OrderListController controller,
+  ) {
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(
+      backgroundColor: AppColors.fullWhite,
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (sheetContext) {
@@ -319,12 +330,11 @@ class _OrdersPageState extends State<OrdersPage> {
     );
   }
 
-  
-  void _showStatusFilter() {
-    showModalBottomSheet(
+  void _showStatusFilter(BuildContext context, OrderListController controller) {
+    showModalBottomSheet<void>(
       context: context,
       backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (sheetContext) {

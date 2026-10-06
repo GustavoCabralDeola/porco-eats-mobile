@@ -8,6 +8,8 @@ class CustomerOrder {
   final OrderStatus status;
   int quantity;
   final String customerName;
+  final String? customerEmail;
+  final DateTime? createdAt;
 
   CustomerOrder({
     required this.id,
@@ -16,6 +18,8 @@ class CustomerOrder {
     required this.status,
     this.quantity = 1,
     required this.customerName,
+    this.customerEmail,
+    this.createdAt,
   });
 
   Product? get firstProduct => products.isNotEmpty ? products.first : null;
@@ -27,6 +31,8 @@ class CustomerOrder {
     'status': status.name,
     'quantity': quantity,
     'customerName': customerName,
+    'customerEmail': customerEmail,
+    'createdAt': createdAt?.toIso8601String(),
   };
 
   factory CustomerOrder.fromJson(Map<String, dynamic> json) {
@@ -41,7 +47,26 @@ class CustomerOrder {
         orElse: () => OrderStatus.received,
       ),
       quantity: json['quantity'] as int? ?? 1,
-      customerName: json['customerName']?.toString() ?? '',
+      customerName: _customerNameFromJson(json),
+      customerEmail: json['customerEmail'] as String?,
+      createdAt: DateTime.tryParse(json['createdAt'] as String? ?? ''),
     );
+  }
+
+  static String _customerNameFromJson(Map<String, dynamic> json) {
+    final name = json['customerName'] ?? json['customer_name'] ?? json['name'];
+    if (name is String && name.trim().isNotEmpty) {
+      return name.trim();
+    }
+
+    final customer = json['customer'];
+    if (customer is String && customer.trim().isNotEmpty) {
+      return customer.trim();
+    }
+    if (customer is Map && customer['name'] is String) {
+      return (customer['name'] as String).trim();
+    }
+
+    return '';
   }
 }

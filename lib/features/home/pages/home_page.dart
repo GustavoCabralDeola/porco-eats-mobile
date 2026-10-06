@@ -20,13 +20,39 @@ import 'package:porco_eats/shared/widgets/app_text_style.dart';
 import 'package:porco_eats/shared/widgets/app_home_navigation_bar_customer.dart';
 import 'package:porco_eats/shared/widgets/app_home_navigation_bar_manager.dart';
 import 'package:provider/provider.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../shared/widgets/app_home_header.dart';
 
 class HomePage extends StatefulWidget {
   static const String route = '/home';
 
-  const HomePage({super.key});
+  const HomePage({super.key, this.showInitialSkeleton = false});
+
+  final bool showInitialSkeleton;
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  @override
+  void initState() {
+    super.initState();
+    if (widget.showInitialSkeleton) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          context.read<HomeController>().showInitialSkeleton();
+        }
+      });
+    }
+  }
+
+  void _openCategory(String categoryName) {
+    Navigator.of(
+      context,
+    ).pushNamed(CategoryProductsPage.route, arguments: categoryName);
+  }
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -51,6 +77,10 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final isShowingInitialSkeleton = context
+        .watch<HomeController>()
+        .isShowingInitialSkeleton;
+
     return Scaffold(
       floatingActionButton: Consumer<CartController>(
         builder: (context, cart, child) {

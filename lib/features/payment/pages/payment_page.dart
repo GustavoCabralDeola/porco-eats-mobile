@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:porco_eats/features/cart/controllers/cart_controller.dart';
+import 'package:porco_eats/features/customer_order/controllers/customer_order_controller.dart';
+import 'package:porco_eats/features/customer_order/pages/customer_order_page.dart';
 import 'package:porco_eats/features/login/controllers/login_controller.dart';
 import 'package:porco_eats/features/payment/controllers/payment_controller.dart';
 import 'package:porco_eats/shared/widgets/app_colors.dart';
+import 'package:porco_eats/shared/widgets/app_elevated_button.dart';
 import 'package:provider/provider.dart';
 
 class PaymentPage extends StatelessWidget {
@@ -313,31 +316,57 @@ class PaymentPage extends StatelessWidget {
                       return SizedBox(
                         width: double.infinity,
                         height: 56,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            controller.checkout(loginController.user!);
-                            print(controller.orders);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.redDelivery,
-                            foregroundColor: AppColors.fullWhite,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(14),
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                'Finalizar pedido',
-                                style: GoogleFonts.poppins(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
+                        child: AppElevatedButton(
+                          onPressed: () async {
+                            final user = loginController.user;
+
+                            if (user == null) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                    'Entre na sua conta para finalizar o pedido.',
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(width: 8),
-                              const Icon(Icons.arrow_forward_rounded, size: 22),
-                            ],
+                              );
+                              return;
+                            }
+
+                            try {
+                              final order = await controller.checkout(
+                                user,
+                                context.read<CustomerOrderController>(),
+                              );
+
+                              if (!context.mounted || order == null) return;
+
+                              Navigator.pushReplacementNamed(
+                                context,
+                                CustomerOrderPage.route,
+                              );
+                            } catch (error) {
+                              if (!context.mounted) return;
+
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    'Não foi possível finalizar o pedido: $error',
+                                  ),
+                                ),
+                              );
+                            }
+                          },
+                          label: 'Finalizar pedido',
+                          isLoading: controller.isLoading,
+                          type: ButtonType.filled,
+                          backgroundColor: AppColors.darkBrown,
+                          borderRadius: BorderRadius.circular(14),
+                          height: 56,
+                          suffixIcon: Icons.arrow_forward_rounded,
+                          suffixIconSize: 22,
+                          labelStyle: GoogleFonts.poppins(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.fullWhite,
                           ),
                         ),
                       );
