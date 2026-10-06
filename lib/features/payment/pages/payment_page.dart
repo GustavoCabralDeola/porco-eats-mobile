@@ -6,6 +6,7 @@ import 'package:porco_eats/features/customer_order/pages/customer_order_page.dar
 import 'package:porco_eats/features/login/controllers/login_controller.dart';
 import 'package:porco_eats/features/payment/controllers/payment_controller.dart';
 import 'package:porco_eats/shared/widgets/app_colors.dart';
+import 'package:porco_eats/shared/widgets/app_elevated_button.dart';
 import 'package:provider/provider.dart';
 
 class PaymentPage extends StatelessWidget {
@@ -315,9 +316,10 @@ class PaymentPage extends StatelessWidget {
                       return SizedBox(
                         width: double.infinity,
                         height: 56,
-                        child: ElevatedButton(
+                        child: AppElevatedButton(
                           onPressed: () async {
                             final user = loginController.user;
+
                             if (user == null) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
@@ -334,13 +336,16 @@ class PaymentPage extends StatelessWidget {
                                 user,
                                 context.read<CustomerOrderController>(),
                               );
+
                               if (!context.mounted || order == null) return;
+
                               Navigator.pushReplacementNamed(
                                 context,
                                 CustomerOrderPage.route,
                               );
                             } catch (error) {
                               if (!context.mounted) return;
+
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text(
@@ -350,26 +355,18 @@ class PaymentPage extends StatelessWidget {
                               );
                             }
                           },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.redDelivery,
-                            foregroundColor: AppColors.fullWhite,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(14),
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                'Finalizar pedido',
-                                style: GoogleFonts.poppins(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              const SizedBox(width: 8),
-                              const Icon(Icons.arrow_forward_rounded, size: 22),
-                            ],
+                          label: 'Finalizar pedido',
+                          isLoading: controller.isLoading,
+                          type: ButtonType.filled,
+                          backgroundColor: AppColors.darkBrown,
+                          borderRadius: BorderRadius.circular(14),
+                          height: 56,
+                          suffixIcon: Icons.arrow_forward_rounded,
+                          suffixIconSize: 22,
+                          labelStyle: GoogleFonts.poppins(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.fullWhite,
                           ),
                         ),
                       );
