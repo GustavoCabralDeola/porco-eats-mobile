@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:porco_eats/features/Dashboard/pages/dashboard_order_page.dart';
+import 'package:porco_eats/features/dashboard/pages/dashboard_order_page.dart';
 import 'package:porco_eats/features/cart/pages/cart_page.dart';
 import 'package:porco_eats/features/customer_order/pages/customer_order_page.dart';
 import 'package:porco_eats/features/order_list/pages/order_details_page.dart';

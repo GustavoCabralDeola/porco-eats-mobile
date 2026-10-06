@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:porco_eats/features/Dashboard/pages/dashboard_order_page.dart';
+import 'package:porco_eats/features/dashboard/pages/dashboard_order_page.dart';
 import 'package:porco_eats/features/home/pages/home_page.dart';
 import 'package:porco_eats/features/order_list/pages/orders_list_page.dart';
 import 'package:porco_eats/shared/widgets/app_colors.dart';

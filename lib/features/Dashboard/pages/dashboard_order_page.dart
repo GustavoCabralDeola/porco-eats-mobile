@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:porco_eats/features/Dashboard/controllers/dashboard_order_controller.dart';
+import 'package:porco_eats/features/dashboard/controllers/dashboard_order_controller.dart';
 import 'package:porco_eats/features/home/pages/home_page.dart';
 import 'package:porco_eats/features/order_list/pages/orders_list_page.dart';
 import 'package:porco_eats/features/login/controllers/login_controller.dart';
