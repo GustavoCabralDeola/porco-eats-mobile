@@ -35,7 +35,7 @@ class SignupView extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             AppTextField(
-              controller: controller.confirmarSenhaController,
+              controller: controller.confirmPasswordController,
               onChanged: (_) => controller.onFieldChanged(),
               labelText: 'Confirmar senha',
               obscureText: true,
@@ -43,12 +43,10 @@ class SignupView extends StatelessWidget {
             const SizedBox(height: 24),
             AppElevatedButton(
               type: ButtonType.filled,
-              backgroundColor: controller.podeCadastrar
-                  ? Colors.red
-                  : Colors.grey,
+              backgroundColor: controller.canSignup ? Colors.red : Colors.grey,
               label: 'CADASTRAR',
-              onPressed: controller.podeCadastrar
-                  ? () => controller.cadastrarUsuario()
+              onPressed: controller.canSignup
+                  ? () => controller.signupUser()
                   : null,
             ),
           ],

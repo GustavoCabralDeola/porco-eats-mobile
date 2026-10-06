@@ -7,14 +7,14 @@ class AppTextFormFieldNotifier extends ChangeNotifier {
 
   bool get isObscure => _isObscure;
 
-  void setObscure(bool value) {
-    if (_isObscure == value) return;
-    _isObscure = value;
+  void toggleObscure() {
+    _isObscure = !_isObscure;
     notifyListeners();
   }
 
-  void toggleObscure() {
-    _isObscure = !_isObscure;
+  void setObscure(bool value) {
+    if (_isObscure == value) return;
+    _isObscure = value;
     notifyListeners();
   }
 }
