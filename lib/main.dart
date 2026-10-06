@@ -49,12 +49,14 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (context) {
-            return DashboardOrderController(preferences: preferences);
+            return CustomerOrderController(preferences: preferences);
           },
         ),
         ChangeNotifierProvider(
           create: (context) {
-            return CustomerOrderController(preferences: preferences);
+            return DashboardOrderController(
+              context.read<CustomerOrderController>(),
+            );
           },
         ),
         ChangeNotifierProvider(

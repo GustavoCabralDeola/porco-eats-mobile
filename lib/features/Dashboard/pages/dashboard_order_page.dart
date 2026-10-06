@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:porco_eats/features/Dashboard/controllers/dashboard_order_controller.dart';
@@ -15,10 +17,23 @@ import 'package:porco_eats/shared/widgets/app_home_navigation_bar_manager.dart';
 import 'package:porco_eats/shared/widgets/cards/app_card_dashboard.dart';
 import 'package:provider/provider.dart';
 
-class DashboardOrderPage extends StatelessWidget {
+class DashboardOrderPage extends StatefulWidget {
   const DashboardOrderPage({super.key});
 
   static const String route = '/dashboard';
+
+  @override
+  State<DashboardOrderPage> createState() => _DashboardOrderPageState();
+}
+
+class _DashboardOrderPageState extends State<DashboardOrderPage> {
+  @override
+  void initState() {
+    super.initState();
+    unawaited(
+      context.read<DashboardOrderController>().loadOrders(forceRefresh: true),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

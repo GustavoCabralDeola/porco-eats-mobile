@@ -41,7 +41,7 @@ class CustomerOrderPage extends StatelessWidget {
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
         ),
       ),
-      bottomNavigationBar: const AppHomeNavigationBarCustomer(selectedIndex: 1),
+      bottomNavigationBar: AppHomeNavigationBarCustomer(selectedIndex: 1),
       body: orderController.isLoading && orderController.orders.isEmpty
           ? const Center(
               child: CircularProgressIndicator(color: AppColors.redDelivery),
@@ -53,7 +53,7 @@ class CustomerOrderPage extends StatelessWidget {
               onRetry: orderController.loadOrders,
             )
           : ListView(
-              padding: const EdgeInsets.fromLTRB(16, 20, 16, 24),
+              padding: EdgeInsets.fromLTRB(16, 20, 16, 24),
               children: [
                 const Text(
                   'Histórico de pedidos',
@@ -267,7 +267,7 @@ class _CustomerOrderCard extends StatelessWidget {
                             color: AppColors.darkBrown,
                           ),
                         )
-                      : Image.network(
+                      : Image.asset(
                           product.imageUrl,
                           fit: BoxFit.cover,
                           errorBuilder: (_, _, _) => const ColoredBox(

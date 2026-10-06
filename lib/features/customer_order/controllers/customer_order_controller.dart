@@ -90,7 +90,7 @@ class CustomerOrderController extends ChangeNotifier {
   }
 
   Future<void> updateOrderStatus(String orderId, OrderStatus status) async {
-    await loadOrders();
+    await loadOrders(forceRefresh: true);
     if (_errorMessage != null) throw StateError(_errorMessage!);
 
     final index = _orders.indexWhere((order) => order.id == orderId);
