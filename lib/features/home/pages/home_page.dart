@@ -6,6 +6,7 @@ import 'package:porco_eats/features/home/controllers/home_controller.dart';
 import 'package:porco_eats/features/home/widgets/app_home_banners_row.dart';
 import 'package:porco_eats/features/home/widgets/app_home_categories_row.dart';
 import 'package:porco_eats/features/home/widgets/app_home_products_section.dart';
+import 'package:porco_eats/features/home/widgets/home_skeleton_loaders.dart';
 import 'package:porco_eats/features/login/controllers/login_controller.dart';
 import 'package:porco_eats/models/enums/user_role.dart';
 import 'package:porco_eats/models/product.dart';
@@ -14,7 +15,6 @@ import 'package:porco_eats/shared/widgets/app_search_field.dart';
 import 'package:porco_eats/shared/widgets/navigation/app_home_navigation_bar_customer.dart';
 import 'package:porco_eats/shared/widgets/navigation/app_home_navigation_bar_manager.dart';
 import 'package:provider/provider.dart';
-import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../shared/widgets/headers/app_home_header.dart';
 
@@ -69,52 +69,106 @@ class HomePage extends StatelessWidget {
               : AppHomeNavigationBarManager();
         },
       ),
-      body: Skeletonizer(
-        enabled: isShowingInitialSkeleton,
-        child: SingleChildScrollView(
-          child: Consumer<HomeController>(
-            builder: (context, controller, child) => Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Skeleton.ignore(child: AppHomeHeader()),
-                SizedBox(height: 10),
-                AppSearchField(
-                  hintText: 'O que você deseja comer hoje?',
-                  enableFilter: true,
+      body: isShowingInitialSkeleton
+          ? const HomePageSkeletonLoader()
+          : SingleChildScrollView(
+              child: Consumer<HomeController>(
+                builder: (context, controller, child) => Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    AppHomeHeader(),
+                    SizedBox(height: 10),
+                    AppSearchField(
+                      hintText: 'O que você deseja comer hoje?',
+                      enableFilter: true,
+                    ),
+                    SizedBox(height: 20),
+                    AppHomeCategoriesRow(),
+                    SizedBox(height: 20),
+                    AppHomeBannersRow(),
+                    SizedBox(height: 20),
+                    AppHomeProductsSection(
+                      title: 'Ofertas para você',
+                      products: controller.offerProducts,
+                      badgeLabels: ['-20%', '♛ Mais pedido', '-15%'],
+                      badgeColors: [Colors.red, Colors.orange, Colors.red],
+                      onProductTap: (product) =>
+                          _showProductBottomSheet(context, product),
+                    ),
+                    SizedBox(height: 20),
+                    AppHomeProductsSection(
+                      title: 'Mais pedidos',
+                      products: controller.mostOrderedProducts,
+                      onProductTap: (product) =>
+                          _showProductBottomSheet(context, product),
+                    ),
+                    SizedBox(height: 20),
+                  ],
                 ),
-                SizedBox(height: 20),
-
-                AppHomeCategoriesRow(),
-                SizedBox(height: 20),
-
-                AppHomeBannersRow(),
-                SizedBox(height: 20),
-
-                AppHomeProductsSection(
-                  title: 'Ofertas para você',
-                  products: controller.offerProducts,
-                  badgeLabels: ['-20%', '♛ Mais pedido', '-15%'],
-                  badgeColors: [Colors.red, Colors.orange, Colors.red],
-                  onProductTap: (product) =>
-                      _showProductBottomSheet(context, product),
-                ),
-                SizedBox(height: 20),
-
-                AppHomeProductsSection(
-                  title: 'Mais pedidos',
-                  products: controller.mostOrderedProducts,
-                  onProductTap: (product) =>
-                      _showProductBottomSheet(context, product),
-                ),
-                SizedBox(height: 20),
-              ],
+              ),
             ),
-          ),
-        ),
-      ),
     );
   }
 }
+
+// class CategoryProductsPage extends StatelessWidget {
+//   static const route = '/category-products';
+
+//   const CategoryProductsPage({super.key, required this.categoryName});
+
+//   final String categoryName;
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       backgroundColor: AppColors.brownWhite,
+//       appBar: AppBar(
+//         backgroundColor: AppColors.brownWhite,
+//         foregroundColor: AppColors.darkBrown,
+//         elevation: 0,
+//         leading: IconButton(
+//           onPressed: () => Navigator.of(context).pop(),
+//           icon: const Icon(Icons.arrow_back),
+//         ),
+//         title: Text(categoryName),
+//       ),
+//       bottomNavigationBar: Consumer<LoginController>(
+//         builder: (context, controller, child) {
+//           return controller.user?.role == UserRole.customer
+//               ? AppHomeNavigationBarCustomer()
+//               : AppHomeNavigationBarManager();
+//         },
+//       ),
+//       body: Consumer<HomeController>(
+//         builder: (context, controller, child) {
+//           final products = controller.productsInCategory(categoryName);
+
+//           if (products.isEmpty) {
+//             return const Center(child: Text('Nenhum produto encontrado.'));
+//           }
+
+//           return GridView.builder(
+//             padding: const EdgeInsets.all(16),
+//             gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+//               maxCrossAxisExtent: 180,
+//               mainAxisExtent: 190,
+//               crossAxisSpacing: 12,
+//               mainAxisSpacing: 16,
+//             ),
+//             itemCount: products.length,
+//             itemBuilder: (context, index) {
+//               final product = products[index];
+//               return AppProductCard(
+//                 product: product,
+//                 onTap: () => _showProductBottomSheet(context, product),
+//               );
+//             },
+//           );
+//         },
+//       ),
+//     );
+//   }
+// }
 
 void _showProductBottomSheet(BuildContext context, Product product) {
   showModalBottomSheet(

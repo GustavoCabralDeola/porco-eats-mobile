@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:porco_eats/features/Dashboard/controllers/dashboard_order_controller.dart';
+import 'package:porco_eats/features/dashboard/controllers/dashboard_order_controller.dart';
 import 'package:porco_eats/features/home/pages/home_page.dart';
+import 'package:porco_eats/features/order_list/controllers/orders_list_controller.dart';
 import 'package:porco_eats/features/order_list/pages/orders_list_page.dart';
 import 'package:porco_eats/features/login/controllers/login_controller.dart';
 import 'package:porco_eats/models/customer_order.dart';
@@ -16,26 +17,16 @@ import 'package:porco_eats/shared/widgets/headers/app_header_default.dart';
 import 'package:porco_eats/shared/widgets/navigation/app_home_navigation_bar_manager.dart';
 import 'package:provider/provider.dart';
 
-class DashboardOrderPage extends StatefulWidget {
+class DashboardOrderPage extends StatelessWidget {
   const DashboardOrderPage({super.key});
 
   static const String route = '/dashboard';
 
   @override
-  State<DashboardOrderPage> createState() => _DashboardOrderPageState();
-}
-
-class _DashboardOrderPageState extends State<DashboardOrderPage> {
-  @override
-  void initState() {
-    super.initState();
-    unawaited(
-      context.read<DashboardOrderController>().loadOrders(forceRefresh: true),
-    );
-  }
-
-  @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<DashboardOrderController>().loadOrders();
+    });
     return Scaffold(
       backgroundColor: AppColors.brownWhite,
       bottomNavigationBar: const AppHomeNavigationBarManager(selectedIndex: 2),
@@ -306,6 +297,10 @@ class _DashboardOrderPageState extends State<DashboardOrderPage> {
         const SizedBox(height: 24),
         AppOrderSection(
           title: 'Pedidos em andamento',
+          onActionPressed: () {
+            context.read<OrderListController>().showOngoingOrders();
+            Navigator.pushNamed(context, OrdersPage.route);
+          },
           children: controller.ongoingOrders.isEmpty
               ? [_buildEmptyOrdersMessage('Nenhum pedido em andamento')]
               : controller.ongoingOrders
@@ -316,7 +311,12 @@ class _DashboardOrderPageState extends State<DashboardOrderPage> {
         AppOrderSection(
           title: 'Últimos pedidos',
           actionLabel: 'Ver todos',
-          onActionPressed: () => Navigator.pushNamed(context, OrdersPage.route),
+          onActionPressed: () {
+            context.read<OrderListController>().showOrdersWithStatus(
+              OrderStatus.delivered,
+            );
+            Navigator.pushNamed(context, OrdersPage.route);
+          },
           children: controller.recentOrders.isEmpty
               ? [_buildEmptyOrdersMessage('Nenhum pedido finalizado ainda')]
               : controller.recentOrders

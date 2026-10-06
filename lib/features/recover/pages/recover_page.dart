@@ -38,7 +38,7 @@ class RecoverPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const AppLoginHeader(),
+                AppLoginHeader(),
                 const SizedBox(height: 20),
                 Text(
                   'Esqueceu a senha?',
