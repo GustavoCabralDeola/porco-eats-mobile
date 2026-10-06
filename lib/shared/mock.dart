@@ -55,7 +55,7 @@ class Mocks {
     },
     {
       'id': 5,
-      'brand': 'Poderoso da Terra',
+      'restaurant': 'Poderoso da Terra',
       'name': 'X-Bacon Cabuloso',
       'imageUrl': 'assets/images/porco_eats_images/products/xbaconcabuloso.png',
       'price': 29.90,
@@ -66,7 +66,7 @@ class Mocks {
     },
     {
       'id': 6,
-      'brand': 'Poderoso da Terra',
+      'restaurant': 'Poderoso da Terra',
       'name': 'X-Burger Supremo',
       'imageUrl':
           'assets/images/porco_eats_images/products/xburguersupremo.png',
@@ -78,7 +78,7 @@ class Mocks {
     },
     {
       'id': 7,
-      'brand': 'Madrugon Lanches',
+      'restaurant': 'Madrugon Lanches',
       'name': 'X-Egg',
       'imageUrl': 'assets/images/porco_eats_images/products/xegg.png',
       'price': 24.90,

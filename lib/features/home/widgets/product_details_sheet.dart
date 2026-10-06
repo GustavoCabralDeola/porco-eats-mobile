@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:porco_eats/features/cart/controllers/cart_controller.dart';
 import 'package:porco_eats/models/product.dart';
 import 'package:porco_eats/shared/widgets/app_colors.dart';
+import 'package:porco_eats/shared/widgets/app_quantity_control.dart';
 import 'package:provider/provider.dart';
 
 class ProductDetailsSheet extends StatelessWidget {
@@ -95,7 +96,7 @@ class ProductDetailsSheet extends StatelessWidget {
                   builder: (context, cart, child) {
                     final quantity = cart.getQuantity(product);
                     if (quantity > 0) {
-                      return _QuantityControl(
+                      return AppQuantityControl(
                         quantity: quantity,
                         onDecrease: () => cart.decreaseQuantity(product),
                         onIncrease: () => cart.increaseQuantity(product),
@@ -118,43 +119,6 @@ class ProductDetailsSheet extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class _QuantityControl extends StatelessWidget {
-  const _QuantityControl({
-    required this.quantity,
-    required this.onDecrease,
-    required this.onIncrease,
-  });
-
-  final int quantity;
-  final VoidCallback onDecrease;
-  final VoidCallback onIncrease;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        IconButton(
-          onPressed: onDecrease,
-          icon: const Icon(Icons.remove_circle_outline),
-          color: AppColors.darkBrown,
-        ),
-        Text(
-          '$quantity',
-          style: const TextStyle(
-            color: AppColors.darkBrown,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        IconButton(
-          onPressed: onIncrease,
-          icon: const Icon(Icons.add_circle_outline),
-          color: AppColors.darkBrown,
-        ),
-      ],
     );
   }
 }

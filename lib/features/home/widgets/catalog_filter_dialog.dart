@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:porco_eats/features/home/controllers/catalog_filter_controller.dart';
 import 'package:porco_eats/features/home/controllers/home_controller.dart';
 import 'package:porco_eats/shared/widgets/app_colors.dart';
+import 'package:provider/provider.dart';
 
-class CatalogFilterDialog extends StatefulWidget {
-  const CatalogFilterDialog({
-    super.key,
-    required this.selectedCategories,
-    required this.onApply,
-  });
+class CatalogFilterDialog extends StatelessWidget {
+  const CatalogFilterDialog({super.key, required this.onApply});
 
-  final Set<String> selectedCategories;
   final ValueChanged<Set<String>> onApply;
 
   static Future<void> show({
@@ -19,45 +16,23 @@ class CatalogFilterDialog extends StatefulWidget {
   }) {
     return showDialog<void>(
       context: context,
-      builder: (context) => CatalogFilterDialog(
-        selectedCategories: selectedCategories,
-        onApply: onApply,
+      builder: (context) => ChangeNotifierProvider(
+        create: (_) => CatalogFilterController(selectedCategories),
+        child: CatalogFilterDialog(onApply: onApply),
       ),
     );
   }
 
-  @override
-  State<CatalogFilterDialog> createState() => _CatalogFilterDialogState();
-}
-
-class _CatalogFilterDialogState extends State<CatalogFilterDialog> {
-  late final Set<String> _categoriesInDialog;
-
-  @override
-  void initState() {
-    super.initState();
-    _categoriesInDialog = Set<String>.from(widget.selectedCategories);
-  }
-
-  void _toggleCategory(String category) {
-    setState(() {
-      if (!_categoriesInDialog.add(category)) {
-        _categoriesInDialog.remove(category);
-      }
-    });
-  }
-
-  void _clearCategories() {
-    setState(_categoriesInDialog.clear);
-  }
-
-  void _applyFilters() {
-    widget.onApply(Set<String>.unmodifiable(_categoriesInDialog));
+  void _applyFilters(BuildContext context) {
+    onApply(context.read<CatalogFilterController>().selectedCategories);
     Navigator.pop(context);
   }
 
   @override
   Widget build(BuildContext context) {
+    final categoriesInDialog = context
+        .watch<CatalogFilterController>()
+        .selectedCategories;
     final dialogHeight = MediaQuery.sizeOf(context).height * 0.82;
 
     return Dialog(
@@ -71,9 +46,9 @@ class _CatalogFilterDialogState extends State<CatalogFilterDialog> {
         child: Column(
           children: [
             _buildHeader(context),
-            _buildInstructions(),
-            Expanded(child: _buildCategoryList()),
-            _buildApplyButton(),
+            _buildInstructions(context, categoriesInDialog),
+            Expanded(child: _buildCategoryList(context, categoriesInDialog)),
+            _buildApplyButton(context),
           ],
         ),
       ),
@@ -108,7 +83,10 @@ class _CatalogFilterDialogState extends State<CatalogFilterDialog> {
     );
   }
 
-  Widget _buildInstructions() {
+  Widget _buildInstructions(
+    BuildContext context,
+    Set<String> categoriesInDialog,
+  ) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 14, 16, 10),
       child: Row(
@@ -120,41 +98,47 @@ class _CatalogFilterDialogState extends State<CatalogFilterDialog> {
             ),
           ),
           TextButton(
-            onPressed: _categoriesInDialog.isEmpty ? null : _clearCategories,
-            child: Text('Limpar (${_categoriesInDialog.length})'),
+            onPressed: categoriesInDialog.isEmpty
+                ? null
+                : context.read<CatalogFilterController>().clearCategories,
+            child: Text('Limpar (${categoriesInDialog.length})'),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildCategoryList() {
+  Widget _buildCategoryList(
+    BuildContext context,
+    Set<String> categoriesInDialog,
+  ) {
     return ListView.separated(
       padding: const EdgeInsets.fromLTRB(16, 4, 16, 16),
       itemCount: HomeController.availableCategories.length,
       separatorBuilder: (context, index) => const SizedBox(height: 8),
       itemBuilder: (context, index) {
         final category = HomeController.availableCategories[index];
-        final isSelected = _categoriesInDialog.contains(category);
+        final isSelected = categoriesInDialog.contains(category);
 
         return _CategoryOptionTile(
           name: category,
           icon: _categoryIcon(category),
           selected: isSelected,
-          onTap: () => _toggleCategory(category),
+          onTap: () =>
+              context.read<CatalogFilterController>().toggleCategory(category),
         );
       },
     );
   }
 
-  Widget _buildApplyButton() {
+  Widget _buildApplyButton(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
       child: SizedBox(
         width: double.infinity,
         height: 50,
         child: ElevatedButton(
-          onPressed: _applyFilters,
+          onPressed: () => _applyFilters(context),
           style: ElevatedButton.styleFrom(
             backgroundColor: AppColors.yellowAgility,
             foregroundColor: AppColors.darkBrown,

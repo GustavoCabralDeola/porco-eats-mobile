@@ -65,7 +65,7 @@ class Product {
       id: json['id'] ?? 0,
       name: json['name'] as String,
       description: json['description'] as String?,
-      restaurant: (json['restaurant'] ?? json['brand']) as String,
+      restaurant: json['restaurant'] as String,
       rating: (json['avaliation'] as num?)?.toDouble() ?? 0,
       category: json['category'] as String,
       price: (json['price'] as num).toDouble(),

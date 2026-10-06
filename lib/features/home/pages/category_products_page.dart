@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:porco_eats/features/cart/pages/cart_page.dart';
+import 'package:porco_eats/features/home/controllers/category_products_controller.dart';
 import 'package:porco_eats/features/home/controllers/home_controller.dart';
 import 'package:porco_eats/features/home/widgets/product_details_sheet.dart';
 import 'package:porco_eats/models/product.dart';
@@ -7,7 +8,7 @@ import 'package:porco_eats/shared/widgets/app_colors.dart';
 import 'package:porco_eats/shared/widgets/app_product_card.dart';
 import 'package:provider/provider.dart';
 
-class CategoryProductsPage extends StatefulWidget {
+class CategoryProductsPage extends StatelessWidget {
   const CategoryProductsPage({super.key, required this.categoryName});
 
   static const String route = '/category-products';
@@ -15,31 +16,38 @@ class CategoryProductsPage extends StatefulWidget {
   final String categoryName;
 
   @override
-  State<CategoryProductsPage> createState() => _CategoryProductsPageState();
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => CategoryProductsController(),
+      child: _CategoryProductsPageContent(categoryName: categoryName),
+    );
+  }
 }
 
-class _CategoryProductsPageState extends State<CategoryProductsPage> {
-  String _searchText = '';
-  String? _selectedRestaurant;
+class _CategoryProductsPageContent extends StatelessWidget {
+  const _CategoryProductsPageContent({required this.categoryName});
+
+  final String categoryName;
 
   @override
   Widget build(BuildContext context) {
     final categoryProducts = context
         .watch<HomeController>()
-        .productsForCategory(widget.categoryName);
+        .productsForCategory(categoryName);
+    final controller = context.watch<CategoryProductsController>();
     final restaurants = categoryProducts
         .map((product) => product.restaurant)
         .toSet()
         .toList()
       ..sort();
-    final products = _filterProducts(categoryProducts);
+    final products = controller.filterProducts(categoryProducts);
 
     return Scaffold(
       backgroundColor: AppColors.brownWhite,
       appBar: AppBar(
         backgroundColor: AppColors.darkBrown,
         foregroundColor: AppColors.fullWhite,
-        title: Text(widget.categoryName),
+        title: Text(categoryName),
         actions: [
           IconButton(
             tooltip: 'Abrir carrinho',
@@ -50,19 +58,23 @@ class _CategoryProductsPageState extends State<CategoryProductsPage> {
       ),
       body: Column(
         children: [
-          _buildSearchField(),
-          if (restaurants.length > 1) _buildRestaurantFilter(restaurants),
-          Expanded(child: _buildProductGrid(products)),
+          _buildSearchField(context, controller),
+          if (restaurants.length > 1)
+            _buildRestaurantFilter(context, controller, restaurants),
+          Expanded(child: _buildProductGrid(context, products)),
         ],
       ),
     );
   }
 
-  Widget _buildSearchField() {
+  Widget _buildSearchField(
+    BuildContext context,
+    CategoryProductsController controller,
+  ) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
       child: TextField(
-        onChanged: (value) => setState(() => _searchText = value),
+        onChanged: controller.setSearchText,
         decoration: InputDecoration(
           hintText: 'Buscar nesta categoria',
           prefixIcon: const Icon(Icons.search, color: AppColors.darkBrown),
@@ -85,12 +97,16 @@ class _CategoryProductsPageState extends State<CategoryProductsPage> {
     );
   }
 
-  Widget _buildRestaurantFilter(List<String> restaurants) {
+  Widget _buildRestaurantFilter(
+    BuildContext context,
+    CategoryProductsController controller,
+    List<String> restaurants,
+  ) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
       child: DropdownButtonFormField<String>(
-        key: ValueKey(_selectedRestaurant),
-        initialValue: _selectedRestaurant,
+        key: ValueKey(controller.selectedRestaurant),
+        initialValue: controller.selectedRestaurant,
         isExpanded: true,
         decoration: InputDecoration(
           labelText: 'Restaurante',
@@ -117,17 +133,12 @@ class _CategoryProductsPageState extends State<CategoryProductsPage> {
             ),
           ),
         ],
-        onChanged: (restaurant) {
-          setState(() {
-            _selectedRestaurant =
-                restaurant == null || restaurant.isEmpty ? null : restaurant;
-          });
-        },
+        onChanged: controller.setSelectedRestaurant,
       ),
     );
   }
 
-  Widget _buildProductGrid(List<Product> products) {
+  Widget _buildProductGrid(BuildContext context, List<Product> products) {
     if (products.isEmpty) {
       return const Center(
         child: Padding(
@@ -162,19 +173,5 @@ class _CategoryProductsPageState extends State<CategoryProductsPage> {
         );
       },
     );
-  }
-
-  List<Product> _filterProducts(List<Product> products) {
-    final query = _searchText.trim().toLowerCase();
-    return products.where((product) {
-      final matchesRestaurant =
-          _selectedRestaurant == null ||
-          product.restaurant == _selectedRestaurant;
-      final matchesSearch =
-          query.isEmpty ||
-          product.name.toLowerCase().contains(query) ||
-          product.restaurant.toLowerCase().contains(query);
-      return matchesRestaurant && matchesSearch;
-    }).toList(growable: false);
   }
 }
