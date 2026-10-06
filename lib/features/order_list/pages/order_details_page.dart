@@ -293,7 +293,7 @@ class _OrderDetailsView extends StatelessWidget {
               color: const Color(0xFFF0EEEB),
             ),
             clipBehavior: Clip.antiAlias,
-            child: Image.network(
+            child: Image.asset(
               imageUrl,
               fit: BoxFit.cover,
               errorBuilder: (_, _, _) {

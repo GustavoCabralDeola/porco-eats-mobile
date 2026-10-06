@@ -69,7 +69,8 @@ class OrderListController extends ChangeNotifier {
         .toList(growable: false);
   }
 
-  Future<void> loadOrdersFromStorage() => _orderController.loadOrders();
+  Future<void> loadOrdersFromStorage({bool forceRefresh = true}) =>
+      _orderController.loadOrders(forceRefresh: forceRefresh);
 
   Future<void> updateOrderStatus(String orderId, OrderStatus status) =>
       _orderController.updateOrderStatus(orderId, status);
