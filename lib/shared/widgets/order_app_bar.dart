@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:porco_eats/features/order_list/controllers/orders_list_controller.dart';
 import 'package:porco_eats/shared/widgets/app_colors.dart';
+import 'package:porco_eats/shared/widgets/app_text_field.dart';
 
 class OrderAppBar extends StatelessWidget implements PreferredSizeWidget {
   const OrderAppBar({super.key, required this.controller});
@@ -14,15 +15,13 @@ class OrderAppBar extends StatelessWidget implements PreferredSizeWidget {
       foregroundColor: AppColors.fullWhite,
       elevation: 0,
       title: controller.isSearching
-          ? TextField(
+          ? AppTextField(
               controller: controller.searchController,
               autofocus: true,
-              style: TextStyle(color: Colors.white),
-              decoration: InputDecoration(
-                hintText: 'Buscar pedidos...',
-                hintStyle: TextStyle(color: Colors.white70),
-                border: InputBorder.none,
-              ),
+              style: const TextStyle(color: Colors.white),
+              hintText: 'Buscar pedidos...',
+              hintStyle: const TextStyle(color: Colors.white70),
+              border: InputBorder.none,
             )
           : Text(
               'Pedidos',

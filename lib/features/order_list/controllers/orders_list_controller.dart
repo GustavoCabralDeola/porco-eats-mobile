@@ -19,6 +19,7 @@ class OrderListController extends ChangeNotifier {
   String _searchQuery = '';
 
   OrderStatus? _selectedStatus;
+  bool _ongoingOnly = false;
   String? _selectedCustomer;
   bool _isSearching = false;
   bool _isLoading = false;
@@ -26,8 +27,19 @@ class OrderListController extends ChangeNotifier {
 
   List<CustomerOrder> get allOrders => List.unmodifiable(_orders);
   OrderStatus? get selectedStatus => _selectedStatus;
+  bool get ongoingOnly => _ongoingOnly;
+  bool get hasStatusFilter => _selectedStatus != null || _ongoingOnly;
+  String get statusFilterLabel =>
+      _ongoingOnly ? 'Em andamento' : _selectedStatus?.label ?? 'Status';
   String? get selectedCustomer => _selectedCustomer;
-  String get searchQuery => _searchQuery;
+  bool get isSearching => _isSearching;
+  bool get isLoading => _isLoading;
+  String? get errorMessage => _errorMessage;
+
+  bool get hasFilters =>
+      hasStatusFilter ||
+      _selectedCustomer != null ||
+      searchController.text.trim().isNotEmpty;
 
   List<String> get customers {
     final names = _orders
@@ -57,6 +69,25 @@ class OrderListController extends ChangeNotifier {
       return matchesStatus && matchesCustomer && matchesQuery;
     }).toList(growable: false);
   }
+  List<CustomerOrder> get filteredOrders {
+    final query = searchController.text.trim().toLowerCase();
+
+    return _orders
+        .where((order) {
+          final matchesStatus = _ongoingOnly
+              ? order.status != OrderStatus.delivered &&
+                    order.status != OrderStatus.cancelled
+              : _selectedStatus == null || order.status == _selectedStatus;
+          final matchesCustomer =
+              _selectedCustomer == null ||
+              order.customerName == _selectedCustomer;
+          final matchesQuery =
+              query.isEmpty ||
+              order.id.toLowerCase().contains(query) ||
+              order.customerName.toLowerCase().contains(query) ||
+              order.products.any(
+                (product) => product.name.toLowerCase().contains(query),
+              );
 
   Future<void> loadOrdersFromStorage() async {
     final orders = await AppPreferences().loadOrders();
@@ -91,6 +122,27 @@ class OrderListController extends ChangeNotifier {
   void setSearchQuery(String query) {
     if (_searchQuery == query) return;
     _searchQuery = query;
+  void setSelectedStatus(OrderStatus? status) {
+    _ongoingOnly = false;
+    _selectedStatus = status;
+    notifyListeners();
+  }
+
+  void showOngoingOrders() {
+    _selectedStatus = null;
+    _ongoingOnly = true;
+    _selectedCustomer = null;
+    _isSearching = false;
+    searchController.clear();
+    notifyListeners();
+  }
+
+  void showOrdersWithStatus(OrderStatus status) {
+    _selectedStatus = status;
+    _ongoingOnly = false;
+    _selectedCustomer = null;
+    _isSearching = false;
+    searchController.clear();
     notifyListeners();
   }
 
@@ -100,6 +152,7 @@ class OrderListController extends ChangeNotifier {
 
   void clearFilters() {
     _selectedStatus = null;
+    _ongoingOnly = false;
     _selectedCustomer = null;
     _searchQuery = '';
     notifyListeners();

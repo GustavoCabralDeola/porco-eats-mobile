@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:porco_eats/shared/widgets/app_colors.dart';
-
-import 'app_header_default.dart';
+import 'package:porco_eats/shared/widgets/headers/app_header_default.dart';
 
 class AppProfileHeader extends StatelessWidget {
   const AppProfileHeader({super.key});

@@ -4,7 +4,7 @@ import 'package:porco_eats/features/login/controllers/login_controller.dart';
 import 'package:porco_eats/models/customer_order.dart';
 import 'package:porco_eats/models/enums/order_status.dart';
 import 'package:porco_eats/shared/widgets/app_colors.dart';
-import 'package:porco_eats/shared/widgets/app_home_navigation_bar_customer.dart';
+import 'package:porco_eats/shared/widgets/navigation/app_home_navigation_bar_customer.dart';
 import 'package:porco_eats/shared/widgets/app_product_image.dart';
 import 'package:provider/provider.dart';
 
@@ -407,13 +407,15 @@ class _OrderProgress extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final currentStep = switch (status) {
-      OrderStatus.outForDelivery => 1,
-      _ => 0,
+      OrderStatus.received => 0,
+      OrderStatus.preparing => 1,
+      OrderStatus.outForDelivery => 2,
+      OrderStatus.delivered => 3,
+      OrderStatus.cancelled => 4,
     };
-    final steps = [
-      status == OrderStatus.received
-          ? (Icons.receipt_long_outlined, 'Recebido')
-          : (Icons.restaurant, 'Em preparo'),
+    final steps = const [
+      (Icons.receipt_long_outlined, 'Recebido'),
+      (Icons.restaurant, 'Em preparo'),
       (Icons.delivery_dining, 'Saiu para entrega'),
       (Icons.check_circle, 'Entregue'),
       (Icons.close, 'Cancelado'),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:porco_eats/features/login/controllers/signup_controller.dart'
     show SignupController;
+import 'package:porco_eats/shared/widgets/app_elevated_button.dart';
+import 'package:porco_eats/shared/widgets/app_text_field.dart';
 import 'package:provider/provider.dart';
 
 class SignupView extends StatelessWidget {
@@ -12,36 +14,40 @@ class SignupView extends StatelessWidget {
       builder: (context, controller, child) {
         return Column(
           children: [
-            TextField(
+            AppTextField(
               controller: controller.nameController,
               onChanged: (_) => controller.onFieldChanged(),
+              labelText: 'Nome completo',
             ),
-
-            TextField(
+            const SizedBox(height: 12),
+            AppTextField(
               controller: controller.emailController,
               onChanged: (_) => controller.onFieldChanged(),
+              labelText: 'E-mail',
+              keyboardType: TextInputType.emailAddress,
             ),
-
-            TextField(
+            const SizedBox(height: 12),
+            AppTextField(
               controller: controller.passwordController,
               onChanged: (_) => controller.onFieldChanged(),
+              labelText: 'Senha',
+              obscureText: true,
             ),
-
-            TextField(
-              controller: controller.confirmarSenhaController,
+            const SizedBox(height: 12),
+            AppTextField(
+              controller: controller.confirmPasswordController,
               onChanged: (_) => controller.onFieldChanged(),
+              labelText: 'Confirmar senha',
+              obscureText: true,
             ),
-
-            ElevatedButton(
-              onPressed: controller.podeCadastrar
-                  ? () => controller.cadastrarUsuario()
+            const SizedBox(height: 24),
+            AppElevatedButton(
+              type: ButtonType.filled,
+              backgroundColor: controller.canSignup ? Colors.red : Colors.grey,
+              label: 'CADASTRAR',
+              onPressed: controller.canSignup
+                  ? () => controller.signupUser()
                   : null,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: controller.podeCadastrar
-                    ? Colors.red
-                    : Colors.grey,
-              ),
-              child: const Text('CADASTRAR'),
             ),
           ],
         );

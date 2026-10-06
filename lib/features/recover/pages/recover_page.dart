@@ -3,6 +3,7 @@ import 'package:porco_eats/shared/widgets/app_colors.dart';
 import 'package:porco_eats/shared/widgets/app_login_header.dart';
 import 'package:porco_eats/shared/widgets/app_text_form_field.dart';
 import 'package:porco_eats/shared/widgets/app_text_style.dart';
+import 'package:porco_eats/shared/widgets/app_elevated_button.dart';
 import 'package:provider/provider.dart';
 import '../controllers/recover_controller.dart';
 
@@ -37,7 +38,7 @@ class RecoverPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const AppLoginHeader(),
+                AppLoginHeader(),
                 const SizedBox(height: 20),
                 Text(
                   'Esqueceu a senha?',
@@ -67,21 +68,11 @@ class RecoverPage extends StatelessWidget {
                           onSubmitted: (_) => _sendCode(context, controller),
                         ),
                         const SizedBox(height: 70),
-                        ElevatedButton(
+                        AppElevatedButton(
+                          type: ButtonType.filled,
+                          label: 'ENVIAR CÓDIGO',
+                          prefixIcon: Icons.arrow_right,
                           onPressed: () => _sendCode(context, controller),
-                          style: ElevatedButton.styleFrom(
-                            minimumSize: const Size.fromHeight(48),
-                            foregroundColor: AppColors.fullWhite,
-                            backgroundColor: AppColors.redDelivery,
-                          ),
-                          child: const Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.arrow_right),
-                              SizedBox(width: 5),
-                              Text('ENVIAR CÓDIGO'),
-                            ],
-                          ),
                         ),
                         const SizedBox(height: 40),
                         Row(

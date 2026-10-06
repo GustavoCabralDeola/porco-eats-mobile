@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:porco_eats/shared/widgets/app_colors.dart';
+import 'package:porco_eats/shared/widgets/app_elevated_button.dart';
+import 'package:porco_eats/shared/widgets/app_text_form_field.dart';
 
 class ChangePasswordModal extends StatefulWidget {
   const ChangePasswordModal({
@@ -142,22 +144,17 @@ class _ChangePasswordModalState extends State<ChangePasswordModal> {
                   child: const Text('Cancelar'),
                 ),
                 const SizedBox(width: 8),
-                ElevatedButton(
-                  onPressed: _isLoading ? null : _validateAndSubmit,
-                  style: ElevatedButton.styleFrom(
+                SizedBox(
+                  width: 140,
+                  child: AppElevatedButton(
+                    type: ButtonType.filled,
                     backgroundColor: AppColors.yellowAgility,
-                    foregroundColor: AppColors.darkBrown,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
+                    borderRadius: BorderRadius.circular(10),
+                    labelStyle: const TextStyle(color: AppColors.darkBrown),
+                    isLoading: _isLoading,
+                    label: 'Confirmar',
+                    onPressed: _isLoading ? null : _validateAndSubmit,
                   ),
-                  child: _isLoading
-                      ? const SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : const Text('Confirmar'),
                 ),
               ],
             ),
@@ -168,15 +165,11 @@ class _ChangePasswordModalState extends State<ChangePasswordModal> {
   }
 
   Widget _passwordField(TextEditingController controller, String label) {
-    return TextFormField(
-      controller: controller,
+    return AppTextFormField(
+      TextInputType.text,
+      textEditingcontroller: controller,
       obscureText: true,
-      decoration: InputDecoration(
-        labelText: label,
-        filled: true,
-        fillColor: Colors.white,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-      ),
+      hintText: label,
     );
   }
 }

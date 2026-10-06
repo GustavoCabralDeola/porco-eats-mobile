@@ -3,11 +3,15 @@ import 'package:porco_eats/models/product.dart';
 import 'package:porco_eats/shared/mock.dart';
 
 class HomeController extends ChangeNotifier {
-  HomeController() {
-    _products = Mocks().productsJson
-        .map(Product.fromJson)
-        .toList(growable: false);
-  }
+  Timer? _initialSkeletonTimer;
+  bool _isShowingInitialSkeleton = false;
+  bool _hasShownInitialSkeleton = false;
+
+  List<Category> listCategories = [];
+  List<Product> listProducts = [];
+  List<CustomerOrder> listCustomerOrdersInCart = [];
+
+  Mocks mockJson = Mocks();
 
   static const List<int> _offerProductIds = [1, 8, 12];
   static const List<int> _mostOrderedProductIds = [17, 1, 21];
@@ -80,14 +84,12 @@ class HomeController extends ChangeNotifier {
     );
   }
 
-  bool _matchesSearch(Product product) {
-    final searchText = _searchText.trim().toLowerCase();
-    if (searchText.isEmpty) return true;
+  void showInitialSkeleton() {
+    if (_isShowingInitialSkeleton || _hasShownInitialSkeleton) return;
 
-    return product.name.toLowerCase().contains(searchText) ||
-        product.restaurant.toLowerCase().contains(searchText) ||
-        (product.description?.toLowerCase().contains(searchText) ?? false);
-  }
+    _hasShownInitialSkeleton = true;
+    _isShowingInitialSkeleton = true;
+    notifyListeners();
 
   String _normalizeCategory(String category) {
     final normalizedCategory = category.trim().toLowerCase();
