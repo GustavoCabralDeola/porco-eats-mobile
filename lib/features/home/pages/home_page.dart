@@ -3,23 +3,22 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:porco_eats/features/cart/controllers/cart_controller.dart';
 import 'package:porco_eats/features/cart/pages/cart_page.dart';
 import 'package:porco_eats/features/home/controllers/home_controller.dart';
+import 'package:porco_eats/features/home/widgets/app_home_banners_row.dart';
+import 'package:porco_eats/features/home/widgets/app_home_categories_row.dart';
+import 'package:porco_eats/features/home/widgets/app_home_products_section.dart';
 import 'package:porco_eats/features/login/controllers/login_controller.dart';
 import 'package:porco_eats/models/enums/user_role.dart';
 import 'package:porco_eats/models/product.dart';
 import 'package:porco_eats/shared/widgets/app_colors.dart';
-import 'package:porco_eats/shared/widgets/app_product_card.dart';
-import 'package:porco_eats/shared/widgets/app_promo_carousel.dart';
 import 'package:porco_eats/shared/widgets/app_search_field.dart';
-import 'package:porco_eats/shared/widgets/app_text_style.dart';
-import 'package:porco_eats/shared/widgets/app_home_navigation_bar_customer.dart';
-import 'package:porco_eats/shared/widgets/app_home_navigation_bar_manager.dart';
+import 'package:porco_eats/shared/widgets/navigation/app_home_navigation_bar_customer.dart';
+import 'package:porco_eats/shared/widgets/navigation/app_home_navigation_bar_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-import '../../../shared/widgets/app_category_item.dart';
-import '../../../shared/widgets/app_home_header.dart';
+import '../../../shared/widgets/headers/app_home_header.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends StatelessWidget {
   static String route = '/home';
 
   const HomePage({super.key, this.showInitialSkeleton = false});
@@ -27,30 +26,13 @@ class HomePage extends StatefulWidget {
   final bool showInitialSkeleton;
 
   @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  @override
-  void initState() {
-    super.initState();
-    if (widget.showInitialSkeleton) {
+  Widget build(BuildContext context) {
+    if (showInitialSkeleton) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) {
-          context.read<HomeController>().showInitialSkeleton();
-        }
+        context.read<HomeController>().showInitialSkeleton();
       });
     }
-  }
 
-  void _openCategory(String categoryName) {
-    Navigator.of(
-      context,
-    ).pushNamed(CategoryProductsPage.route, arguments: categoryName);
-  }
-
-  @override
-  Widget build(BuildContext context) {
     final isShowingInitialSkeleton = context
         .watch<HomeController>()
         .isShowingInitialSkeleton;
@@ -83,8 +65,8 @@ class _HomePageState extends State<HomePage> {
       bottomNavigationBar: Consumer<LoginController>(
         builder: (context, controller, child) {
           return controller.user?.role == UserRole.customer
-              ? const AppHomeNavigationBarCustomer()
-              : const AppHomeNavigationBarManager();
+              ? AppHomeNavigationBarCustomer()
+              : AppHomeNavigationBarManager();
         },
       ),
       body: Skeletonizer(
@@ -92,6 +74,7 @@ class _HomePageState extends State<HomePage> {
         child: SingleChildScrollView(
           child: Consumer<HomeController>(
             builder: (context, controller, child) => Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Skeleton.ignore(child: AppHomeHeader()),
                 SizedBox(height: 10),
@@ -101,251 +84,33 @@ class _HomePageState extends State<HomePage> {
                 ),
                 SizedBox(height: 20),
 
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-                      SizedBox(width: 20),
-                      AppCategoryItem(
-                        label: 'Lanches',
-                        onTap: () => _openCategory('Lanches'),
-                        image:
-                            'assets/images/porco_eats_images/categories_icons/hamburguerIcon.png',
-                        imageWidth: 43,
-                        imageHeight: 43,
-                      ),
-
-                      SizedBox(width: 10),
-
-                      AppCategoryItem(
-                        label: 'Pizzas',
-                        onTap: () => _openCategory('Pizzas'),
-                        image:
-                            'assets/images/porco_eats_images/categories_icons/pizzaIcon.png',
-                        imageWidth: 43,
-                        imageHeight: 43,
-                      ),
-
-                      SizedBox(width: 10),
-
-                      AppCategoryItem(
-                        label: 'Sushi',
-                        onTap: () => _openCategory('Sushi'),
-                        image:
-                            'assets/images/porco_eats_images/categories_icons/sushiIcon.png',
-                        imageWidth: 50,
-                        imageHeight: 50,
-                      ),
-
-                      SizedBox(width: 10),
-
-                      AppCategoryItem(
-                        label: 'Executivos',
-                        onTap: () => _openCategory('Executivos'),
-                        image:
-                            'assets/images/porco_eats_images/categories_icons/executivoIcon.png',
-                        imageWidth: 100,
-                        imageHeight: 55,
-                        scale: 1.5,
-                      ),
-
-                      SizedBox(width: 10),
-                      AppCategoryItem(
-                        label: 'Porções',
-                        onTap: () => _openCategory('Porções'),
-                        image:
-                            'assets/images/porco_eats_images/categories_icons/porcoesIcon.png',
-                        imageWidth: 74,
-                        imageHeight: 58,
-                      ),
-
-                      SizedBox(width: 10),
-                      AppCategoryItem(
-                        label: 'Bebidas',
-                        onTap: () => _openCategory('Bebidas'),
-                        image:
-                            'assets/images/porco_eats_images/categories_icons/bebidaIcon.png',
-                        imageWidth: 60,
-                        imageHeight: 80,
-                      ),
-
-                      SizedBox(width: 10),
-                    ],
-                  ),
-                ),
-
+                AppHomeCategoriesRow(),
                 SizedBox(height: 20),
 
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-                      SizedBox(width: 10),
-                      AppPromoCarousel(
-                        banners: [
-                          'assets/images/porco_eats_images/carousel_images/hamburguerCarousel.png',
-                          'assets/images/porco_eats_images/carousel_images/pizzaCarousel.png',
-                          'assets/images/porco_eats_images/carousel_images/sushiCarousel.png',
-                        ],
-                      ),
-                      SizedBox(width: 4),
-                      AppPromoCarousel(
-                        fit: BoxFit.contain,
-                        alignment: Alignment.centerLeft,
-                        width: 300,
-                        height: 127,
-                        banners: [
-                          'assets/images/porco_eats_images/carousel_images/firstcupomcarousel.png',
-                          'assets/images/porco_eats_images/carousel_images/secoundcupomcarousel.png',
-                        ],
-                      ),
-                      SizedBox(width: 10),
-                    ],
-                  ),
+                AppHomeBannersRow(),
+                SizedBox(height: 20),
+
+                AppHomeProductsSection(
+                  title: 'Ofertas para você',
+                  products: controller.offerProducts,
+                  badgeLabels: ['-20%', '♛ Mais pedido', '-15%'],
+                  badgeColors: [Colors.red, Colors.orange, Colors.red],
+                  onProductTap: (product) =>
+                      _showProductBottomSheet(context, product),
                 ),
                 SizedBox(height: 20),
 
-                Row(
-                  children: [
-                    SizedBox(width: 20),
-                    Text('Ofertas para você', style: AppTextStyle.sectionTitle),
-                  ],
-                ),
-
-                SizedBox(height: 20),
-
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-                      SizedBox(width: 14),
-                      ...List.generate(controller.offerProducts.length, (
-                        index,
-                      ) {
-                        final product = controller.offerProducts[index];
-                        final badges = ['-20%', '♛ Mais pedido', '-15%'];
-                        final badgeColors = [
-                          Colors.red,
-                          Colors.orange,
-                          Colors.red,
-                        ];
-
-                        return Padding(
-                          padding: const EdgeInsets.only(right: 32),
-                          child: AppProductCard(
-                            product: product,
-                            badgeLabel: badges[index],
-                            badgeColor: badgeColors[index],
-                            onTap: () =>
-                                _showProductBottomSheet(context, product),
-                          ),
-                        );
-                      }),
-                      SizedBox(width: 14),
-                    ],
-                  ),
+                AppHomeProductsSection(
+                  title: 'Mais pedidos',
+                  products: controller.mostOrderedProducts,
+                  onProductTap: (product) =>
+                      _showProductBottomSheet(context, product),
                 ),
                 SizedBox(height: 20),
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    SizedBox(width: 20),
-                    Container(
-                      child: Text(
-                        'Mais pedidos',
-                        style: AppTextStyle.sectionTitle,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 20),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-                      SizedBox(width: 14),
-                      ...List.generate(controller.mostOrderedProducts.length, (
-                        index,
-                      ) {
-                        final product = controller.mostOrderedProducts[index];
-
-                        return Padding(
-                          padding: const EdgeInsets.only(right: 32),
-                          child: AppProductCard(
-                            product: product,
-                            onTap: () =>
-                                _showProductBottomSheet(context, product),
-                          ),
-                        );
-                      }),
-                      SizedBox(width: 14),
-                    ],
-                  ),
-                ),
               ],
             ),
           ),
         ),
-      ),
-    );
-  }
-}
-
-class CategoryProductsPage extends StatelessWidget {
-  static const route = '/category-products';
-
-  const CategoryProductsPage({super.key, required this.categoryName});
-
-  final String categoryName;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.brownWhite,
-      appBar: AppBar(
-        backgroundColor: AppColors.brownWhite,
-        foregroundColor: AppColors.darkBrown,
-        elevation: 0,
-        leading: IconButton(
-          onPressed: () => Navigator.of(context).pop(),
-          icon: const Icon(Icons.arrow_back),
-        ),
-        title: Text(categoryName),
-      ),
-      bottomNavigationBar: Consumer<LoginController>(
-        builder: (context, controller, child) {
-          return controller.user?.role == UserRole.customer
-              ? const AppHomeNavigationBarCustomer()
-              : const AppHomeNavigationBarManager();
-        },
-      ),
-      body: Consumer<HomeController>(
-        builder: (context, controller, child) {
-          final products = controller.productsInCategory(categoryName);
-
-          if (products.isEmpty) {
-            return const Center(child: Text('Nenhum produto encontrado.'));
-          }
-
-          return GridView.builder(
-            padding: const EdgeInsets.all(16),
-            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-              maxCrossAxisExtent: 180,
-              mainAxisExtent: 190,
-              crossAxisSpacing: 12,
-              mainAxisSpacing: 16,
-            ),
-            itemCount: products.length,
-            itemBuilder: (context, index) {
-              final product = products[index];
-              return AppProductCard(
-                product: product,
-                onTap: () => _showProductBottomSheet(context, product),
-              );
-            },
-          );
-        },
       ),
     );
   }
@@ -396,7 +161,6 @@ void _showProductBottomSheet(BuildContext context, Product product) {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // IMAGEM DO PRODUTO
                         ClipRRect(
                           borderRadius: BorderRadius.circular(16),
                           child: Image.asset(
@@ -411,7 +175,6 @@ void _showProductBottomSheet(BuildContext context, Product product) {
 
                         const SizedBox(height: 20),
 
-                        // NOME
                         Text(
                           product.name,
                           style: GoogleFonts.poppins(
@@ -422,7 +185,6 @@ void _showProductBottomSheet(BuildContext context, Product product) {
 
                         const SizedBox(height: 8),
 
-                        // RESTAURANTE
                         Text(
                           product.restaurant,
                           style: GoogleFonts.poppins(
@@ -433,7 +195,6 @@ void _showProductBottomSheet(BuildContext context, Product product) {
 
                         const SizedBox(height: 12),
 
-                        // AVALIAÇÃO
                         Row(
                           children: [
                             const Icon(
@@ -451,7 +212,6 @@ void _showProductBottomSheet(BuildContext context, Product product) {
 
                         const SizedBox(height: 20),
 
-                        // DESCRIÇÃO
                         Text(
                           'Descrição',
                           style: GoogleFonts.poppins(
@@ -469,7 +229,6 @@ void _showProductBottomSheet(BuildContext context, Product product) {
 
                         const SizedBox(height: 30),
 
-                        // PREÇO + CARRINHO
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [

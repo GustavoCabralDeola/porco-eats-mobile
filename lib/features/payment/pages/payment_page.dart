@@ -7,6 +7,7 @@ import 'package:porco_eats/features/login/controllers/login_controller.dart';
 import 'package:porco_eats/features/payment/controllers/payment_controller.dart';
 import 'package:porco_eats/shared/widgets/app_colors.dart';
 import 'package:porco_eats/shared/widgets/app_elevated_button.dart';
+import 'package:porco_eats/shared/widgets/app_text_field.dart';
 import 'package:provider/provider.dart';
 
 class PaymentPage extends StatelessWidget {
@@ -29,15 +30,10 @@ class PaymentPage extends StatelessWidget {
               color: AppColors.darkBrown,
             ),
           ),
-          content: TextField(
+          content: AppTextField(
             controller: controller,
             autofocus: true,
-            decoration: InputDecoration(
-              hintText: 'Digite o logradouro',
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
+            hintText: 'Digite o logradouro',
           ),
           actions: [
             TextButton(
@@ -47,21 +43,20 @@ class PaymentPage extends StatelessWidget {
                 style: GoogleFonts.poppins(color: AppColors.subTitle),
               ),
             ),
-            ElevatedButton(
-              onPressed: () {
-                final value = controller.text.trim();
-                if (value.isNotEmpty) {
-                  context.read<PaymentController>().setAddress(value);
-                }
-                Navigator.pop(dialogContext);
-              },
-              style: ElevatedButton.styleFrom(
+            SizedBox(
+              width: 110,
+              child: AppElevatedButton(
+                type: ButtonType.filled,
                 backgroundColor: AppColors.redDelivery,
-                foregroundColor: AppColors.fullWhite,
-              ),
-              child: Text(
-                'Salvar',
-                style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+                labelStyle: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+                label: 'Salvar',
+                onPressed: () {
+                  final value = controller.text.trim();
+                  if (value.isNotEmpty) {
+                    context.read<PaymentController>().setAddress(value);
+                  }
+                  Navigator.pop(dialogContext);
+                },
               ),
             ),
           ],
@@ -358,7 +353,7 @@ class PaymentPage extends StatelessWidget {
                           label: 'Finalizar pedido',
                           isLoading: controller.isLoading,
                           type: ButtonType.filled,
-                          backgroundColor: AppColors.darkBrown,
+                          backgroundColor: AppColors.redDelivery,
                           borderRadius: BorderRadius.circular(14),
                           height: 56,
                           suffixIcon: Icons.arrow_forward_rounded,

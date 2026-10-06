@@ -16,6 +16,9 @@ class AppTextField extends StatelessWidget {
     this.validator,
     this.enabled = true,
     this.maxLines = 1,
+    this.style,
+    this.hintStyle,
+    this.border = const OutlineInputBorder(),
   });
 
   final TextEditingController? controller;
@@ -31,6 +34,9 @@ class AppTextField extends StatelessWidget {
   final FormFieldValidator<String>? validator;
   final bool enabled;
   final int maxLines;
+  final TextStyle? style;
+  final TextStyle? hintStyle;
+  final InputBorder? border;
 
   @override
   Widget build(BuildContext context) {
@@ -43,14 +49,16 @@ class AppTextField extends StatelessWidget {
       validator: validator,
       enabled: enabled,
       maxLines: maxLines,
+      style: style,
       decoration: InputDecoration(
         labelText: labelText,
         hintText: hintText,
+        hintStyle: hintStyle,
         prefixIcon: prefixIcon != null ? Icon(prefixIcon) : null,
         suffixIcon: suffixIcon != null
             ? IconButton(onPressed: onSuffixIconPressed, icon: Icon(suffixIcon))
             : null,
-        border: const OutlineInputBorder(),
+        border: border,
       ),
     );
   }

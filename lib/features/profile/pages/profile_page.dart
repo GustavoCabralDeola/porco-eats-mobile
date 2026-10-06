@@ -8,7 +8,8 @@ import 'package:porco_eats/features/profile/widgets/logout_modal.dart';
 import 'package:porco_eats/features/profile/widgets/profile_avatar.dart';
 import 'package:porco_eats/features/profile/widgets/profile_form.dart';
 import 'package:porco_eats/shared/widgets/app_colors.dart';
-import 'package:porco_eats/shared/widgets/app_profile_header.dart';
+import 'package:porco_eats/shared/widgets/app_elevated_button.dart';
+import 'package:porco_eats/shared/widgets/headers/app_profile_header.dart';
 import 'package:provider/provider.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -232,34 +233,19 @@ class _ProfilePageState extends State<ProfilePage> {
                             addressController: _controller.addressController,
                           ),
                           const SizedBox(height: 24),
-                          SizedBox(
-                            width: double.infinity,
-                            child: ElevatedButton(
-                              onPressed: _isSaving ? null : _saveProfile,
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.yellowAgility,
-                                foregroundColor: AppColors.darkBrown,
-                                minimumSize: const Size(0, 54),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                              ),
-                              child: _isSaving
-                                  ? const SizedBox(
-                                      width: 20,
-                                      height: 20,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                      ),
-                                    )
-                                  : const Text(
-                                      'Salvar alterações',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: 18,
-                                      ),
-                                    ),
+                          AppElevatedButton(
+                            height: 54,
+                            type: ButtonType.filled,
+                            backgroundColor: AppColors.yellowAgility,
+                            borderRadius: BorderRadius.circular(12),
+                            labelStyle: const TextStyle(
+                              color: AppColors.darkBrown,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 18,
                             ),
+                            isLoading: _isSaving,
+                            label: 'Salvar alterações',
+                            onPressed: _isSaving ? null : _saveProfile,
                           ),
                           const SizedBox(height: 18),
                           _actionTile(
