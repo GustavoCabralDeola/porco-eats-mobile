@@ -4,7 +4,7 @@ import 'package:porco_eats/features/customer_order/pages/customer_order_page.dar
 import 'package:porco_eats/features/home/pages/home_page.dart';
 import 'package:porco_eats/features/login/controllers/login_controller.dart';
 import 'package:porco_eats/shared/widgets/app_colors.dart';
-import 'package:porco_eats/shared/widgets/navigationbar/app_navigation_bar_item.dart';
+import 'package:porco_eats/shared/widgets/navigation/app_navigation_bar_item.dart';
 import 'package:porco_eats/features/profile/pages/profile_page.dart';
 import 'package:provider/provider.dart';
 
