@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:porco_eats/features/cart/controllers/cart_controller.dart';
 import 'package:porco_eats/features/cart/pages/cart_page.dart';
 import 'package:porco_eats/features/home/controllers/home_controller.dart';
+import 'package:porco_eats/features/home/controllers/home_search_filter_controller.dart';
 import 'package:porco_eats/features/home/widgets/app_home_banners_row.dart';
 import 'package:porco_eats/features/home/widgets/app_home_categories_row.dart';
 import 'package:porco_eats/features/home/widgets/app_home_products_section.dart';
@@ -89,7 +90,9 @@ class HomePage extends StatelessWidget {
                     SizedBox(height: 20),
                     AppHomeProductsSection(
                       title: 'Ofertas para você',
-                      products: controller.offerProducts,
+                      products: context
+                          .watch<HomeSearchFilterController>()
+                          .filterProducts(controller.offerProducts),
                       badgeLabels: ['-20%', '♛ Mais pedido', '-15%'],
                       badgeColors: [Colors.red, Colors.orange, Colors.red],
                       onProductTap: (product) =>
@@ -98,7 +101,9 @@ class HomePage extends StatelessWidget {
                     SizedBox(height: 20),
                     AppHomeProductsSection(
                       title: 'Mais pedidos',
-                      products: controller.mostOrderedProducts,
+                      products: context
+                          .watch<HomeSearchFilterController>()
+                          .filterProducts(controller.mostOrderedProducts),
                       onProductTap: (product) =>
                           _showProductBottomSheet(context, product),
                     ),

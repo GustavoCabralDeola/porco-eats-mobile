@@ -3,6 +3,7 @@ import 'package:porco_eats/features/cart/controllers/cart_controller.dart';
 import 'package:porco_eats/features/customer_order/controllers/customer_order_controller.dart';
 import 'package:porco_eats/features/dashboard/controllers/dashboard_order_controller.dart';
 import 'package:porco_eats/features/home/controllers/home_controller.dart';
+import 'package:porco_eats/features/home/controllers/home_search_filter_controller.dart';
 import 'package:porco_eats/features/login/controllers/login_controller.dart';
 import 'package:porco_eats/features/login/controllers/signup_controller.dart';
 import 'package:porco_eats/features/order_list/controllers/orders_list_controller.dart';
@@ -46,6 +47,9 @@ class MyApp extends StatelessWidget {
           create: (context) {
             return HomeController();
           },
+        ),
+        ChangeNotifierProvider(
+          create: (context) => HomeSearchFilterController(),
         ),
         ChangeNotifierProvider(
           create: (context) {
