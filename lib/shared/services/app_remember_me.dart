@@ -7,7 +7,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class AppPreferences {
   static const _userKey = 'remembered_user';
-  static const _registeredUserKey = 'registered_user';
   static const _registeredUsersKey = 'registered_users';
   static const _productsKey = 'products';
   static const _ordersKey = 'orders';
@@ -38,29 +37,30 @@ class AppPreferences {
 
   Future<void> clearUser() => _preferences.remove(_userKey);
 
-  Future<void> saveRegisteredUser(User user) {
-    return _preferences.setString(
-      _registeredUserKey,
-      jsonEncode(user.toJson()),
-    );
-  }
+  // Future<void> saveRegisteredUser(User user) {
+  //   return _preferences.setString(
+  //     _registeredUsersKey,
+  //     jsonEncode(user.toJson()),
+  //   );
+  // }
 
   Future<User?> loadRegisteredUser() async {
-    final value = await _preferences.getString(_registeredUserKey);
+    final value = await _preferences.getString(_registeredUsersKey);
     if (value == null) return null;
 
     try {
       return User.fromJson(jsonDecode(value) as Map<String, dynamic>);
     } on FormatException {
-      await _preferences.remove(_registeredUserKey);
+      await _preferences.remove(_registeredUsersKey);
       return null;
     } on TypeError {
-      await _preferences.remove(_registeredUserKey);
+      await _preferences.remove(_registeredUsersKey);
       return null;
     }
   }
 
-  Future<void> clearRegisteredUser() => _preferences.remove(_registeredUserKey);
+  Future<void> clearRegisteredUser() =>
+      _preferences.remove(_registeredUsersKey);
 
   Future<void> saveRegisteredUsers(List<User> users) {
     final value = jsonEncode(users.map((user) => user.toJson()).toList());
@@ -94,7 +94,7 @@ class AppPreferences {
     );
     return _preferences.setString(_productsKey, value);
   }
- 
+
   Future<void> saveOrders(List<CustomerOrder> orders) {
     final value = jsonEncode(orders.map((order) => order.toJson()).toList());
     return _preferences.setString(_ordersKey, value);
@@ -120,4 +120,3 @@ class AppPreferences {
 
   Future<void> clearOrders() => _preferences.remove(_ordersKey);
 }
-

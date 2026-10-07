@@ -9,9 +9,12 @@ import 'package:porco_eats/features/profile/widgets/change_password_modal.dart';
 import 'package:porco_eats/features/profile/widgets/logout_modal.dart';
 import 'package:porco_eats/features/profile/widgets/profile_avatar.dart';
 import 'package:porco_eats/features/profile/widgets/profile_form.dart';
+import 'package:porco_eats/models/enums/user_role.dart';
 import 'package:porco_eats/shared/widgets/app_colors.dart';
 import 'package:porco_eats/shared/widgets/app_elevated_button.dart';
 import 'package:porco_eats/shared/widgets/headers/app_profile_header.dart';
+import 'package:porco_eats/shared/widgets/navigation/app_home_navigation_bar_customer.dart';
+import 'package:porco_eats/shared/widgets/navigation/app_home_navigation_bar_manager.dart';
 import 'package:provider/provider.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -44,122 +47,122 @@ class _ProfileView extends StatelessWidget {
     final controller = context.watch<ProfileController>();
 
     return Scaffold(
+      bottomNavigationBar: Consumer<LoginController>(
+        builder: (context, controller, child) {
+          return controller.user?.role == UserRole.customer
+              ? const AppHomeNavigationBarCustomer(selectedIndex: 3)
+              : const AppHomeNavigationBarManager(selectedIndex: 3);
+        },
+      ),
       backgroundColor: AppColors.brownWhite,
-      body: SafeArea(
-        child: controller.isLoading
-            ? Center(child: CircularProgressIndicator())
-            : controller.loadError != null
-            ? Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(controller.loadError!, textAlign: TextAlign.center),
-                    TextButton(
-                      onPressed: controller.loadProfile,
-                      child: const Text('Tentar novamente'),
-                    ),
-                  ],
-                ),
-              )
-            : SingleChildScrollView(
-                child: Column(
-                  children: [
-                    AppProfileHeader(),
-                    Padding(
-                      padding: EdgeInsets.fromLTRB(18, 18, 18, 30),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              IconButton(
-                                onPressed: () => Navigator.maybePop(context),
-                                icon: Icon(Icons.arrow_back_ios),
+      body: controller.isLoading
+          ? Center(child: CircularProgressIndicator())
+          : controller.loadError != null
+          ? Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(controller.loadError!, textAlign: TextAlign.center),
+                  TextButton(
+                    onPressed: controller.loadProfile,
+                    child: const Text('Tentar novamente'),
+                  ),
+                ],
+              ),
+            )
+          : SingleChildScrollView(
+              child: Column(
+                children: [
+                  AppProfileHeader(),
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(18, 18, 18, 30),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            SizedBox(width: 2),
+                            Text(
+                              'Meu perfil',
+                              style: TextStyle(
                                 color: AppColors.darkBrown,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w800,
                               ),
-                              SizedBox(width: 2),
-                              Text(
-                                'Meu perfil',
-                                style: TextStyle(
-                                  color: AppColors.darkBrown,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w800,
+                            ),
+                          ],
+                        ),
+
+                        Center(
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              ProfileAvatar(
+                                initials: controller.initials,
+                                imageBytes: controller.profileImageBytes,
+                                onEditPressed: controller.isPickingPhoto
+                                    ? () {}
+                                    : () => _chooseProfilePhoto(
+                                        context,
+                                        controller,
+                                      ),
+                              ),
+                              if (controller.isPickingPhoto)
+                                const SizedBox(
+                                  width: 26,
+                                  height: 26,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
                                 ),
-                              ),
                             ],
                           ),
-
-                          Center(
-                            child: Stack(
-                              alignment: Alignment.center,
-                              children: [
-                                ProfileAvatar(
-                                  initials: controller.initials,
-                                  imageBytes: controller.profileImageBytes,
-                                  onEditPressed: controller.isPickingPhoto
-                                      ? () {}
-                                      : () => _chooseProfilePhoto(
-                                          context,
-                                          controller,
-                                        ),
-                                ),
-                                if (controller.isPickingPhoto)
-                                  const SizedBox(
-                                    width: 26,
-                                    height: 26,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                    ),
-                                  ),
-                              ],
-                            ),
+                        ),
+                        const SizedBox(height: 22),
+                        ProfileForm(
+                          nameController: controller.nameController,
+                          lastNameController: controller.lastNameController,
+                          emailController: controller.emailController,
+                          phoneController: controller.phoneController,
+                          addressController: controller.addressController,
+                        ),
+                        const SizedBox(height: 24),
+                        AppElevatedButton(
+                          height: 54,
+                          type: ButtonType.filled,
+                          backgroundColor: AppColors.yellowAgility,
+                          borderRadius: BorderRadius.circular(12),
+                          labelStyle: const TextStyle(
+                            color: AppColors.darkBrown,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 18,
                           ),
-                          const SizedBox(height: 22),
-                          ProfileForm(
-                            nameController: controller.nameController,
-                            lastNameController: controller.lastNameController,
-                            emailController: controller.emailController,
-                            phoneController: controller.phoneController,
-                            addressController: controller.addressController,
-                          ),
-                          const SizedBox(height: 24),
-                          AppElevatedButton(
-                            height: 54,
-                            type: ButtonType.filled,
-                            backgroundColor: AppColors.yellowAgility,
-                            borderRadius: BorderRadius.circular(12),
-                            labelStyle: const TextStyle(
-                              color: AppColors.darkBrown,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 18,
-                            ),
-                            isLoading: controller.isSaving,
-                            label: 'Salvar alterações',
-                            onPressed: controller.isSaving
-                                ? null
-                                : () => _saveProfile(context, controller),
-                          ),
-                          const SizedBox(height: 18),
-                          _actionTile(
-                            icon: Icons.lock_outline,
-                            title: 'Alterar senha',
-                            onTap: () =>
-                                _openChangePasswordModal(context, controller),
-                          ),
-                          const SizedBox(height: 12),
-                          _actionTile(
-                            icon: Icons.logout,
-                            title: 'Sair da conta',
-                            color: AppColors.redDelivery,
-                            onTap: () => _openLogoutModal(context, controller),
-                          ),
-                        ],
-                      ),
+                          isLoading: controller.isSaving,
+                          label: 'Salvar alterações',
+                          onPressed: controller.isSaving
+                              ? null
+                              : () => _saveProfile(context, controller),
+                        ),
+                        const SizedBox(height: 18),
+                        _actionTile(
+                          icon: Icons.lock_outline,
+                          title: 'Alterar senha',
+                          onTap: () =>
+                              _openChangePasswordModal(context, controller),
+                        ),
+                        const SizedBox(height: 12),
+                        _actionTile(
+                          icon: Icons.logout,
+                          title: 'Sair da conta',
+                          color: AppColors.redDelivery,
+                          onTap: () => _openLogoutModal(context, controller),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-      ),
+            ),
     );
   }
 

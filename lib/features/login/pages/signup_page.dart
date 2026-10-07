@@ -41,7 +41,7 @@ class SignupPage extends StatelessWidget {
                     prefixIcon: Icons.person_outline,
                     textEditingcontroller: controller.nameController,
                     onChanged: (_) => controller.onFieldChanged(),
-                    validator: (value) => controller.validateName(),
+                    validator: (value) => controller.validarNome(),
                   ),
 
                   SizedBox(height: 15),
@@ -52,7 +52,7 @@ class SignupPage extends StatelessWidget {
                     prefixIcon: Icons.email_outlined,
                     textEditingcontroller: controller.emailController,
                     onChanged: (_) => controller.onFieldChanged(),
-                    validator: (value) => controller.validateEmail(),
+                    validator: (value) => controller.validarEmail(),
                   ),
 
                   SizedBox(height: 15),
@@ -64,7 +64,7 @@ class SignupPage extends StatelessWidget {
                     obscureText: true,
                     textEditingcontroller: controller.passwordController,
                     onChanged: (_) => controller.onFieldChanged(),
-                    validator: (value) => controller.validatePassword(),
+                    validator: (value) => controller.validarSenha(),
                   ),
 
                   SizedBox(height: 15),
@@ -74,9 +74,9 @@ class SignupPage extends StatelessWidget {
                     hintText: 'Confirme sua senha',
                     prefixIcon: Icons.lock_outline,
                     obscureText: true,
-                    textEditingcontroller: controller.confirmPasswordController,
+                    textEditingcontroller: controller.confirmarSenhaController,
                     onChanged: (_) => controller.onFieldChanged(),
-                    validator: (value) => controller.validateConfirmPassword(),
+                    // validator: (value) => controller.validarConfirmarSenha(),
                   ),
 
                   SizedBox(height: 15),
@@ -120,10 +120,10 @@ class SignupPage extends StatelessWidget {
                     label: 'CADASTRAR',
                     type: ButtonType.filled,
                     isLoading: controller.isLoading,
-                    onPressed: controller.isLoading || !controller.canSignup
+                    onPressed: controller.isLoading || !controller.podeCadastrar
                         ? null
                         : () async {
-                            final sucesso = await controller.signupUser();
+                            final sucesso = await controller.cadastrarUsuario();
 
                             if (!context.mounted) return;
 
@@ -140,10 +140,13 @@ class SignupPage extends StatelessWidget {
                                 context,
                                 LoginPage.route,
                               );
-                            } else if (controller.signupErrorMessage != null) {
+                            } else if (controller.cadastroErrorMessage !=
+                                null) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
-                                  content: Text(controller.signupErrorMessage!),
+                                  content: Text(
+                                    controller.cadastroErrorMessage!,
+                                  ),
                                 ),
                               );
                             }
