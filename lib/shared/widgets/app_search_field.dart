@@ -7,10 +7,15 @@ class AppSearchField extends StatelessWidget {
     super.key,
     required this.hintText,
     this.enableFilter = false,
+    this.controller,
+    this.onChanged,
   });
 
   final String hintText;
   final bool? enableFilter;
+  final TextEditingController? controller;
+  final ValueChanged<String>? onChanged;
+
   @override
   Widget build(BuildContext context) {
     return Padding(

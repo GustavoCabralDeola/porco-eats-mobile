@@ -95,15 +95,13 @@ class CartPage extends StatelessWidget {
                       ),
                       type: ButtonType.filled,
                       height: 56,
-                      backgroundColor: AppColors.darkBrown,
+                      backgroundColor: AppColors.redDelivery,
                       borderRadius: BorderRadius.circular(14),
                       suffixIcon: Icons.arrow_forward_rounded,
                       suffixIconSize: 22,
                       onPressed: () {
                         Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => PaymentPage(),
-                          ),
+                          MaterialPageRoute(builder: (_) => PaymentPage()),
                         );
                       },
                     ),

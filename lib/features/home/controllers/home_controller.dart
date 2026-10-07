@@ -12,14 +12,45 @@ enum ProductsViewState { loading, sucess, error }
 
 class HomeController extends ChangeNotifier {
   Timer? _initialSkeletonTimer;
+
   bool _isShowingInitialSkeleton = false;
   bool _hasShownInitialSkeleton = false;
+
+  final TextEditingController searchController = TextEditingController();
+
+  String _searchText = '';
 
   List<Category> listCategories = [];
   List<Product> listProducts = [];
   List<CustomerOrder> listCustomerOrdersInCart = [];
 
   Mocks mockJson = Mocks();
+
+  CategoriesViewState categoriesViewState = CategoriesViewState.loading;
+
+  ProductsViewState productsViewState = ProductsViewState.loading;
+
+  List<Product> get offerProducts => _productsByIds([1, 8, 12]);
+
+  List<Product> get mostOrderedProducts => _productsByIds([17, 1, 21]);
+
+  String get searchText => _searchText;
+
+  bool get isSearching => _searchText.trim().isNotEmpty;
+
+  List<Product> get filteredProducts {
+    final query = _searchText.trim().toLowerCase();
+
+    if (query.isEmpty) {
+      return listProducts;
+    }
+
+    return listProducts.where((product) {
+      return product.name.toLowerCase().contains(query) ||
+          product.restaurant.toLowerCase().contains(query) ||
+          product.category.toLowerCase().contains(query);
+    }).toList();
+  }
 
   List<Product> _productsByIds(List<int> ids) {
     return ids
@@ -31,10 +62,6 @@ class HomeController extends ChangeNotifier {
         .toList();
   }
 
-  List<Product> get offerProducts => _productsByIds([1, 8, 12]);
-
-  List<Product> get mostOrderedProducts => _productsByIds([17, 1, 21]);
-
   List<Product> productsInCategory(String categoryName) {
     final category = categoryName == 'Pizzas' ? 'Pizza' : categoryName;
 
@@ -44,10 +71,18 @@ class HomeController extends ChangeNotifier {
         .toList();
   }
 
-  CategoriesViewState categoriesViewState = CategoriesViewState.loading;
-  ProductsViewState productsViewState = ProductsViewState.loading;
-
   bool get isShowingInitialSkeleton => _isShowingInitialSkeleton;
+
+  void searchProducts(String value) {
+    _searchText = value;
+    notifyListeners();
+  }
+
+  void clearSearch() {
+    searchController.clear();
+    _searchText = '';
+    notifyListeners();
+  }
 
   void showInitialSkeleton() {
     if (_isShowingInitialSkeleton || _hasShownInitialSkeleton) return;
@@ -94,6 +129,7 @@ class HomeController extends ChangeNotifier {
   @override
   void dispose() {
     _initialSkeletonTimer?.cancel();
+    searchController.dispose();
     super.dispose();
   }
 }
