@@ -68,6 +68,7 @@ class PaymentPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final paymentController = context.watch<PaymentController>();
+    final cartController = context.watch<CartController>();
 
     return Scaffold(
       backgroundColor: AppColors.brownWhite,
@@ -294,7 +295,7 @@ class PaymentPage extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      'R\$ 51,30',
+                      'R\$ ${cartController.totalPrice.toStringAsFixed(2).replaceAll('.', ',')}',
                       style: GoogleFonts.poppins(
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
