@@ -9,12 +9,14 @@ class AppSearchField extends StatelessWidget {
     this.enableFilter = false,
     this.controller,
     this.onChanged,
+    this.onFilterPressed,
   });
 
   final String hintText;
   final bool? enableFilter;
   final TextEditingController? controller;
   final ValueChanged<String>? onChanged;
+  final VoidCallback? onFilterPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +26,8 @@ class AppSearchField extends StatelessWidget {
         children: [
           Expanded(
             child: TextFormField(
+              controller: controller,
+              onChanged: onChanged,
               keyboardType: TextInputType.webSearch,
 
               decoration: InputDecoration(
@@ -44,7 +48,10 @@ class AppSearchField extends StatelessWidget {
             ),
           ),
 
-          if (enableFilter == true) ...[SizedBox(width: 5), AppSearchButton()],
+          if (enableFilter == true) ...[
+            SizedBox(width: 5),
+            AppSearchButton(onPressed: onFilterPressed),
+          ],
         ],
       ),
     );

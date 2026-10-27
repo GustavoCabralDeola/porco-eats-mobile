@@ -85,6 +85,29 @@ class HomePage extends StatelessWidget {
                       onChanged: controller.searchProducts,
                     ),
                     SizedBox(height: 20),
+                    if (controller.isSearching || controller.hasActiveFilters) ...[
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Text(
+                          controller.isSearching ? 'Resultados da busca' : 'Produtos filtrados',
+                          style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.title),
+                        ),
+                      ),
+                      SizedBox(height: 12),
+                      if (controller.filteredProducts.isEmpty)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+                          child: Text('Nenhum produto encontrado.', style: GoogleFonts.poppins(color: AppColors.subTitle)),
+                        )
+                      else
+                        AppHomeProductsSection(
+                          title: '',
+                          products: controller.filteredProducts,
+                          displayGrid: true,
+                          onProductTap: (product) => _showProductBottomSheet(context, product),
+                        ),
+                    ],
+                    if (!controller.isSearching && !controller.hasActiveFilters) ...[
                     AppHomeCategoriesRow(),
                     SizedBox(height: 20),
                     AppHomeBannersRow(),
@@ -105,6 +128,7 @@ class HomePage extends StatelessWidget {
                           _showProductBottomSheet(context, product),
                     ),
                     SizedBox(height: 20),
+                    ],
                   ],
                 ),
               ),

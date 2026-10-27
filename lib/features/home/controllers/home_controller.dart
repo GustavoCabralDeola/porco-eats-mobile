@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:porco_eats/models/category.dart';
 import 'package:porco_eats/models/customer_order.dart';
 import 'package:porco_eats/models/product.dart';
+import 'package:porco_eats/features/home/controllers/home_filter_controller.dart';
 import 'package:porco_eats/shared/mock.dart';
 
 enum CategoriesViewState { loading, sucess, error }
@@ -19,6 +20,7 @@ class HomeController extends ChangeNotifier {
   final TextEditingController searchController = TextEditingController();
 
   String _searchText = '';
+  Set<String> _selectedCategories = {};
 
   List<Category> listCategories = [];
   List<Product> listProducts = [];
@@ -37,19 +39,29 @@ class HomeController extends ChangeNotifier {
   String get searchText => _searchText;
 
   bool get isSearching => _searchText.trim().isNotEmpty;
+  Set<String> get selectedCategories => Set.unmodifiable(_selectedCategories);
+  bool get hasActiveFilters => _selectedCategories.isNotEmpty;
 
   List<Product> get filteredProducts {
     final query = _searchText.trim().toLowerCase();
+    final products = listProducts.isEmpty
+        ? mockJson.productsJson.map(Product.fromJson).toList()
+        : listProducts;
 
-    if (query.isEmpty) {
-      return listProducts;
-    }
-
-    return listProducts.where((product) {
-      return product.name.toLowerCase().contains(query) ||
+    return products.where((product) {
+      final matchesText = query.isEmpty || product.name.toLowerCase().contains(query) ||
           product.restaurant.toLowerCase().contains(query) ||
           product.category.toLowerCase().contains(query);
+      final matchesCategory = _selectedCategories.isEmpty ||
+          _selectedCategories.any((category) => product.category.toLowerCase() ==
+              HomeFilterController.productCategory(category).toLowerCase());
+      return matchesText && matchesCategory;
     }).toList();
+  }
+
+  void applyCategoryFilters(Set<String> categories) {
+    _selectedCategories = {...categories};
+    notifyListeners();
   }
 
   List<Product> _productsByIds(List<int> ids) {
